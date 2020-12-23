@@ -1,0 +1,37 @@
+[
+  {
+    "stylers": [
+      {
+        "hue": "#baf4c4"
+      },
+      {
+        "saturation": 10
+      }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "on"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "stylers": [
+      {
+        "color": "#effefd"
+      }
+    ]
+  }
+]

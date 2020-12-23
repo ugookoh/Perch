@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "89897349326",
+    "firebase_url": "https://perch-01.firebaseio.com",
+    "project_id": "perch-01",
+    "storage_bucket": "perch-01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:89897349326:android:71c36b2d73a7575318609f",
+        "android_client_info": {
+          "package_name": "com.maps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "89897349326-kjb3mirjt526tpqs9uu7n7096ans6lap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCS3CV8R89KVeuentcCQv9W50Vi7sfyjdc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "89897349326-kjb3mirjt526tpqs9uu7n7096ans6lap.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "89897349326-lvt0e9m0eq4gj73134j7ehr1vcph6is6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "Perch"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:89897349326:android:e92744c2b865a3c818609f",
+        "android_client_info": {
+          "package_name": "com.perch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "89897349326-kjb3mirjt526tpqs9uu7n7096ans6lap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCS3CV8R89KVeuentcCQv9W50Vi7sfyjdc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "89897349326-kjb3mirjt526tpqs9uu7n7096ans6lap.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "89897349326-lvt0e9m0eq4gj73134j7ehr1vcph6is6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "Perch"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
