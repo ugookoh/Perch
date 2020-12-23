@@ -133,7 +133,6 @@ export default class ContactUs extends React.Component {
                         {/* <View style={styles.image}>
                             <CustomerCare height={'100%'} width={'100%'} />
                         </View> */}
-
                         <Animated.View style={[styles.pickerView, { bottom: this.pickerPosition, }]}>
                             <View style={styles.pickerChoice}>
                                 <View style={{ marginRight: x(20) }}>
