@@ -449,11 +449,11 @@ export function handleLogin() {
     .catch(error => this.setState({ errorMessage: error.message, loading: false }));
 };
 //HANDLE SIGN-UPS
-export function createUserDetails(firstName, lastName, email, phoneNumber, password) {
+export function createUserDetails(firstName, lastName, email, phoneNumber, password, isDriver) {
   auth().createUserWithEmailAndPassword(email, password)
     .then(() => {
       const userID = auth().currentUser.uid;
-      axios.post('https://us-central1-perch-01.cloudfunctions.net/createUserDetails', { firstName: firstName, lastName: lastName, email: email, phoneNumber: phoneNumber, userID: userID })
+      axios.post('https://us-central1-perch-01.cloudfunctions.net/createUserDetails', { firstName: firstName, lastName: lastName, email: email, phoneNumber: phoneNumber, userID: userID, isDriver: isDriver })
         .then(() => {
           database().ref(`users/${userID}`).once('value', data => {
             AsyncStorage.setItem('USER_DETAILS', JSON.stringify(data.val()))
@@ -1276,6 +1276,6 @@ export function dateformat(time) {
   const m = time.substring(slash1 + 1, slash2);
   const d = time.substring(slash2 + 1, slash3);
 
-  return `${d}/${Number(m)+1}/${y}`;
+  return `${d}/${Number(m) + 1}/${y}`;
 };
 export const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
