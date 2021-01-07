@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './styles';
 import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, ScrollView, Button, Platform, StatusBar, Alert } from 'react-native';
-import { OfflineNotice, signOut, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
+import { OfflineNotice, signOut, x, y, height, width, openBrowser } from '../../Functions/Functions';
 
 import Header from '../../Components/Header/Header';
 import Icon from 'react-native-vector-icons/Feather';
@@ -43,9 +43,9 @@ export default class Settings extends React.Component {
         return (
             <View style={styles.container}>
                 <Header name={'Settings'} scrollY={this.state.scrollY} onPress={() => { this.props.navigation.goBack(); }} />
-                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
 
-                <TouchableOpacity style={{ zIndex: -1 }}>
+                <TouchableOpacity style={{ zIndex: -1 }} onPress={()=>{openBrowser(`https://perchrides.com/s/articles/why_should_you_be_a_perch_driver`)}}>
                     <Animated.View style={[styles.rWP, { top: this.animatedPosition }]}>
                         <TouchableOpacity style={[styles.rWP_x,]}
                             onPress={this.closeAd}

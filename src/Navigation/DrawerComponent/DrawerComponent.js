@@ -186,7 +186,7 @@ export default class DrawerComponent extends React.Component {
 
                     <TouchableOpacity
                         onPress={() => {
-                            if (this.state.status == 'OFFLINE')
+                            if (this.props.status == 'OFFLINE')
                                 Alert.alert(
                                     'Perch',
                                     'Are you sure you want to log out of Perch?',
@@ -207,7 +207,7 @@ export default class DrawerComponent extends React.Component {
                                     ],
                                     { cancelable: false }
                                 );
-                            else if (this.state.status == 'ONLINE')
+                            else if (this.props.status == 'ONLINE')
                                 Alert.alert('Complete trip',
                                     'You cannot log out while you have an ongoing trip',
                                     [{

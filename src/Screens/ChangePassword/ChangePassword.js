@@ -5,13 +5,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../Components/Header/Header';
 import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
 import Button from '../../Components/Button/Button';
-import { OfflineNotice, changePassword, x, y, height, width, dimensionAssert,CustomLayoutLinear } from '../../Functions/Functions';
+import { OfflineNotice, changePassword, x, y, height, width, dimensionAssert, CustomLayoutLinear, sendPasswordResetLink } from '../../Functions/Functions';
 const [GREEN, WHITE, RED] = ['#4DB748', '#FFFFFF', '#FF0000'];
 
 
 export default class ChangePassword extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         if (Platform.OS === 'android') {
             UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -24,7 +24,7 @@ export default class ChangePassword extends React.Component {
             confirmNewPassword: '',
             errorMessage: '',
             loading: false,
-
+            userDetails: this.props.route.params.userDetails,
         };
     }
     render() {
@@ -34,7 +34,7 @@ export default class ChangePassword extends React.Component {
             <TouchableWithoutFeedback
                 onPress={() => { Keyboard.dismiss() }}>
                 <View style={styles.container}>
-                     <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                    <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                     <View style={styles.header}>
                         <Header name={'Change Password'} scrollY={this.state.scrollY} onPress={() => { this.props.navigation.goBack() }} />
                     </View>
@@ -103,7 +103,12 @@ export default class ChangePassword extends React.Component {
                             </View>}
                             <View style={styles.choices}>
                                 <Text style={styles.fP}>Forgot password?</Text>
-                                <TouchableOpacity style={{ top: (StatusBar.currentHeight ? x(3) : 0) }}>
+                                <TouchableOpacity style={{ top: (StatusBar.currentHeight ? x(3) : 0) }}
+                                    onPress={() => {
+                                        this.setState({ loading: true }, () => {
+                                            sendPasswordResetLink.call(this, this.state.userDetails.email);
+                                        })
+                                    }}>
                                     <Text style={styles.vE}>Send verification email</Text>
                                 </TouchableOpacity>
                             </View>

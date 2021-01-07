@@ -437,7 +437,12 @@ export function handleLogin() {
               if (this.props.route.params.forceUpdate)
                 this.props.route.params.forceUpdate(data.val());
 
-            this.props.navigation.navigate("Main", { userDetails: data.val() });
+            if (data.val().summarizedHistory.phoneVerified)
+              this.props.navigation.navigate("Main", { userDetails: data.val() });
+            else {
+              this.props.navigation.navigate("VerifyPhoneNumber", { userDetails: data.val() });
+              sendVerification(userID, 'phoneNumber', 'storeAndSend', '', data.val().phoneNumber, '', data.val().firstName, '');
+            }
           })
           .catch(error => { console.log(error.message) });
       }).catch(error => console.log(error.message))
@@ -450,27 +455,68 @@ export function handleLogin() {
 };
 //HANDLE SIGN-UPS
 export function createUserDetails(firstName, lastName, email, phoneNumber, password, isDriver) {
-  auth().createUserWithEmailAndPassword(email, password)
-    .then(() => {
-      const userID = auth().currentUser.uid;
-      axios.post('https://us-central1-perch-01.cloudfunctions.net/createUserDetails', { firstName: firstName, lastName: lastName, email: email, phoneNumber: phoneNumber, userID: userID, isDriver: isDriver })
-        .then(() => {
-          database().ref(`users/${userID}`).once('value', data => {
-            AsyncStorage.setItem('USER_DETAILS', JSON.stringify(data.val()))
+  axios.post(`https://us-central1-perch-01.cloudfunctions.net/checkIfPhoneNumberIsFree`, { phoneNumber: phoneNumber })
+    .then(r => {
+      if (r.data) {
+        auth().createUserWithEmailAndPassword(email, password)
+          .then(() => {
+            const userID = auth().currentUser.uid;
+            axios.post('https://us-central1-perch-01.cloudfunctions.net/createUserDetails', { firstName: firstName, lastName: lastName, email: email, phoneNumber: phoneNumber, userID: userID, isDriver: isDriver })
               .then(() => {
-                this.props.navigation.navigate("Main", { userDetails: data.val() });
+                database().ref(`users/${userID}`).once('value', data => {
+                  AsyncStorage.setItem('USER_DETAILS', JSON.stringify(data.val()))
+                    .then(() => {
+                      this.props.navigation.navigate("VerifyPhoneNumber", { userDetails: data.val() });
+                    })
+                    .catch(error => { console.log(error.message) });
+                }).catch(error => console.log(error.message))
               })
-              .catch(error => { console.log(error.message) });
-          }).catch(error => console.log(error.message))
-        })
-        .then(() => {
-          setTimeout(() => {
-            this.setState({ password: "", errorMessage: "", loading: false })
-          }, 1000)
-        })
-        .catch(error => { console.log(error.message) });
-    }).catch(error => this.setState({ errorMessage: error.message, loading: false }));
+              .then(() => {
+                setTimeout(() => {
+                  this.setState({ password: "", errorMessage: "", loading: false })
+                }, 1000)
+              })
+              .catch(error => { this.setState({ errorMessage: error.message, loading: false }) });
+          }).catch(error => { this.setState({ errorMessage: error.message, loading: false }) });
+      }
+      else
+        this.setState({ errorMessage: 'This phone number is currently registered with another account, contact us for help', loading: false })
+    }).catch(error => {
+      this.setState({ errorMessage: error.message, loading: false })
+    })
 
+
+};
+//SEND VERIFICATION CODES
+export function sendVerification(userID, type, action, code, phoneNumber, email, name, screenName) {
+  axios.post(`https://us-central1-perch-01.cloudfunctions.net/sendVerificationCode`,
+    {
+      userID: userID,
+      type: type,
+      action: action,
+      code: code,
+      phoneNumber: phoneNumber,
+      email: email,
+      name: name
+    })
+    .then((r) => {
+      const result = r.data;
+      if (action == 'check') {
+        if (result) {
+          this.setState({ loading: false });
+          if (screenName = 'VerifyPhoneNumber')
+            this.props.navigation.navigate('Main')
+        }
+        else {
+          this.setState({ loading: false })
+          Alert.alert('Error', 'The verification code was not correct. Please check again or click resend.',);
+        }
+      }
+    })
+    .catch(error => {
+      Alert.alert('Error', `${error.message}, please resend code`);
+      this.setState({ loading: false });
+    })
 };
 //HANDLE LOGOUTS
 export function signOut(forceUpdate) {
@@ -1162,9 +1208,19 @@ export function changePassword(oldPassword, newPassword) {
       }).catch(error => { console.log(error.message) })
   })
 };
+export function sendPasswordResetLink(email) {
+  auth().sendPasswordResetEmail(email)
+    .then(() => {
+      Alert.alert('Email sent', 'Your password reset email has been successfully send',
+        [{ text: 'Ok', onPress: () => { this.props.navigation.goBack() } }])
+    }).catch(error => {
+      Alert.alert(`Error`, error.message);
+      this.setState({ loading: false })
+    })
+};
 export async function openBrowser(URL) {
   try {
-    const url = URL;//'https://www.google.com'
+    const url = URL;//'https://www.perchrides.com'
     await InAppBrowser.isAvailable()
     InAppBrowser.open(url, {
       // iOS Properties
