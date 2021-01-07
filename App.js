@@ -9,7 +9,7 @@ import LoadingScreen from './src/Components/LoadingScreen/LoadingScreen';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import messaging from '@react-native-firebase/messaging';
-
+import database from '@react-native-firebase/database';
 
 export default class App extends React.Component {
   constructor() {
@@ -20,6 +20,7 @@ export default class App extends React.Component {
       user: null,
       firstLaunch: false,
       checkFirstLaunch: false,
+      phoneVerified: 'loading',
     };
   };
   componentDidMount() {
@@ -43,17 +44,25 @@ export default class App extends React.Component {
     return this.subscriber;
   }
   onAuthStateChanged = (user) => {
+    if (user) {
+      const userID = auth().currentUser.uid;
+      database().ref(`users/${userID}/summarizedHistory/phoneVerified`).once('value', snap => {
+        this.setState({ phoneVerified: snap.val() })
+      }).catch(() => { this.setState({ phoneVerified: false }) })
+    }
+    else
+      this.setState({ phoneVerified: false })
     this.setState({ user: user })
     if (this.state.initializing)
       this.setState({ initializing: false });
   }
   render() {
-    if (this.state.initializing == true || this.state.checkFirstLaunch == false)
+    if (this.state.initializing == true || this.state.checkFirstLaunch == false || this.state.phoneVerified == 'loading')
       return <LoadingScreen />;
     else
       return (
         <NavigationContainer>
-          <MyStack isFirstLaunch={this.state.firstLaunch} />
+          <MyStack isFirstLaunch={this.state.firstLaunch} phoneVerified={this.state.phoneVerified} />
         </NavigationContainer>
       );
   }

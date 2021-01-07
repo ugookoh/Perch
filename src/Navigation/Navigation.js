@@ -55,9 +55,17 @@ export default class MyStack extends React.Component {
     this.state = {};
   };
   render() {
+    let routeName = '';
+    if (this.props.isFirstLaunch)
+      routeName = 'Onboarding'
+    else if (initialRouteName == 'Main' && this.props.phoneVerified)
+      routeName = 'Main';
+    else
+      routeName = 'SignIn'
+
     return (
       <Stack.Navigator
-        initialRouteName={this.props.isFirstLaunch ? 'Onboarding' : initialRouteName}
+        initialRouteName={routeName}
         screenOptions={{
           headerShown: false,
           gestureEnabled: false

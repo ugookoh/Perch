@@ -57,7 +57,7 @@ export default class Privacy extends React.Component {
                 <Divider width={x(350)} height={0.5} borderRadius={0} borderColor={'#D3D3D3'} borderWidth={1} />
                 <TouchableOpacity
                     onPress={() => {
-                        //openBrowser('https://www.google.com')
+                        openBrowser('https://perchrides.com/s/db/udash')
                     }}>
                     <View style={styles.option}>
                         <Text style={styles.delete}>Delete Account</Text>
