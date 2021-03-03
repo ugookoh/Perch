@@ -13,7 +13,8 @@ import {
     x, y, width, height, dimensionAssert, CustomLayoutLinear,
     scheduledCarpoolRequestHandler,
     scheduledCarpoolRequestCanceller,
-    startScheduledRiderTrip
+    startScheduledRiderTrip,
+    cancelTrip,
 } from '../../Functions/Functions';
 import Svg, { Path, G } from "react-native-svg";
 import Header from '../../Components/Header/Header';
@@ -188,6 +189,7 @@ export default class CarpoolTripDetails extends React.Component {
         })
     };
     componentDidMount() {
+
         KeepAwake.activate();
         const data = this.data;
         switch (data.steps) {
@@ -861,7 +863,7 @@ export default class CarpoolTripDetails extends React.Component {
                         stopB: data.travelDetails.stop1B,
                         index_START: data.tripIndexes.index1st_1,
                         index_END: data.tripIndexes.index1st_2,
-                        scheduled:!this.state.now,
+                        scheduled: !this.state.now,
                     },
                 ];
 
@@ -994,7 +996,7 @@ export default class CarpoolTripDetails extends React.Component {
                         stopB: data.travelDetails.stop1B,
                         index_START: data.tripIndexes.index1st_1,
                         index_END: data.tripIndexes.index1st_2,
-                        scheduled:!this.state.now,
+                        scheduled: !this.state.now,
                     },
                     {
                         driverID: data.end,
@@ -1007,7 +1009,7 @@ export default class CarpoolTripDetails extends React.Component {
                         stopB: data.travelDetails.stop2B,
                         index_START: data.tripIndexes.index2nd_1,
                         index_END: data.tripIndexes.index2nd_2,
-                        scheduled:!this.state.now,
+                        scheduled: !this.state.now,
                     },
                 ];
 
@@ -1244,7 +1246,7 @@ export default class CarpoolTripDetails extends React.Component {
                         stopB: data.travelDetails.stop1B,
                         index_START: data.tripIndexes.index1st_1,
                         index_END: data.tripIndexes.index1st_2,
-                        scheduled:!this.state.now,
+                        scheduled: !this.state.now,
                     },
                     {
                         driverID: data.middle,
@@ -1256,7 +1258,7 @@ export default class CarpoolTripDetails extends React.Component {
                         stopB: data.travelDetails.stop2B,
                         index_START: data.tripIndexes.index2nd_1,
                         index_END: data.tripIndexes.index2nd_2,
-                        scheduled:!this.state.now,
+                        scheduled: !this.state.now,
                     },
                     {
                         driverID: data.end,
@@ -1269,7 +1271,7 @@ export default class CarpoolTripDetails extends React.Component {
                         stopB: data.travelDetails.stop3B,
                         index_START: data.tripIndexes.index3rd_1,
                         index_END: data.tripIndexes.index3rd_2,
-                        scheduled:!this.state.now,
+                        scheduled: !this.state.now,
                     },
                 ];
 
@@ -2066,6 +2068,7 @@ class CarpoolRideConfirmed extends React.Component {
             driver3Rating: 0,
 
             loading: false,
+            cancelLoading: false,
             callScreen: false,
             messageScreen: false,
             navigationLoading: false,
@@ -2160,7 +2163,9 @@ class CarpoolRideConfirmed extends React.Component {
 
     componentDidMount() {
         const data = this.data;
-
+        database().ref(`carpoolTripReserve/carpool/user/${this.props.userID}`).on('child_removed', snapshot => {
+            this.props.navigation.navigate("Main");
+        })
         Geolocation.getCurrentPosition(
             (position) => {
                 database().ref(`userLocation/${this.props.userID}`).set({
@@ -2548,9 +2553,11 @@ class CarpoolRideConfirmed extends React.Component {
         let messages = <></>;
         let justifyContent_ = 'space-between';
         let driverID1, driverID2, driverID3;
+        let driverIDArray = [];
         switch (data.steps) {
             case 1: {
                 driverID1 = data.key;
+                driverIDArray = [driverID1];
                 if (this.props.driver1) {
                     loadingComplete = true;
                     ratingStack = (
@@ -2624,6 +2631,7 @@ class CarpoolRideConfirmed extends React.Component {
             case 2: {
                 driverID1 = data.start;
                 driverID2 = data.end;
+                driverIDArray = [driverID1, driverID2];
                 if (this.props.driver1 && this.props.driver2) {
                     loadingComplete = true;
                     ratingStack = (
@@ -2748,6 +2756,7 @@ class CarpoolRideConfirmed extends React.Component {
                 driverID1 = data.start;
                 driverID2 = data.middle;
                 driverID3 = data.end;
+                driverIDArray = [driverID1, driverID2, driverID3];
                 if (this.props.driver1 && this.props.driver2 && this.props.driver3) {
                     loadingComplete = true;
                     ratingStack = (
@@ -2917,60 +2926,74 @@ class CarpoolRideConfirmed extends React.Component {
                 <View style={styles.container}>
                     <StatusBar backgroundColor={'#000000'} barStyle={Platform.OS == 'android' ? 'light-content' : 'dark-content'} />
                     <OfflineNotice navigation={this.props.navigation} screenName={this.props.screenName} />
-                    {this.state.cancelAlert == true ?
-                        <View style={styles.cancelAlertContainer}>
-                            <View style={styles.cancelAlert}>
-                                <View style={styles.cancelAlertUpper}>
-                                    <Text style={[styles.cancelText, { fontSize: y(17), marginBottom: y(6) }]}>Leave this screen?</Text>
-                                    <Text style={[styles.cancelText, { fontSize: y(13), marginBottom: y(10), fontFamily: 'Gilroy-Regular' }]}>Leave this screen?</Text>
+                    {
+                        this.state.cancelLoading ?
+                            <View style={[styles.cancelContainer, {}]}>
+                                <View style={styles.cancelLoadingContainer}>
+                                    <MaterialIndicator color={GREEN} size={x(35)} style={{}} />
+                                    <Text style={styles.cancelLoadingText}>We are cancelling your trip. Please do not go back or close this screen.</Text>
                                 </View>
-                                <View style={[{ flexDirection: 'row' }]}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            // this.tripIsOver.call(this);
-                                            this.props.endTrip();
-                                        }}
-                                        style={[styles.cancelAlertLower, { borderRightWidth: 0.5, borderColor: 'rgba(64, 61, 61, 0.3)', }]}>
-                                        <Text style={[styles.cancelText, { fontSize: y(15), color: RED, marginVertical: y(15) }]}>Exit</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => { this.setState({ cancelAlert: false }) }} style={[styles.cancelAlertLower, { borderLeftWidth: 0.5, borderColor: 'rgba(64, 61, 61, 0.3)', }]}>
-                                        <Text style={[styles.cancelText, { fontSize: y(15), color: GREEN, marginVertical: y(15) }]}>Stay</Text>
-                                    </TouchableOpacity>
+                            </View> : <></>
+                    }
+                    {
+                        this.state.cancelAlert == true ?
+                            <View style={styles.cancelAlertContainer}>
+                                <View style={styles.cancelAlert}>
+                                    <View style={styles.cancelAlertUpper}>
+                                        <Text style={[styles.cancelText, { fontSize: y(17), marginBottom: y(6) }]}>Leave this screen?</Text>
+                                        <Text style={[styles.cancelText, { fontSize: y(13), marginBottom: y(10), fontFamily: 'Gilroy-Regular' }]}>Leave this screen?</Text>
+                                    </View>
+                                    <View style={[{ flexDirection: 'row' }]}>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                // this.tripIsOver.call(this);
+                                                this.props.endTrip();
+                                            }}
+                                            style={[styles.cancelAlertLower, { borderRightWidth: 0.5, borderColor: 'rgba(64, 61, 61, 0.3)', }]}>
+                                            <Text style={[styles.cancelText, { fontSize: y(15), color: RED, marginVertical: y(15) }]}>Exit</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => { this.setState({ cancelAlert: false }) }} style={[styles.cancelAlertLower, { borderLeftWidth: 0.5, borderColor: 'rgba(64, 61, 61, 0.3)', }]}>
+                                            <Text style={[styles.cancelText, { fontSize: y(15), color: GREEN, marginVertical: y(15) }]}>Stay</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-                            </View>
-                        </View> :
-                        <></>}
-
-                    {this.state.callScreen ?
-                        <View style={styles.cancelAlertContainer}>
-                            <View style={[styles.cancelAlert, { padding: x(10), width: x(270) }]}>
-                                <View style={[styles.cancelIcon, {}]}>
-                                    <TouchableOpacity onPress={() => { this.setState({ callScreen: false, }) }} style={{ width: y(40), height: y(40) }}>
-                                        <Icon name={'x'} size={y(26)} />
-                                    </TouchableOpacity>
+                            </View> :
+                            <></>
+                    }
+                    {
+                        this.state.callScreen ?
+                            <View style={styles.cancelAlertContainer}>
+                                <View style={[styles.cancelAlert, { padding: x(10), width: x(270) }]}>
+                                    <View style={[styles.cancelIcon, {}]}>
+                                        <TouchableOpacity onPress={() => { this.setState({ callScreen: false, }) }} style={{ width: y(40), height: y(40) }}>
+                                            <Icon name={'x'} size={y(26)} />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <Text style={[styles.cancelText, { fontSize: y(17), marginBottom: y(6) }]}>Pick the driver you want to call</Text>
+                                    <View style={[styles.phoneContainer, { justifyContent: justifyContent_ }]}>
+                                        {phones}
+                                    </View>
                                 </View>
-                                <Text style={[styles.cancelText, { fontSize: y(17), marginBottom: y(6) }]}>Pick the driver you want to call</Text>
-                                <View style={[styles.phoneContainer, { justifyContent: justifyContent_ }]}>
-                                    {phones}
+                            </View> :
+                            <></>
+                    }
+                    {
+                        this.state.messageScreen ?
+                            <View style={styles.cancelAlertContainer}>
+                                <View style={[styles.cancelAlert, { padding: x(10), width: x(270) }]}>
+                                    <View style={[styles.cancelIcon, {}]}>
+                                        <TouchableOpacity onPress={() => { this.setState({ messageScreen: false, }) }} style={{ width: y(40), height: y(40) }}>
+                                            <Icon name={'x'} size={y(26)} />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <Text style={[styles.cancelText, { fontSize: y(17), marginBottom: y(6) }]}>Pick the driver you want to text</Text>
+                                    <View style={[styles.phoneContainer, { justifyContent: justifyContent_ }]}>
+                                        {messages}
+                                    </View>
                                 </View>
-                            </View>
-                        </View> :
-                        <></>}
-                    {this.state.messageScreen ?
-                        <View style={styles.cancelAlertContainer}>
-                            <View style={[styles.cancelAlert, { padding: x(10), width: x(270) }]}>
-                                <View style={[styles.cancelIcon, {}]}>
-                                    <TouchableOpacity onPress={() => { this.setState({ messageScreen: false, }) }} style={{ width: y(40), height: y(40) }}>
-                                        <Icon name={'x'} size={y(26)} />
-                                    </TouchableOpacity>
-                                </View>
-                                <Text style={[styles.cancelText, { fontSize: y(17), marginBottom: y(6) }]}>Pick the driver you want to text</Text>
-                                <View style={[styles.phoneContainer, { justifyContent: justifyContent_ }]}>
-                                    {messages}
-                                </View>
-                            </View>
-                        </View> :
-                        <></>}
+                            </View> :
+                            <></>
+                    }
                     <TouchableOpacity style={[styles.zoomIcon, { backgroundColor: RED, top: y(70), right: x(10) }]} onPress={() => { this.setState({ cancelAlert: true }) }}>
                         <Icon name={'x'} size={y(21)} color={'#FFFFFF'} />
                     </TouchableOpacity>
@@ -3154,12 +3177,36 @@ class CarpoolRideConfirmed extends React.Component {
                                     />
                                 </View>
                                 <View style={[styles.divider, { marginVertical: y(14) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-                                <TouchableOpacity style={[styles.textContainer, { marginTop: y(23), marginBottom: y(20) }]} onPress={() => { }}>
+                                <TouchableOpacity
+                                    style={[styles.textContainer, { marginTop: y(23), marginBottom: y(20) }]}
+                                    onPress={() => {
+                                        Alert.alert(
+                                            'Cancel this trip?',
+                                            'Are you sure you want to cancel this trip? You might get charged a fee depending on the conditions by which you cancel your trip, visit our website for more information.',
+                                            [{
+                                                text: 'Close',
+                                                style: 'cancel',
+                                            }, {
+                                                text: 'Cancel trip',
+                                                style: 'destructive',
+                                                onPress: () => {
+                                                    if (this.props.now) {//MAKE SURE TO SEND driverIDArray
+                                                        cancelTrip.call(this, {
+                                                            userID: this.props.userID,
+                                                            type: 'rider',
+                                                            driverIDArray: driverIDArray,
+                                                            time: new Date().getTime(),
+                                                        });
+                                                    } else {//deal with scheduled trip cancellations
+
+                                                    }
+                                                },
+                                            }])
+                                    }}>
                                     <Text style={[styles.firstLayer, { color: '#FF0000', }]}>{this.props.now ? 'Cancel trip' : 'Cancel scheduled request'}</Text>
                                 </TouchableOpacity>
                             </View>
-                            <View style={[styles.tripBreakdown,
-                            ]}>
+                            <View style={[styles.tripBreakdown,]}>
                                 <Text style={[styles.tripTitle, { top: y(14), left: x(15), }]}>Trip Breakdown</Text>
 
                                 {this.props.tripBreakdown}
@@ -3206,7 +3253,7 @@ class CarpoolRideConfirmed extends React.Component {
                         </View>
                     </Animated.View>
 
-                </View>
+                </View >
             )
         else
             return (

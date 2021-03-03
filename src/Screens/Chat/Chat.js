@@ -94,7 +94,7 @@ export default class Chat extends React.Component {
         //user details and token
         axios.post(`https://us-central1-perch-01.cloudfunctions.net/chatGetUserDetails`, { userID: this.state.mainDriverID })
             .then((result) => {
-                const snapshot=result.data;
+                const snapshot = result.data;
                 this.setState({
                     recieverDetails: {
                         name: `${snapshot.firstName} ${snapshot.lastName}`,
@@ -251,7 +251,7 @@ export default class Chat extends React.Component {
                 m: ID ? 'Image' : this.state.message,
                 tS: getTime(),
                 time: new Date().getTime() + `-${makeid(7)}`,//TO SEPERATE KEYS ,TIME SEPERATED BY - TO A ID
-                date: `${DAY}/${MONTH}/${YEAR}`,
+                date: `${DAY}/${MONTH + 1}/${YEAR}`,
                 imageID: ID,
             })
                 .then(() => {
