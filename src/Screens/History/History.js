@@ -39,21 +39,18 @@ export default class History extends React.Component {
     };
     componentDidMount() {
         this.loadResults.call(this);
-
     }
     loadResults() {
-
         this.setState({ results: null }, () => {
             database().ref(`userHistory/${this.state.userID}/${this.state.choice}/${this.state.year}/${this.state.month}`).once('value', snapshot => {
                 this.setState({ results: snapshot.val() ? snapshot.val() : 'NORESULTS' });
-            })
-        })
+            }).catch(error => { alert(error.message) })
+        });
     };
     togglePicker(choice) {
         if (this.state.modePicker) {//make it false
 
             if (choice) {
-
                 const l = this.toDisplay;
                 this.toDisplay = this.toHide;
                 this.setState({ choice: this.toDisplay === 'Carpool' ? 'carpool' : 'rideshare' }, () => {
@@ -147,7 +144,7 @@ export default class History extends React.Component {
                 <Header scrollY={this.state.scrollY} name={'History'} onPress={() => {
                     this.props.navigation.goBack();
                 }} />
-                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                 <View style={styles.pickerContainer}>
 
                     <View style={styles.picker}>
@@ -245,7 +242,7 @@ export default class History extends React.Component {
                                 //this.hidePicker();
                             }}>
                             <Picker.Item label="January" value="January" />
-                            <Picker.Item label="Febuary" value="Febuary" />
+                            <Picker.Item label="February" value="February" />
                             <Picker.Item label="March" value="March" />
                             <Picker.Item label="April" value="April" />
                             <Picker.Item label="May" value="May" />

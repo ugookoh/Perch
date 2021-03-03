@@ -6,6 +6,42 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+  cancelContainer: {
+    zIndex: 6,
+    elevation: 6,
+    backgroundColor: 'rgba(255,255,255,0.6)',
+    height: height,
+    width: width,
+    position: 'absolute',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+  },
+  cancelLoadingContainer: {
+    width: x(250),
+    height: y(140),
+    borderRadius: 5,
+    backgroundColor: '#ffffff',
+    flexDirection:'column',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 2,
+    padding:5
+  },
+  cancelLoadingText:{
+    fontFamily:'Gilroy-Medium',
+    fontSize:y(15),
+    textAlign:'center',
+
+
+  },
   driverContainer: {
     backgroundColor: 'rgba(180, 179, 179, 0.80)',
     justifyContent: 'center',
