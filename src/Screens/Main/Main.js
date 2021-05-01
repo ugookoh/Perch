@@ -174,6 +174,7 @@ export default class Main extends React.Component {
                 });
                 database().ref(`users/${userDetails.userID}/`).on('value', snapshot => { //ALL DATABASE CALLS ARE TO ALWAYS DOWNLOAD USER IN CASE WEB EDITS IT
                     AsyncStorage.setItem('USER_DETAILS', JSON.stringify(snapshot.val()))
+                        .then(() => { this.setState({ userDetails: snapshot.val() }) })
                         .catch((e) => { console.log(e.message) })
                 });
             }
@@ -190,6 +191,7 @@ export default class Main extends React.Component {
 
                         database().ref(`users/${userDetails.userID}/`).on('value', snapshot => {
                             AsyncStorage.setItem('USER_DETAILS', JSON.stringify(snapshot.val()))
+                                .then(() => { this.setState({ userDetails: snapshot.val() }) })
                                 .catch((e) => { console.log(e.message) })
                         });
                     }
@@ -206,6 +208,7 @@ export default class Main extends React.Component {
 
                                     database().ref(`users/${userDetails_.userID}/`).on('value', snapshot => {
                                         AsyncStorage.setItem('USER_DETAILS', JSON.stringify(snapshot.val()))
+                                            .then(() => { this.setState({ userDetails: snapshot.val() }) })
                                             .catch((e) => { console.log(e.message) })
                                     });
                                 }).catch(error => { console.log(error.message) })
@@ -678,6 +681,7 @@ export default class Main extends React.Component {
                             status={this.state.status}
                             navigation={this.props.navigation}
                             hideMenu={this.hideMenu}
+                            userDetails={this.state.userDetails}
                             choice={this.state.rideshare ? 'rideshare' : `carpool`}
                             forceUpdate={(value) => { this.forceUpdate.call(this, value) }}
                             rerender={this.state.rerender}

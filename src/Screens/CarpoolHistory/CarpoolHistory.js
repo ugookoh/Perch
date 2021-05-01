@@ -695,6 +695,13 @@ export default class CarpoolHistory extends React.Component {
 
                             </MapView>
                         </View>
+                       {
+                           this.state.data.status=='CANCELLED'?
+                           <View style={styles.tripDetails}>
+                           <Text style={[styles.tripTitle, { marginVertical: y(14), width: x(313), color: '#FF0000', fontSize: y(16) }]}>This trip was cancelled</Text>
+                       </View>
+                       :<></>
+                       }
 
                         <View style={styles.tripDetails}>
                             <Text style={[styles.tripTitle, { marginTop: y(14), width: x(313) }]}>Cost Analysis</Text>

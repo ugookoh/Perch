@@ -15,6 +15,7 @@ import {
     scheduledCarpoolRequestCanceller,
     startScheduledRiderTrip,
     cancelTrip,
+    cancelScheduledTrip,
 } from '../../Functions/Functions';
 import Svg, { Path, G } from "react-native-svg";
 import Header from '../../Components/Header/Header';
@@ -3198,7 +3199,12 @@ class CarpoolRideConfirmed extends React.Component {
                                                             time: new Date().getTime(),
                                                         });
                                                     } else {//deal with scheduled trip cancellations
-
+                                                        cancelScheduledTrip.call(this, {
+                                                            userID: this.props.userID,
+                                                            type: 'rider',
+                                                            driverIDArray: driverIDArray,
+                                                            time: new Date().getTime(),
+                                                        });
                                                     }
                                                 },
                                             }])

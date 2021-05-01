@@ -1179,6 +1179,38 @@ export function cancelTrip(toSend) {
   });
 
 };
+//SCHEDULED CANCEL FUNCTION
+export function cancelScheduledTrip(toSend) {
+  this.setState({ cancelLoading: true }, () => {
+    axios.post(`https://us-central1-perch-01.cloudfunctions.net/cancelScheduledTrip`, toSend)
+      .then(() => {
+        Alert.alert(
+          'Your trip has been cancelled',
+          'We would reach out to you shortly regarding refunds and compensation. Contact us for further information.',
+          [{
+            text: 'Done',
+            style: 'cancel',
+            onPress: () => {
+              this.props.navigation.navigate('Main');
+            },
+          },
+          ])
+      })
+      .catch(() => {
+        Alert.alert(
+          'Cancel request failed',
+          'We failed to cancel this trip due to unknown reasons, please try again. Contact us for further help.',
+          [{
+            text: 'Close',
+            style: 'cancel',
+            onPress: () => {
+              this.setState({ cancelLoading: false })
+            },
+          },
+          ])
+      })
+  });
+};
 //CALCULATE DISTANCE IN METERS
 export function polylineLenght(data) {
   let distance = 0;
