@@ -149,8 +149,8 @@ PODS:
   - GTMSessionFetcher/Core (1.4.0)
   - leveldb-library (1.22)
   - lottie-ios (3.1.8)
-  - lottie-react-native (3.4.0):
-    - lottie-ios (~> 3.1.3)
+  - lottie-react-native (3.5.0):
+    - lottie-ios (~> 3.1.8)
     - React
   - nanopb (0.3.9011):
     - nanopb/decode (= 0.3.9011)
@@ -432,6 +432,12 @@ PODS:
     - React
   - RNVectorIcons (6.6.0):
     - React
+  - Stripe (21.3.1):
+    - Stripe/Stripe3DS2 (= 21.3.1)
+  - Stripe/Stripe3DS2 (21.3.1)
+  - tipsi-stripe (9.0.0):
+    - React
+    - Stripe (>= 21.3.1)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -498,6 +504,8 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - Stripe (~> 21.3.1)
+  - tipsi-stripe (from `../node_modules/tipsi-stripe`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -526,6 +534,7 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - Protobuf
+    - Stripe
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -644,6 +653,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  tipsi-stripe:
+    :path: "../node_modules/tipsi-stripe"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -677,7 +688,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
-  lottie-react-native: a664f59f1f298c2696dd0ae07b15cbdfc433cb02
+  lottie-react-native: 1fb4ce21d6ad37dab8343eaff8719df76035bd93
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   Permission-Camera: 402f1ac15b962448d75e8cf2039d235e7bc09a85
   Permission-LocationAlways: 48085521ad224052f5b25c3fdc6d0e996d162428
@@ -730,8 +741,10 @@ SPEC CHECKSUMS:
   RNScreens: b5c0e1b2b04512919e78bd3898e144a157ce2363
   RNSVG: 7e16ddfc6e00d5aa69c9eb83e699bcce5dcb85d4
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
+  Stripe: 326a2160ac541eeffafb8b1aa0c9712e3ce8cec7
+  tipsi-stripe: 262adc0a23fc0b8af1f8cb7778ee2ee681edd2b6
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 27212c98a7ba5451e8e417179405698a5b70b1b7
+PODFILE CHECKSUM: d15ed700c11e1163b45d6bb85eea5a24f6b39d19
 
 COCOAPODS: 1.9.3

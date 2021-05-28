@@ -80,6 +80,19 @@ export default StyleSheet.create({
         position: 'absolute',
         top: -x(dimensionAssert() ? 4 : 7)
     },
+    logo: {
+        width: x(35),
+        height: y(30),
+        position: 'absolute',
+        top: -x(dimensionAssert() ? 4 : 7)
+    },
+    googlePayLogo: {
+        width: x(55),
+        height: y(40),
+        position: 'absolute',
+        top: -x(dimensionAssert() ? 9 : 12),
+        left:-7,
+    },
     optionsContainer: {
 
         justifyContent: 'space-between',

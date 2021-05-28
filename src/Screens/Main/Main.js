@@ -164,6 +164,13 @@ export default class Main extends React.Component {
     componentDidMount() {
         getFirebaseMessagingToken();
 
+        // axios.post(`https://us-central1-perch-01.cloudfunctions.net/customerStripe`, { type: 'update', fullname: 'Ugo Okoh', email: 'edokoh999@gmail.com', userID: 'P3OrHF0YeQMYF8hQ1WYRm81lBMz1', customerID: 'cus_JXaZtE4TYCjPVs' })
+        //     .then(result => {
+        //         console.log(result.data)
+        //     })
+        //     .catch(error => {
+        //         console.log(error.message)
+        //     })
 
         if (this.props.route.params) {
             if (this.props.route.params.userDetails) {

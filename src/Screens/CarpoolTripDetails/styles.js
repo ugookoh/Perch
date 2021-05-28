@@ -229,7 +229,7 @@ export default StyleSheet.create({
   visa: {
     height: y(33.13),
     width: x(42.2),
-    bottom: -x(8),
+    bottom: -x(6),
     left: -x(5),
   },
   visa_: {

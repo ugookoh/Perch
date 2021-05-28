@@ -1,20 +1,26 @@
 import React from 'react';
 import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, ScrollView, Platform, StatusBar, Alert, PanResponder, LayoutAnimation, UIManager, } from 'react-native';
-import { OfflineNotice, x, y, height, width, dimensionAssert, CustomLayoutLinear } from '../../Functions/Functions';
+import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, ScrollView, Platform, StatusBar, Alert, PanResponder, LayoutAnimation, UIManager, Switch } from 'react-native';
+import { OfflineNotice, x, y, height, width, deleteCard, CustomLayoutLinear } from '../../Functions/Functions';
 import Header from '../../Components/Header/Header';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import WalletImage from '../../Images/svgImages/wallet';
+import Logo from '../../Images/svgImages/logo';
 import Visa from '../../Images/svgImages/visa';
+import MasterCard from '../../Images/svgImages/mastercard';
+import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
+import ApplePayLogo from '../../Images/svgImages/applePayLogo';
+import GooglePaylogo from '../../Images/svgImages/googlePayLogo';
 import Button from '../../Components/Button/Button';
 import Divider from '../../Components/Divider/Divider';
+import database from '@react-native-firebase/database';
 const [GREEN, WHITE, GREY, RED] = ['#4DB748', '#FFFFFF', '#918686', '#FF0000'];
 const X_CONSTANT = 0;
 const Y_START = y(20);
 
 export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR THE CASH ADDING WHEN ADDING RIDESHARE
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         if (Platform.OS === 'android') {
             UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -22,7 +28,12 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
 
         this.state = {
             scrollY: new Animated.Value(0),
-            show: false,
+            toShow: null,
+            userDetails: this.props.route.params.userDetails,
+            cards: null,
+            choice: this.props.route.params.choice,
+            usePerchKms: false,
+            selected: null,
         };
 
         this.TOP_OF_TRIPS = 0;
@@ -105,22 +116,36 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
     }
 
     componentDidMount() {
-        //this.closeAd();
+        this.loadCards();
     };
-    deleteCreditCard() {
+    loadCards = () => {
+        database().ref(`cards/${this.state.userDetails.userID}`).once('value', snapshot => {
+            this.setState({ cards: snapshot.val(), selected: snapshot.val().selected ? snapshot.val().selected : null, });
+        });
+
+        if (this.state.choice)
+            database().ref(`cards/${this.state.userDetails.userID}/selected`).on('value', snapshot => {
+                if (snapshot.val())
+                    this.setState({ toShow: snapshot.val(), })
+            })
+    };
+    deleteCreditCard = () => {
         Alert.alert(
             'Delete Card',
             'Are you sure you want to delete this card?',
             [
                 {
                     text: 'Cancel',
-                    //onPress: () => console.log('Cancel Pressed'),
+                    onPress: () => { this.setState({ toShow: null }); },
                     style: 'cancel'
                 },
                 {
                     text: 'Delete',
                     onPress: () => {
-
+                        deleteCard.call(this, this.state.userDetails.userID, this.state.toShow, this.state.selected);
+                        let cards = this.state.cards;
+                        cards[this.state.toShow] = null;
+                        this.setState({ cards: cards, toShow: null });
                     },
                     style: 'destructive'
                 }
@@ -130,55 +155,39 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
     }
     render() {
         LayoutAnimation.configureNext(CustomLayoutLinear);
-        return (
-            <View style={styles.container}>
-                <View style={{ zIndex: 1 }}>
-                    <Header name={'Wallet'} scrollY={this.headerInverse} onPress={() => { this.props.navigation.goBack(); }} />
-                </View>
-                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
-                <Animated.View style={[this.position.getLayout(), { positon: 'relative' }]} {...this.panResponder.panHandlers}>
-                    <View onLayout={(event) => {
-                        this.TOP_OF_TRIPS = -event.nativeEvent.layout.height + (height / (1.5));
-                    }}>
-                        <View style={styles.mainContainer}>
-                            <Text style={styles.titleText}>Perch Wallet</Text>
-                            <View style={styles.walletImage}>
-                                <WalletImage />
-                            </View>
-                            <Text style={styles.balanceText}>{`10.9 km`}</Text>
-                            <View style={styles.button}>
-                                <Button text={'Add kilometers'} width={x(322)} height={y(48)} top={0} left={0} zIndex={2} onPress={() => {
-                                    this.props.navigation.navigate('AddFunds');
-                                }}
-                                />
-                            </View>
-                        </View>
-                        <View style={[styles.subContainer, { marginTop: y(20) }]}>
-                            <TouchableOpacity style={styles.innerContainer}
-                                onPress={() => {
-                                    this.props.navigation.navigate('CreditHistory');
-                                }}>
-                                <Text style={styles.text}>Credit History</Text>
-                                <Icon name={'arrow-right'} size={y(12)} />
-                            </TouchableOpacity>
-                        </View>
+        const cards = [];
 
+        if (this.state.cards)
+            for (let key in this.state.cards)
+                if (this.state.cards[key] && key != 'selected')
+                    cards.push(
                         <View style={[styles.subContainer, { marginTop: y(20) }]} ///ALL CREDIT CARDS SHOULD BE LISTED UNDER HERE JUST LIKE THIS! ...STORE CREDIT CARDS IN USER OBJECT(ENCRYPED)
                         >
                             <TouchableOpacity style={styles.innerContainer}
                                 onPress={() => {
-                                    this.setState({ show: this.state.show ? false : true })
+                                    if (this.state.choice)
+                                        this.setState({ toShow: key })
+                                    else
+                                        this.setState({ toShow: this.state.toShow == key ? null : key })
                                 }}>
                                 <View style={{ flexDirection: 'row' }}>
-                                    <View style={styles.visa}><Visa /></View>
-                                    <Text style={[styles.text, { marginLeft: x(40) }]}>XXXX XXXX XXX3 4536 - 02/24</Text>
+                                    <View style={styles.visa}>{
+                                        this.state.cards[key].card.brand == "Visa" ?
+                                            <Visa /> :
+                                            this.state.cards[key].card.brand == "Mastercard" ?
+                                                <MasterCard /> :
+                                                <GenericPaymentCard />
+                                    }</View>
+                                    <Text style={[styles.text, { marginLeft: x(40) }]}>•••• •••• •••• {key} - {('0' + this.state.cards[key].card.expMonth).slice(-2)}/{this.state.cards[key].card.expYear}</Text>
                                 </View>
-                                {!this.state.show ? <Icon name={'arrow-right'} size={y(12)} /> : <></>}
+                                {this.state.toShow != key && !this.state.choice ? <Icon name={'arrow-right'} size={y(12)} /> : <></>}
+                                {this.state.toShow == key && this.state.choice ? <Icon name={'check'} size={y(15)} color={GREEN} /> : <></>}
                             </TouchableOpacity>
-                            {this.state.show ?
+                            {this.state.toShow == key && !this.state.choice ?
                                 <View style={styles.optionsContainer}>
                                     <TouchableOpacity style={[styles.options, { backgroundColor: WHITE }]} onPress={() => {
-                                        this.setState({ show: false });
+                                        if (!this.state.choice)
+                                            this.setState({ toShow: null });
                                     }}>
                                         <Text style={[styles.text, { color: GREEN }]}>Close</Text>
                                     </TouchableOpacity>
@@ -190,11 +199,106 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                                 </View> :
                                 <></>}
                         </View>
+                    );
+        return (
+            <View style={styles.container}>
+                <View style={{ zIndex: 1 }}>
+                    <Header
+                        name={this.state.choice ? 'Payment Method' : 'Wallet'}
+                        scrollY={this.headerInverse}
+                        onPress={() => {
+                            if (this.state.choice && this.state.selected) {
+                                database().ref(`cards/${this.state.userDetails.userID}`).update({ selected: this.state.toShow })
+                                    .catch(error => { console.log(error.message) })
+                                this.props.navigation.goBack();
+                            }
+                            else
+                                this.props.navigation.goBack();
+                        }} />
+                </View>
+                <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                <Animated.View style={[this.position.getLayout(), { positon: 'relative' }]} {...this.panResponder.panHandlers}>
+                    <View onLayout={(event) => {
+                        this.TOP_OF_TRIPS = -event.nativeEvent.layout.height + (height / (1.5));
+                    }}>
+                        {
+                            this.state.choice ?
+                                <></> :
+                                <>
+                                    <View style={styles.mainContainer}>
+                                        <Text style={styles.titleText}>Perch Wallet</Text>
+                                        <View style={styles.walletImage}>
+                                            <WalletImage />
+                                        </View>
+                                        <Text style={styles.balanceText}>{`10.9 km`}</Text>
+                                        <View style={styles.button}>
+                                            <Button text={'Add kilometers'} width={x(322)} height={y(48)} top={0} left={0} zIndex={2} onPress={() => {
+                                                this.props.navigation.navigate('AddFunds');
+                                            }}
+                                            />
+                                        </View>
+                                    </View>
+
+                                    <View style={[styles.subContainer, { marginTop: y(20) }]}>
+                                        <TouchableOpacity style={styles.innerContainer}
+                                            onPress={() => {
+                                                this.props.navigation.navigate('CreditHistory');
+                                            }}>
+                                            <Text style={styles.text}>Credit History</Text>
+                                            <Icon name={'arrow-right'} size={y(12)} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </>}
+
+                        {this.state.choice ?
+                            <>
+                                <View style={[styles.subContainer, { marginTop: 0 }]}>
+                                    <View style={styles.innerContainer}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            <View style={styles.logo}><Logo /></View>
+                                            <Text style={[styles.text, { marginLeft: x(40) }]}>Perch Kilometers - <Text style={{ color: GREEN }}>10.9km</Text></Text>
+                                        </View>
+                                        {/* {this.state.toShow != key ? <Icon name={'arrow-right'} size={y(12)} /> : <></>} */}
+                                        <Switch
+                                            trackColor={{ false: "#767577", true: "rgba(77, 183, 72, 0.8)" }}
+                                            thumbColor={this.state.sendUserLocation ? "#FFFFFF" : "#f4f3f4"}
+                                            onValueChange={(value) => {
+                                                const toSet = !this.state.usePerchKms;
+                                                this.setState({ usePerchKms: toSet });
+                                            }}
+                                            value={this.state.usePerchKms}
+                                            style={{ transform: [{ scaleX: .7 }, { scaleY: .7 }], position: 'absolute', right: x(0), top: y(-8) }}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={[styles.subContainer, { marginTop: y(20) }]}>
+                                    <TouchableOpacity style={styles.innerContainer}
+                                        onPress={() => {
+                                            this.setState({ toShow: Platform.OS == 'ios' ? 'applePay' : 'googlePay' });
+                                        }}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            {Platform.OS == 'ios' ?
+                                                <View style={styles.visa}><ApplePayLogo /></View> :
+                                                <View style={styles.googlePayLogo}><GooglePaylogo /></View>}
+                                            <Text style={[styles.text, { marginLeft: x(45) }]}>{Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}</Text>
+                                        </View>
+                                        {this.state.toShow == 'applePay' || this.state.toShow == 'googlePay' ? <Icon name={'check'} size={y(15)} color={GREEN} /> : <></>}
+                                    </TouchableOpacity>
+                                </View>
+
+
+
+                            </> : <></>}
+                        {cards}
 
                         <View style={[styles.subContainer, { marginVertical: y(20) }]}>
                             <TouchableOpacity style={styles.innerContainer}
                                 onPress={() => {
-                                    this.props.navigation.navigate('NewCreditCard');
+                                    this.props.navigation.navigate('NewCreditCard', {
+                                        userID: this.state.userDetails.userID,
+                                        refreshCards: () => { this.loadCards() }
+                                    });
                                 }}>
                                 <Text style={styles.text}>Add new credit/debit card</Text>
                                 <Icon name={'arrow-right'} size={y(12)} />
