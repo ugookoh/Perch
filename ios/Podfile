@@ -1,7 +1,8 @@
-platform :ios, '9.0'
+platform :ios, '11.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 target 'Perch' do
+  pod 'Stripe', '~> 21.3.1'
   # Pods for Perch
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
@@ -53,6 +54,8 @@ target 'Perch' do
 
 
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
+
+  pod 'tipsi-stripe', :path => '../node_modules/tipsi-stripe'
 
   target 'PerchTests' do
     inherit! :search_paths

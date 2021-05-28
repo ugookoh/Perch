@@ -16,12 +16,14 @@ import {
     startScheduledRiderTrip,
     cancelTrip,
     cancelScheduledTrip,
+    chargeCustomer,
 } from '../../Functions/Functions';
 import Svg, { Path, G } from "react-native-svg";
 import Header from '../../Components/Header/Header';
 import Button from '../../Components/Button/Button';
 import Divider from '../../Components/Divider/Divider';
 import Visa from '../../Images/svgImages/visa';
+import MasterCard from '../../Images/svgImages/mastercard';
 import Money from '../../Images/svgImages/moneyChoice';
 import PerchWallet from '../../Images/svgImages/perchWallet';
 import Interac from '../../Images/svgImages/interac';
@@ -35,6 +37,8 @@ import { AnimatedPolylineSingleLine, AnimatedPolylineMultipleLine } from '../../
 const [GREEN, BLUE, PURPLE, GREEN_, BLUE_, PURPLE_, GREY, WHITE, RED] = ['#4DB748', '#1970A7', '#A031AF', 'rgba(77, 183, 72, 0.3)', 'rgba(25, 112, 167, 0.3)', 'rgba(160, 49, 175, 0.3)', '#403D3D', '#FFFFFF', '#FF0000'];
 const [GREENMAKER, BLUEMAKER, PURPLEMAKER] = [`#82cd7e`, '#64b5e8', '#cc74d8'];
 import GreenIcon from '../../Images/svgImages/greenIcon';
+import ApplePayLogo from '../../Images/svgImages/applePayLogo';
+import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
 import BlueIcon from '../../Images/svgImages/blueIcon';
 import PurpleIcon from '../../Images/svgImages/purpleIcon';
 import Icon from 'react-native-vector-icons/Feather';
@@ -45,6 +49,7 @@ import CarpoolSlider from '../../Components/CarpoolSlider/CarpoolSlider';
 import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
 import KeepAwake from 'react-native-keep-awake';
 import storage from '@react-native-firebase/storage';
+import GooglePayLogo from '../../Images/svgImages/googlePayLogo';
 
 
 const MAX_HEADER_HEIGHT = y(156);
@@ -101,7 +106,9 @@ export default class CarpoolTripDetails extends React.Component {
             dateText: this.props.route.params.dateText ? this.props.route.params.dateText : null,
 
             scheduledTripStarted: false,
-            paymentMethod: 'creditCard',
+            selected: 'NONE',
+            last4: 'xxxx',
+            card: null,
         };
         this.oldTrip = this.props.route.params.tripAccepted  //THIS IS HOW WE KNOW IF ITS A NEW TRIP OR AN OLDER ONE WE GOT FROM MAIN
         this.mapIsReady = false;
@@ -190,7 +197,6 @@ export default class CarpoolTripDetails extends React.Component {
         })
     };
     componentDidMount() {
-
         KeepAwake.activate();
         const data = this.data;
         switch (data.steps) {
@@ -618,6 +624,28 @@ export default class CarpoolTripDetails extends React.Component {
 
             } break;
         };
+        database().ref(`cards/${this.state.userID}/selected`).on('value', snapshot => {
+            const platformPayment = Platform.OS == 'ios' ? 'applePay' : 'googlePay';
+            if (snapshot.val()) {
+                if (snapshot.val() != platformPayment)
+                    database().ref(`cards/${this.state.userID}/${snapshot.val()}/card`).once('value', card => {
+                        switch (card.val().brand) {
+                            case 'Visa': {
+                                this.setState({ selected: 'visa', last4: snapshot.val(), card: card.val() });
+                            } break;
+                            case 'Mastercard': {
+                                this.setState({ selected: 'mastercard', last4: snapshot.val(), card: card.val() });
+                            } break;
+                            default: {
+                                this.setState({ selected: 'default', last4: snapshot.val(), card: card.val() });
+                            } break;
+                        };
+                    })
+                else
+                    this.setState({ selected: platformPayment })
+            }
+        })
+
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     };
     goBack = () => {
@@ -754,9 +782,6 @@ export default class CarpoolTripDetails extends React.Component {
             } break;
         };
     };
-    changePayment(value) {
-        this.setState({ paymentMethod: value });
-    };
     handleBackButtonClick = () => {
         //HANDLE BACKBUTTON HERE
         this.goBack();
@@ -770,12 +795,28 @@ export default class CarpoolTripDetails extends React.Component {
 
         let PAYMENT_CHOICE = <></>;
 
-        switch (this.state.paymentMethod) {
-            case 'creditCard': {
+        switch (this.state.selected) {
+            case 'visa': {
                 PAYMENT_CHOICE = (
                     <View style={{ width: '100%', flexDirection: 'row' }}>
                         <View style={styles.visa}><Visa height={'100%'} width={'100%'} /></View>
-                        <Text style={styles.cardNumber}> XXXX XXXX XXX3 3456</Text>
+                        <Text style={styles.cardNumber}>XXXX XXXX XXXX {this.state.last4}</Text>
+                    </View>
+                );
+            } break;
+            case 'mastercard': {
+                PAYMENT_CHOICE = (
+                    <View style={{ width: '100%', flexDirection: 'row' }}>
+                        <View style={styles.visa}><MasterCard height={'100%'} width={'100%'} /></View>
+                        <Text style={styles.cardNumber}>XXXX XXXX XXXX {this.state.last4}</Text>
+                    </View>
+                );
+            } break;
+            case 'default': {
+                PAYMENT_CHOICE = (
+                    <View style={{ width: '100%', flexDirection: 'row' }}>
+                        <View style={[styles.visa_, { width: x(26.2) }]}><GenericPaymentCard height={'100%'} width={'100%'} /></View>
+                        <Text style={[styles.cardNumber, { marginLeft: x(6) }]}>XXXX XXXX XXXX {this.state.last4}</Text>
                     </View>
                 );
             } break;
@@ -795,11 +836,27 @@ export default class CarpoolTripDetails extends React.Component {
                     </View>
                 );
             } break;
-            case 'interac': {
+            case 'applePay': {
                 PAYMENT_CHOICE = (
                     <View style={{ width: '100%', flexDirection: 'row' }}>
-                        <View style={styles.visa_}><Interac height={'100%'} width={'100%'} /></View>
-                        <Text style={styles.cardNumber}> Interac e-transfer</Text>
+                        <View style={styles.visa_}><ApplePayLogo height={'100%'} width={'100%'} /></View>
+                        <Text style={[styles.cardNumber, { marginLeft: x(6) }]}>Apple Pay</Text>
+                    </View>
+                );
+            } break;
+            case 'googlePay': {
+                PAYMENT_CHOICE = (
+                    <View style={{ width: '100%', flexDirection: 'row' }}>
+                        <View style={[styles.visa_, { width: x(46.2) }]}><GooglePayLogo height={'100%'} width={'100%'} /></View>
+                        <Text style={[styles.cardNumber, { marginLeft: x(0) }]}>Google Pay</Text>
+                    </View>
+                );
+            } break;
+            default: {
+                PAYMENT_CHOICE = (
+                    <View style={{ width: '100%', flexDirection: 'row' }}>
+                        <View style={[styles.visa_, { width: x(26.2) }]}><GenericPaymentCard height={'100%'} width={'100%'} /></View>
+                        <Text style={[styles.cardNumber, { marginLeft: x(5) }]}>Pick a payment method</Text>
                     </View>
                 );
             } break;
@@ -865,6 +922,7 @@ export default class CarpoolTripDetails extends React.Component {
                         index_START: data.tripIndexes.index1st_1,
                         index_END: data.tripIndexes.index1st_2,
                         scheduled: !this.state.now,
+                        toPay: data.cost.toDrivers.firstDriverPay,
                     },
                 ];
 
@@ -998,6 +1056,7 @@ export default class CarpoolTripDetails extends React.Component {
                         index_START: data.tripIndexes.index1st_1,
                         index_END: data.tripIndexes.index1st_2,
                         scheduled: !this.state.now,
+                        toPay: data.cost.toDrivers.firstDriverPay,
                     },
                     {
                         driverID: data.end,
@@ -1011,6 +1070,7 @@ export default class CarpoolTripDetails extends React.Component {
                         index_START: data.tripIndexes.index2nd_1,
                         index_END: data.tripIndexes.index2nd_2,
                         scheduled: !this.state.now,
+                        toPay: data.cost.toDrivers.secondDriverPay,
                     },
                 ];
 
@@ -1248,6 +1308,7 @@ export default class CarpoolTripDetails extends React.Component {
                         index_START: data.tripIndexes.index1st_1,
                         index_END: data.tripIndexes.index1st_2,
                         scheduled: !this.state.now,
+                        toPay: data.cost.toDrivers.firstDriverPay,
                     },
                     {
                         driverID: data.middle,
@@ -1260,6 +1321,7 @@ export default class CarpoolTripDetails extends React.Component {
                         index_START: data.tripIndexes.index2nd_1,
                         index_END: data.tripIndexes.index2nd_2,
                         scheduled: !this.state.now,
+                        toPay: data.cost.toDrivers.secondDriverPay,
                     },
                     {
                         driverID: data.end,
@@ -1273,6 +1335,7 @@ export default class CarpoolTripDetails extends React.Component {
                         index_START: data.tripIndexes.index3rd_1,
                         index_END: data.tripIndexes.index3rd_2,
                         scheduled: !this.state.now,
+                        toPay: data.cost.toDrivers.thirdDriverPay,
                     },
                 ];
 
@@ -1503,6 +1566,7 @@ export default class CarpoolTripDetails extends React.Component {
                             driver2={this.state.driver2}
                             driver3={this.state.driver3}
                             tripActive={this.state.tripActive}
+                            now={this.state.now}
                             userID={this.state.userID}
                             data={data} onPress={() => { this.goBack.call(this); }}
                             navigate={() => {
@@ -1644,11 +1708,11 @@ export default class CarpoolTripDetails extends React.Component {
                                 </View>
                                 <View style={[styles.textContainer, { marginTop: y(10) }]}>
                                     <Text style={[styles.firstLayer,]}>Cost per km</Text>
-                                    <Text style={[styles.firstLayer,]}>{`$2.00`}</Text>
+                                    <Text style={[styles.firstLayer,]}>${(data.cost.costPerKM).toFixed(2)}</Text>
                                 </View>
                                 <View style={[styles.textContainer, { marginTop: y(14) }]}>
                                     <Text style={[styles.total,]}>TOTAL</Text>
-                                    <Text style={[styles.total,]}>$14.15</Text>
+                                    <Text style={[styles.total,]}>${data.cost.total}</Text>
                                 </View>
                                 <View style={[styles.divider, { marginTop: y(9) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
 
@@ -1657,12 +1721,15 @@ export default class CarpoolTripDetails extends React.Component {
                                     {PAYMENT_CHOICE}
                                     <View style={{ right: 0, bottom: 0, position: 'absolute', }}>
                                         <TouchableOpacity onPress={() => {
-                                            this.props.navigation.navigate('PaymentMethod', {
-                                                choice: this.state.paymentMethod,
-                                                changePayment: (value) => { this.changePayment.call(this, value) },
+                                            AsyncStorage.getItem('USER_DETAILS').then(result => {
+                                                const userDetails = JSON.parse(result);
+                                                this.props.navigation.navigate('Wallet', {
+                                                    userDetails: userDetails,
+                                                    choice: this.state.selected,
+                                                })
                                             })
                                         }}>
-                                            <Text style={styles.change}>CHANGE</Text>
+                                            <Text style={styles.change}>{this.state.selected == 'NONE' ? 'SELECT' : 'CHANGE'}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -1680,12 +1747,49 @@ export default class CarpoolTripDetails extends React.Component {
                                                     steps: data.steps,
                                                     drivers: drivers,
                                                 },
+                                                cost: data.cost,
+                                                card: this.state.card,
+                                                paymentMethod: {
+                                                    selected: this.state.selected,
+                                                    last4: this.state.last4,
+                                                },
                                             };
-                                            if (this.state.now)
-                                                carpoolRequestHandler.call(this, this.dataToSend, historyData);
-                                            else
-                                                scheduledCarpoolRequestHandler.call(this, this.dataToSend, historyData);
 
+                                            if (this.state.selected == 'NONE') {
+                                                Alert.alert(
+                                                    'Please select payment',
+                                                    'Please select a payment method in order to book a ride.', [
+                                                    {
+                                                        text: 'Cancel',
+                                                        style: 'cancel'
+                                                    },
+                                                    {
+                                                        text: 'Select Payment',
+                                                        onPress: () => {
+                                                            AsyncStorage.getItem('USER_DETAILS').then(result => {
+                                                                const userDetails = JSON.parse(result);
+                                                                this.props.navigation.navigate('Wallet', {
+                                                                    userDetails: userDetails,
+                                                                    choice: this.state.selected,
+                                                                })
+                                                            })
+                                                        }
+                                                    }
+                                                ])
+                                            }
+                                            else {
+                                                AsyncStorage.getItem('USER_DETAILS').then(result => {
+                                                    const userDetails = JSON.parse(result);
+
+                                                    chargeCustomer.call(this, {
+                                                        cost: Number(data.cost.total),
+                                                        cardId: this.state.card.cardId,
+                                                        customerID: userDetails.stripeCustomerID,
+                                                    },
+                                                        this.dataToSend,
+                                                        historyData);
+                                                });
+                                            }
                                         }}
                                         loading={this.state.loading} />
                                 </View>
@@ -2025,9 +2129,14 @@ class Drivers extends React.Component {
                 <View style={styles.driverContainer}>
                     {finished == false ?
                         <View style={styles.secondaryDriverConatiner_}>
-                            <Text style={[styles.driverTitle, { textAlign: 'center', marginVertical: y(5) }]}>Waiting for drivers to accept the ride request</Text>
+                            {this.props.now ?
+                                <Text style={[styles.driverTitle, { textAlign: 'center', marginVertical: y(5) }]}>Waiting for drivers to accept the ride request</Text> :
+                                <Text style={[styles.driverTitle, { textAlign: 'center', marginVertical: y(5) }]}>Sending ride request to drivers</Text>
+                            }
                             {toDisplay}
-                            <Text style={[styles.driverName, { textAlign: 'center', marginBottom: y(5), fontSize: y(12) }]}>Drivers will accept within <Text style={{ fontWeight: '700', }}>3 minutes</Text> and the trip would begin</Text>
+                            {this.props.now ?
+                                <Text style={[styles.driverName, { textAlign: 'center', marginBottom: y(5), fontSize: y(12) }]}>Drivers will accept within <Text style={{ fontWeight: '700', }}>3 minutes</Text> and the trip would begin. If your trip is not accepted, you would be refunded fully</Text> :
+                                <Text style={[styles.driverName, { textAlign: 'center', marginBottom: y(5), fontSize: y(12) }]}>We would send you a notification when this driver accepts your ride request. If your trip is not accepted, you would be refunded fully</Text>}
 
                         </View> :
                         <View style={[styles.secondaryDriverConatiner_, { justifyContent: 'center', alignItems: 'center', width: x(100), height: x(100) }]}>

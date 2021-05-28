@@ -50,6 +50,8 @@ export default class Paymentmethod extends React.Component {
                         </View>
                     </TouchableOpacity>
 
+                    
+
                     <TouchableOpacity
                         onPress={() => {
                             this.setState({ choice: 'interac' })

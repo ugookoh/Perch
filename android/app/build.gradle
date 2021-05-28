@@ -180,6 +180,7 @@ android {
 }
 
 dependencies {
+    implementation project(':tipsi-stripe')
     implementation project(':@react-native-community_datetimepicker')
     implementation 'com.google.firebase:firebase-analytics:17.3.0'
     implementation project(':react-native-linear-gradient')

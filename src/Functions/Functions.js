@@ -13,6 +13,8 @@ import axios from 'axios';
 import database from '@react-native-firebase/database';
 import NetInfo from "@react-native-community/netinfo";
 import _ from 'lodash';
+import stripe from 'tipsi-stripe';
+
 const GOOGLE_KEY = 'AIzaSyCBmmCb6Lkhbj6LR5eCi2Lz2ocbpyW6kb4';
 const polyline = require('@mapbox/polyline');// for decoding polylines
 const [WHITE, RED, GREEN] = ['#FFFFFF', '#FF0000', '#4DB748'];
@@ -1211,6 +1213,87 @@ export function cancelScheduledTrip(toSend) {
       })
   });
 };
+export function storeCard(userID, cardObject) {
+  axios.post(`https://us-central1-perch-01.cloudfunctions.net/storeStripeCard`, { userID: userID, cardObject: cardObject })
+    .then(() => {
+      this.setState({ loading: false });
+      Alert.alert('Card added', 'Your card has been successfully added', [{
+        text: 'Ok',
+        onPress: () => {
+          this.props.route.params.refreshCards();
+          this.props.navigation.goBack();
+        }
+      }])
+    })
+    .catch(error => {
+      this.setState({ loading: false });
+      Alert.alert('Error', error.message);
+    });
+}
+export function chargeCustomer(toSend, dataToSend, historyData) {
+  this.setState({ loading: true }, () => {
+    axios.post(`https://us-central1-perch-01.cloudfunctions.net/chargeCustomer`, toSend)
+      .then(result => {
+        const { status, client_secret, id } = result.data;
+        if (status == 'succeeded') {
+          historyData.paymentIntentId = id;
+          if (this.state.now)
+            carpoolRequestHandler.call(this, dataToSend, historyData);
+          else
+            scheduledCarpoolRequestHandler.call(this, dataToSend, historyData);
+        }
+        else if (status == 'requires_action') {
+          stripe.authenticatePaymentIntent({
+            clientSecret: client_secret
+          }).then(data => {
+            if (data.status == 'requires_confirmation') {
+              axios.post(`https://us-central1-perch-01.cloudfunctions.net/confirmStripePayment`, { paymentntentId: data.paymentIntentId, cardId: data.paymentMethodId })
+                .then((result_) => {
+                  const status_ = result_.data.status;
+                  console.log('p2--------> ', result_.data.status, ' ', result_.data.client_secret, ' ', result_.data.id);
+                  if (status_ == 'succeeded') {
+                    if (this.state.now)
+                      carpoolRequestHandler.call(this, dataToSend, historyData);
+                    else
+                      scheduledCarpoolRequestHandler.call(this, dataToSend, historyData);
+                  }
+                })
+                .catch(error => {
+                  Alert.alert(
+                    'Payment Error',
+                    `Error : ${error.message}`,
+                    [{
+                      text: 'Ok',
+                      onPress: () => { this.props.navigation.goBack() }
+                    }])
+                })
+            }
+          }).catch(error => {
+            Alert.alert(
+              'Payment Error',
+              `Error : ${error.message}`,
+              [{
+                text: 'Ok',
+                onPress: () => { this.props.navigation.goBack() }
+              }])
+          })
+        }
+      })
+      .catch(error => {
+        Alert.alert(
+          'Payment Error',
+          `Error : ${error.message}`,
+          [{
+            text: 'Ok',
+            onPress: () => { this.props.navigation.goBack() }
+          }])
+      });
+  });
+}
+
+export function deleteCard(userID, last4, selected) {
+  axios.post(`https://us-central1-perch-01.cloudfunctions.net/deleteStripeCard`, { userID: userID, last4: last4, selected: selected });
+}
 //CALCULATE DISTANCE IN METERS
 export function polylineLenght(data) {
   let distance = 0;
@@ -1337,7 +1420,6 @@ function getTime(eta, duration) {
   const TIME = `${hour}:${minutes} ${meridien}`;
   return TIME;
 };
-
 export function indexFinder(searchMe, value) {
   for (let j = 0; j < searchMe.length; j++)
     if (searchMe[j][0] === value[0] && searchMe[j][1] === value[1])

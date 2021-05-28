@@ -83,7 +83,7 @@ export class OneStepTrip extends React.Component {
                                 <CarIcon />
                             </View>
                         </View>
-                        <Text style={styles.cost}>$3.46</Text>
+                        <Text style={styles.cost}>${Number(data.cost.total).toFixed(2)}</Text>
                         <Text style={styles.distance}>{`${(distance / 1000).toFixed(2)} km`}</Text>
                         <Text style={styles.time}>{`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem} TO ${endHour}:${endMin < 10 ? '0' + endMin : endMin} ${endMeridiem}`}</Text>
                     </View>
@@ -196,7 +196,7 @@ export class TwoStepTrip extends React.Component {
                                 </View> : <></>}</View>
 
                         </View>
-                        <Text style={styles.cost}>$9.46</Text>
+                        <Text style={styles.cost}>${Number(data.cost.total).toFixed(2)}</Text>
                         <Text style={styles.distance}>{`${(distance / 1000).toFixed(2)} km`}</Text>
                         <Text style={styles.time}>{`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem} TO ${endHour}:${endMin < 10 ? '0' + endMin : endMin} ${endMeridiem}`}</Text>
                     </View>
@@ -336,7 +336,7 @@ export class ThreeStepTrip extends React.Component {
                                 </View> : <></>}</View>
 
                         </View>
-                        <Text style={styles.cost}>$2.46</Text>
+                        <Text style={styles.cost}>${Number(data.cost.total).toFixed(2)}</Text>
                         <Text style={styles.distance}>{`${(distance / 1000).toFixed(2)} km`}</Text>
                         <Text style={styles.time}>{`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem} TO ${endHour}:${endMin < 10 ? '0' + endMin : endMin} ${endMeridiem}`}</Text>
                     </View>
