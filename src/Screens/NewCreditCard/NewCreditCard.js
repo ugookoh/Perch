@@ -12,10 +12,9 @@ import Divider from '../../Components/Divider/Divider';
 const [GREEN, WHITE, GREY, RED] = ['#4DB748', '#FFFFFF', '#918686', '#FF0000'];
 stripe.setOptions({
     publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
+    merchantId: 'merchant.com.perch',
 })
-// stripe.setOptions({
-//     publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
-// });
+
 export default class NewCreditCard extends React.Component {
     constructor(props) {
         super(props);
