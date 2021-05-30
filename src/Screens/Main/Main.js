@@ -164,14 +164,6 @@ export default class Main extends React.Component {
     componentDidMount() {
         getFirebaseMessagingToken();
 
-        // axios.post(`https://us-central1-perch-01.cloudfunctions.net/customerStripe`, { type: 'update', fullname: 'Ugo Okoh', email: 'edokoh999@gmail.com', userID: 'P3OrHF0YeQMYF8hQ1WYRm81lBMz1', customerID: 'cus_JXaZtE4TYCjPVs' })
-        //     .then(result => {
-        //         console.log(result.data)
-        //     })
-        //     .catch(error => {
-        //         console.log(error.message)
-        //     })
-
         if (this.props.route.params) {
             if (this.props.route.params.userDetails) {
                 const userDetails = this.props.route.params.userDetails;
@@ -826,8 +818,9 @@ export default class Main extends React.Component {
                                         //this.setState({ getTime: false })
                                         const d = event.nativeEvent.timestamp;
                                         if (date) {
+
                                             const advance15mins = new Date().getTime() + (15 * 60000);//15 mins in advance
-                                            this.setState({ date: d, tomorrow: d > advance15mins ? false : true });
+                                            this.setState({ date: new Date(d), tomorrow: d > advance15mins ? false : true });
                                         }
                                     }}
                                 />
@@ -859,7 +852,7 @@ export default class Main extends React.Component {
                                     const d = event.nativeEvent.timestamp;
                                     if (date) {
                                         const advance15mins = new Date().getTime() + (15 * 60000);//15 mins in advance
-                                        this.setState({ date: d, tomorrow: d > advance15mins ? false : true }, () => {
+                                        this.setState({ date: new Date(d), tomorrow: d > advance15mins ? false : true }, () => {
                                             this.animateFullScreen();
                                         })
                                     }

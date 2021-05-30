@@ -489,7 +489,7 @@ export default class CarpoolResults extends React.Component {
                                     const d = event.nativeEvent.timestamp;
                                     if (date) {
                                         const advance15mins = new Date().getTime() + (15 * 60000);//15 mins in advance
-                                        this.setState({ date: d, tomorrow: d > advance15mins ? false : true, results: '' }, () => { this.onRefresh() });
+                                        this.setState({ date: new Date(d), tomorrow: d > advance15mins ? false : true, results: '' }, () => { this.onRefresh() });
 
                                     }
                                 }}
@@ -516,7 +516,7 @@ export default class CarpoolResults extends React.Component {
                                 const d = event.nativeEvent.timestamp;
                                 if (date) {
                                     const advance15mins = new Date().getTime() + (15 * 60000);//15 mins in advance
-                                    this.setState({ date: d, tomorrow: d > advance15mins ? false : true, results: '' }, () => { this.onRefresh() });
+                                    this.setState({ date: new Date(d), tomorrow: d > advance15mins ? false : true, results: '' }, () => { this.onRefresh() });
 
                                 }
                             }} />
