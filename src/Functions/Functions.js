@@ -1235,8 +1235,8 @@ export function chargeCustomer(toSend, dataToSend, historyData) {
     axios.post(`https://us-central1-perch-01.cloudfunctions.net/chargeCustomer`, toSend)
       .then(result => {
         const { status, client_secret, id } = result.data;
+        historyData.paymentIntentId = id;
         if (status == 'succeeded') {
-          historyData.paymentIntentId = id;
           if (this.state.now)
             carpoolRequestHandler.call(this, dataToSend, historyData);
           else
@@ -1250,7 +1250,6 @@ export function chargeCustomer(toSend, dataToSend, historyData) {
               axios.post(`https://us-central1-perch-01.cloudfunctions.net/confirmStripePayment`, { paymentntentId: data.paymentIntentId, cardId: data.paymentMethodId })
                 .then((result_) => {
                   const status_ = result_.data.status;
-                  console.log('p2--------> ', result_.data.status, ' ', result_.data.client_secret, ' ', result_.data.id);
                   if (status_ == 'succeeded') {
                     if (this.state.now)
                       carpoolRequestHandler.call(this, dataToSend, historyData);
@@ -1289,7 +1288,7 @@ export function chargeCustomer(toSend, dataToSend, historyData) {
           }])
       });
   });
-}
+};
 
 export function deleteCard(userID, last4, selected) {
   axios.post(`https://us-central1-perch-01.cloudfunctions.net/deleteStripeCard`, { userID: userID, last4: last4, selected: selected });

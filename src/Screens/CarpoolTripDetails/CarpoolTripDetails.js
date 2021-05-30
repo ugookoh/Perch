@@ -1749,10 +1749,6 @@ export default class CarpoolTripDetails extends React.Component {
                                                 },
                                                 cost: data.cost,
                                                 card: this.state.card,
-                                                paymentMethod: {
-                                                    selected: this.state.selected,
-                                                    last4: this.state.last4,
-                                                },
                                             };
 
                                             if (this.state.selected == 'NONE') {
