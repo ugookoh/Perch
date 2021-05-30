@@ -50,7 +50,11 @@ import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
 import KeepAwake from 'react-native-keep-awake';
 import storage from '@react-native-firebase/storage';
 import GooglePayLogo from '../../Images/svgImages/googlePayLogo';
-
+import stripe from 'tipsi-stripe';
+stripe.setOptions({
+    publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
+    merchantId: 'merchant.com.perch',
+})
 
 const MAX_HEADER_HEIGHT = y(156);
 const MIN_HEADER_HEIGHT = y(96.5);
@@ -1738,7 +1742,7 @@ export default class CarpoolTripDetails extends React.Component {
                                     <Button text={this.state.scheduled ? 'Request pending' : 'Request Perch'} width={x(313)} height={y(48)} top={0} left={0} zIndex={2}
                                         disabled={this.state.scheduled ? true : false}
                                         onPress={() => {
-                                            const historyData = {
+                                            let historyData = {
                                                 data: JSON.stringify(data),//STRINGIFY IT TO AVOID ARRAYS MOVING ABOUT,
                                                 seatNumber: this.state.seatNumber,
                                                 location: this.state.location,
@@ -1773,10 +1777,83 @@ export default class CarpoolTripDetails extends React.Component {
                                                     }
                                                 ])
                                             }
+                                            else if (this.state.selected == 'applePay') {
+                                                stripe.canMakeNativePayPayments()
+                                                    .then(canUsePayment => {
+                                                        if (canUsePayment) {
+                                                            stripe.paymentRequestWithApplePay([
+                                                                { label: 'Perch', amount: data.cost.total },
+                                                            ], {
+                                                                currencyCode: 'CAD',
+                                                                countryCode: 'CA'
+                                                            })
+                                                                .then((result) => {
+                                                                    stripe.completeApplePayRequest()
+                                                                        .then(() => {
+                                                                            historyData.paymentIntentId = result.tokenId;
+                                                                            if (this.state.now)
+                                                                                carpoolRequestHandler.call(this, this.dataToSend, historyData);
+                                                                            else
+                                                                                scheduledCarpoolRequestHandler.call(this, this.dataToSend, historyData);
+                                                                        })
+                                                                        .catch(error => {
+                                                                            Alert.alert('Payment Error', error.message);
+                                                                            stripe.cancelNativePayRequest()
+                                                                        })
+                                                                }).catch(error => {
+                                                                    Alert.alert('Payment Error', error.message);
+                                                                    stripe.cancelNativePayRequest()
+                                                                })
+                                                        }
+                                                        else
+                                                            Alert.alert('Payment Error', `You cannot use ${Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}, please select another payment method or add a credit/debit card`);
+                                                    })
+                                                    .catch(error => { Alert.alert('Payment Error', error.message) })
+                                            }
+                                            else if (this.state.selected == 'googlePay') {
+                                                stripe.canMakeNativePayPayments()
+                                                    .then(canUsePayment => {
+                                                        if (canUsePayment) {
+                                                            stripe.paymentRequestWithAndroidPay({
+                                                                total_price: data.cost.total,
+                                                                currency_code: 'CAD',
+                                                                shipping_address_required: false,
+                                                                billing_address_required: false,
+                                                                shipping_countries: ["CA"],
+                                                                line_items: [{
+                                                                    currency_code: 'CAD',
+                                                                    description: 'Perch',
+                                                                    total_price: '50.00',
+                                                                    unit_price: '50.00',
+                                                                    quantity: '1',
+                                                                }, {
+                                                                    currency_code: 'USD',
+                                                                    description: 'Vine',
+                                                                    total_price: '30.00',
+                                                                    unit_price: '30.00',
+                                                                    quantity: '1',
+                                                                }],
+                                                            })
+                                                                .then((result) => {
+                                                                    historyData.paymentIntentId = result.tokenId;
+                                                                    if (this.state.now)
+                                                                        carpoolRequestHandler.call(this, this.dataToSend, historyData);
+                                                                    else
+                                                                        scheduledCarpoolRequestHandler.call(this, this.dataToSend, historyData);
+                                                                })
+                                                                .catch(error => {
+                                                                    Alert.alert('Payment Error', error.message);
+                                                                    stripe.cancelNativePayRequest()
+                                                                })
+                                                        }
+                                                        else
+                                                            Alert.alert('Payment Error', `You cannot use ${Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}, please select another payment method or add a credit/debit card`);
+                                                    })
+                                                    .catch(error => { Alert.alert('Payment Error', error.message) })
+                                            }
                                             else {
                                                 AsyncStorage.getItem('USER_DETAILS').then(result => {
                                                     const userDetails = JSON.parse(result);
-
                                                     chargeCustomer.call(this, {
                                                         cost: Number(data.cost.total),
                                                         cardId: this.state.card.cardId,
