@@ -17,6 +17,8 @@ import {
     cancelTrip,
     cancelScheduledTrip,
     chargeCustomer,
+    perchKilometerDifference,
+    perchKilometerPayment,
 } from '../../Functions/Functions';
 import Svg, { Path, G } from "react-native-svg";
 import Header from '../../Components/Header/Header';
@@ -50,6 +52,7 @@ import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
 import KeepAwake from 'react-native-keep-awake';
 import storage from '@react-native-firebase/storage';
 import GooglePayLogo from '../../Images/svgImages/googlePayLogo';
+import Clipboard from '@react-native-community/clipboard';
 import stripe from 'tipsi-stripe';
 stripe.setOptions({
     publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
@@ -113,6 +116,9 @@ export default class CarpoolTripDetails extends React.Component {
             selected: 'NONE',
             last4: 'xxxx',
             card: null,
+
+            perchKms: 0,
+            usePerchKms: false,
         };
         this.oldTrip = this.props.route.params.tripAccepted  //THIS IS HOW WE KNOW IF ITS A NEW TRIP OR AN OLDER ONE WE GOT FROM MAIN
         this.mapIsReady = false;
@@ -148,7 +154,6 @@ export default class CarpoolTripDetails extends React.Component {
 
         });
 
-
         this.panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (event, gestureState) => true,
             onMoveShouldSetPanResponder: (e, gestureState) => {
@@ -173,12 +178,9 @@ export default class CarpoolTripDetails extends React.Component {
                 else if (Math.sign(gestureState.vy) == -1)//going upwards
                     this.direction = 'upwards';
 
-
-
             },
             onPanResponderRelease: (evt, gestureState) => {
                 this.position.flattenOffset();
-
                 const Y_POSITION = Number(JSON.stringify(this.position.y));
                 if (Y_POSITION < Y_START) {
                     Animated.decay(this.position, {
@@ -189,7 +191,6 @@ export default class CarpoolTripDetails extends React.Component {
                         this.direction = 'downwards';
                     else if (Math.sign(gestureState.vy) == -1)//going upwards
                         this.direction = 'upwards';
-
                 }
                 else if (Y_POSITION > Y_START) {
                     this.direction = 'upwards';
@@ -648,7 +649,13 @@ export default class CarpoolTripDetails extends React.Component {
                 else
                     this.setState({ selected: platformPayment })
             }
-        })
+        });
+        database().ref(`usePerchKilometers/${this.state.userID}`).on('value', snapshot => {
+            this.setState({ usePerchKms: snapshot.val() ? true : false })
+        });
+        database().ref(`perchKilometers/${this.state.userID}/quantity`).on('value', snapshot => {
+            this.setState({ perchKms: snapshot.val() })
+        });
 
         BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
     };
@@ -1714,9 +1721,21 @@ export default class CarpoolTripDetails extends React.Component {
                                     <Text style={[styles.firstLayer,]}>Cost per km</Text>
                                     <Text style={[styles.firstLayer,]}>${(data.cost.costPerKM).toFixed(2)}</Text>
                                 </View>
+                                {this.state.usePerchKms ?
+                                    <>
+                                        <View style={[styles.textContainer, { marginTop: y(10) }]}>
+                                            <Text style={[styles.firstLayer,]}>Total kilometers</Text>
+                                            <Text style={[styles.firstLayer,]}>{(data.cost.totalKilometers).toFixed(2)} kms</Text>
+                                        </View>
+                                        <View style={[styles.textContainer, { marginTop: y(10) }]}>
+                                            <Text style={[styles.firstLayer,]}>Available Perch Kilometers </Text>
+                                            <Text style={[styles.firstLayer, { color: GREEN, fontFamily: 'Gilroy-Bold' }]}>{(this.state.perchKms).toFixed(2)} kms</Text>
+                                        </View>
+                                    </> :
+                                    <></>}
                                 <View style={[styles.textContainer, { marginTop: y(14) }]}>
                                     <Text style={[styles.total,]}>TOTAL</Text>
-                                    <Text style={[styles.total,]}>${data.cost.total}</Text>
+                                    <Text style={[styles.total,]}>$ {this.state.usePerchKms ? (perchKilometerDifference(this.state.perchKms, data.cost.totalKilometers, data.cost.costPerKM).remainingCost).toFixed(2) : data.cost.total}</Text>
                                 </View>
                                 <View style={[styles.divider, { marginTop: y(9) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
 
@@ -1742,6 +1761,10 @@ export default class CarpoolTripDetails extends React.Component {
                                     <Button text={this.state.scheduled ? 'Request pending' : 'Request Perch'} width={x(313)} height={y(48)} top={0} left={0} zIndex={2}
                                         disabled={this.state.scheduled ? true : false}
                                         onPress={() => {
+                                            const { remainingPerchKms, remainingTotalKms, usedPerchKms, remainingCost } = perchKilometerDifference(this.state.perchKms, data.cost.totalKilometers, data.cost.costPerKM);
+                                            let cost_ = data.cost;
+                                            if (this.state.usePerchKms && usedPerchKms != 0)
+                                                cost_.total = (remainingCost).toFixed(2);//TO SWITCH THE TOTAL PAID WHEN PERCH KMS ARE USED
                                             let historyData = {
                                                 data: JSON.stringify(data),//STRINGIFY IT TO AVOID ARRAYS MOVING ABOUT,
                                                 seatNumber: this.state.seatNumber,
@@ -1751,10 +1774,10 @@ export default class CarpoolTripDetails extends React.Component {
                                                     steps: data.steps,
                                                     drivers: drivers,
                                                 },
-                                                cost: data.cost,
+                                                cost: cost_,
                                                 card: this.state.card,
+                                                paymentMethod: this.state.selected,//applePay, googlePay or a card type
                                             };
-
                                             if (this.state.selected == 'NONE') {
                                                 Alert.alert(
                                                     'Please select payment',
@@ -1777,91 +1800,182 @@ export default class CarpoolTripDetails extends React.Component {
                                                     }
                                                 ])
                                             }
-                                            else if (this.state.selected == 'applePay') {
-                                                stripe.canMakeNativePayPayments()
-                                                    .then(canUsePayment => {
-                                                        if (canUsePayment) {
-                                                            stripe.paymentRequestWithApplePay([
-                                                                { label: 'Perch', amount: data.cost.total },
-                                                            ], {
-                                                                currencyCode: 'CAD',
-                                                                countryCode: 'CA'
+                                            else if (this.state.usePerchKms && usedPerchKms != 0) {
+
+                                                if (remainingCost == 0) {
+                                                    historyData.paymentIntentId = 'fullyPerchKms';
+                                                    //Process a perch km payment and move on to payments
+                                                    perchKilometerPayment.call(this, {
+                                                        userID: this.state.userID,
+                                                        usedPerchKms: usedPerchKms,
+                                                    }, this.dataToSend, historyData)
+                                                }
+                                                else {
+                                                    if (this.state.selected == 'applePay') {
+                                                        stripe.canMakeNativePayPayments()
+                                                            .then(canUsePayment => {
+                                                                if (canUsePayment) {
+                                                                    stripe.paymentRequestWithApplePay([
+                                                                        { label: 'Perch', amount: remainingCost.toFixed(2) },
+                                                                    ], {
+                                                                        currencyCode: 'CAD',
+                                                                        countryCode: 'CA'
+                                                                    })
+                                                                        .then((result) => {
+                                                                            stripe.completeApplePayRequest()
+                                                                                .then(() => {
+                                                                                    historyData.paymentIntentId = result.tokenId;
+                                                                                    perchKilometerPayment.call(this, {
+                                                                                        userID: this.state.userID,
+                                                                                        usedPerchKms: usedPerchKms,
+                                                                                    }, this.dataToSend, historyData)
+                                                                                })
+                                                                                .catch(error => {
+                                                                                    Alert.alert('Payment Error', error.message);
+                                                                                    stripe.cancelNativePayRequest()
+                                                                                })
+                                                                        }).catch(error => {
+                                                                            Alert.alert('Payment Error', error.message);
+                                                                            stripe.cancelNativePayRequest()
+                                                                        })
+                                                                }
+                                                                else
+                                                                    Alert.alert('Payment Error', `You cannot use ${Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}, please select another payment method or add a credit/debit card`);
                                                             })
-                                                                .then((result) => {
-                                                                    stripe.completeApplePayRequest()
-                                                                        .then(() => {
+                                                            .catch(error => { Alert.alert('Payment Error', error.message) })
+                                                    }
+                                                    else if (this.state.selected == 'googlePay') {
+                                                        stripe.canMakeNativePayPayments()
+                                                            .then(canUsePayment => {
+                                                                if (canUsePayment) {
+                                                                    stripe.paymentRequestWithAndroidPay({
+                                                                        total_price: remainingCost.toFixed(2),
+                                                                        currency_code: 'CAD',
+                                                                        shipping_address_required: false,
+                                                                        billing_address_required: false,
+                                                                        shipping_countries: ["CA"],
+                                                                        line_items: [{
+                                                                            currency_code: 'CAD',
+                                                                            description: 'Perch',
+                                                                            total_price: remainingCost.toFixed(2),
+                                                                            unit_price: remainingCost.toFixed(2),
+                                                                            quantity: '1',
+                                                                        }],
+                                                                    })
+                                                                        .then((result) => {
                                                                             historyData.paymentIntentId = result.tokenId;
-                                                                            if (this.state.now)
-                                                                                carpoolRequestHandler.call(this, this.dataToSend, historyData);
-                                                                            else
-                                                                                scheduledCarpoolRequestHandler.call(this, this.dataToSend, historyData);
+                                                                            perchKilometerPayment.call(this, {
+                                                                                userID: this.state.userID,
+                                                                                usedPerchKms: usedPerchKms,
+                                                                            }, this.dataToSend, historyData)
                                                                         })
                                                                         .catch(error => {
                                                                             Alert.alert('Payment Error', error.message);
                                                                             stripe.cancelNativePayRequest()
                                                                         })
-                                                                }).catch(error => {
-                                                                    Alert.alert('Payment Error', error.message);
-                                                                    stripe.cancelNativePayRequest()
-                                                                })
-                                                        }
-                                                        else
-                                                            Alert.alert('Payment Error', `You cannot use ${Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}, please select another payment method or add a credit/debit card`);
-                                                    })
-                                                    .catch(error => { Alert.alert('Payment Error', error.message) })
-                                            }
-                                            else if (this.state.selected == 'googlePay') {
-                                                stripe.canMakeNativePayPayments()
-                                                    .then(canUsePayment => {
-                                                        if (canUsePayment) {
-                                                            stripe.paymentRequestWithAndroidPay({
-                                                                total_price: data.cost.total,
-                                                                currency_code: 'CAD',
-                                                                shipping_address_required: false,
-                                                                billing_address_required: false,
-                                                                shipping_countries: ["CA"],
-                                                                line_items: [{
-                                                                    currency_code: 'CAD',
-                                                                    description: 'Perch',
-                                                                    total_price: '50.00',
-                                                                    unit_price: '50.00',
-                                                                    quantity: '1',
-                                                                }, {
-                                                                    currency_code: 'USD',
-                                                                    description: 'Vine',
-                                                                    total_price: '30.00',
-                                                                    unit_price: '30.00',
-                                                                    quantity: '1',
-                                                                }],
+                                                                }
+                                                                else
+                                                                    Alert.alert('Payment Error', `You cannot use ${Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}, please select another payment method or add a credit/debit card`);
                                                             })
-                                                                .then((result) => {
-                                                                    historyData.paymentIntentId = result.tokenId;
-                                                                    if (this.state.now)
-                                                                        carpoolRequestHandler.call(this, this.dataToSend, historyData);
-                                                                    else
-                                                                        scheduledCarpoolRequestHandler.call(this, this.dataToSend, historyData);
-                                                                })
-                                                                .catch(error => {
-                                                                    Alert.alert('Payment Error', error.message);
-                                                                    stripe.cancelNativePayRequest()
-                                                                })
-                                                        }
-                                                        else
-                                                            Alert.alert('Payment Error', `You cannot use ${Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}, please select another payment method or add a credit/debit card`);
-                                                    })
-                                                    .catch(error => { Alert.alert('Payment Error', error.message) })
+                                                            .catch(error => { Alert.alert('Payment Error', error.message) })
+                                                    }
+                                                    else {
+                                                        AsyncStorage.getItem('USER_DETAILS').then(result => {
+                                                            const userDetails = JSON.parse(result);
+                                                            chargeCustomer.call(this, {
+                                                                cost: Number(remainingCost.toFixed(2)),
+                                                                cardId: this.state.card.cardId,
+                                                                customerID: userDetails.stripeCustomerID,
+                                                            },
+                                                                this.dataToSend,
+                                                                historyData,
+                                                                usedPerchKms);
+                                                        });
+                                                    }
+                                                }
                                             }
-                                            else {
-                                                AsyncStorage.getItem('USER_DETAILS').then(result => {
-                                                    const userDetails = JSON.parse(result);
-                                                    chargeCustomer.call(this, {
-                                                        cost: Number(data.cost.total),
-                                                        cardId: this.state.card.cardId,
-                                                        customerID: userDetails.stripeCustomerID,
-                                                    },
-                                                        this.dataToSend,
-                                                        historyData);
-                                                });
+                                            else {//WITHOUT PERCH KMS
+
+                                                if (this.state.selected == 'applePay') {
+                                                    stripe.canMakeNativePayPayments()
+                                                        .then(canUsePayment => {
+                                                            if (canUsePayment) {
+                                                                stripe.paymentRequestWithApplePay([
+                                                                    { label: 'Perch', amount: data.cost.total },
+                                                                ], {
+                                                                    currencyCode: 'CAD',
+                                                                    countryCode: 'CA'
+                                                                })
+                                                                    .then((result) => {
+                                                                        stripe.completeApplePayRequest()
+                                                                            .then(() => {
+                                                                                historyData.paymentIntentId = result.tokenId;
+                                                                                if (this.state.now)
+                                                                                    carpoolRequestHandler.call(this, this.dataToSend, historyData);
+                                                                                else
+                                                                                    scheduledCarpoolRequestHandler.call(this, this.dataToSend, historyData);
+                                                                            })
+                                                                            .catch(error => {
+                                                                                Alert.alert('Payment Error', error.message);
+                                                                                stripe.cancelNativePayRequest()
+                                                                            })
+                                                                    }).catch(error => {
+                                                                        Alert.alert('Payment Error', error.message);
+                                                                        stripe.cancelNativePayRequest()
+                                                                    })
+                                                            }
+                                                            else
+                                                                Alert.alert('Payment Error', `You cannot use ${Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}, please select another payment method or add a credit/debit card`);
+                                                        })
+                                                        .catch(error => { Alert.alert('Payment Error', error.message) })
+                                                }
+                                                else if (this.state.selected == 'googlePay') {
+                                                    stripe.canMakeNativePayPayments()
+                                                        .then(canUsePayment => {
+                                                            if (canUsePayment) {
+                                                                stripe.paymentRequestWithAndroidPay({
+                                                                    total_price: data.cost.total,
+                                                                    currency_code: 'CAD',
+                                                                    shipping_address_required: false,
+                                                                    billing_address_required: false,
+                                                                    shipping_countries: ["CA"],
+                                                                    line_items: [{
+                                                                        currency_code: 'CAD',
+                                                                        description: 'Perch',
+                                                                        total_price: data.cost.total,
+                                                                        unit_price: data.cost.total,
+                                                                        quantity: '1',
+                                                                    }],
+                                                                })
+                                                                    .then((result) => {
+                                                                        historyData.paymentIntentId = result.tokenId;
+                                                                        if (this.state.now)
+                                                                            carpoolRequestHandler.call(this, this.dataToSend, historyData);
+                                                                        else
+                                                                            scheduledCarpoolRequestHandler.call(this, this.dataToSend, historyData);
+                                                                    })
+                                                                    .catch(error => {
+                                                                        Alert.alert('Payment Error', error.message);
+                                                                        stripe.cancelNativePayRequest()
+                                                                    })
+                                                            }
+                                                            else
+                                                                Alert.alert('Payment Error', `You cannot use ${Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}, please select another payment method or add a credit/debit card`);
+                                                        })
+                                                        .catch(error => { Alert.alert('Payment Error', error.message) })
+                                                }
+                                                else {
+                                                    AsyncStorage.getItem('USER_DETAILS').then(result => {
+                                                        const userDetails = JSON.parse(result);
+                                                        chargeCustomer.call(this, {
+                                                            cost: Number(data.cost.total),
+                                                            cardId: this.state.card.cardId,
+                                                            customerID: userDetails.stripeCustomerID,
+                                                        },
+                                                            this.dataToSend,
+                                                            historyData);
+                                                    });
+                                                }
                                             }
                                         }}
                                         loading={this.state.loading} />
@@ -2208,8 +2322,8 @@ class Drivers extends React.Component {
                             }
                             {toDisplay}
                             {this.props.now ?
-                                <Text style={[styles.driverName, { textAlign: 'center', marginBottom: y(5), fontSize: y(12) }]}>Drivers will accept within <Text style={{ fontWeight: '700', }}>3 minutes</Text> and the trip would begin. If your trip is not accepted, you would be refunded fully</Text> :
-                                <Text style={[styles.driverName, { textAlign: 'center', marginBottom: y(5), fontSize: y(12) }]}>We would send you a notification when this driver accepts your ride request. If your trip is not accepted, you would be refunded fully</Text>}
+                                <Text style={[styles.driverName, { textAlign: 'center', marginBottom: y(5), fontSize: y(12, true) }]}>Drivers will accept within <Text style={{ fontWeight: '700', }}>3 minutes</Text> and the trip would begin. If your trip is not accepted, you would be refunded fully</Text> :
+                                <Text style={[styles.driverName, { textAlign: 'center', marginBottom: y(5), fontSize: y(12, true) }]}>We would send you a notification when this driver accepts your ride request. If your trip is not accepted, you would be refunded fully</Text>}
 
                         </View> :
                         <View style={[styles.secondaryDriverConatiner_, { justifyContent: 'center', alignItems: 'center', width: x(100), height: x(100) }]}>
@@ -2222,9 +2336,9 @@ class Drivers extends React.Component {
             return (
                 <View style={styles.driverContainer}>
                     <View style={styles.secondaryDriverConatiner_}>
-                        <Text style={[styles.driverTitle, { textAlign: 'center', marginVertical: y(5), fontSize: y(16) }]}>Sadly a driver could not accept your request , please pick another trip</Text>
+                        <Text style={[styles.driverTitle, { textAlign: 'center', marginVertical: y(5), fontSize: y(16, true) }]}>Sadly a driver could not accept your request , please pick another trip</Text>
                         <TouchableOpacity style={styles.backButton} onPress={this.props.onPress}>
-                            <Text style={[styles.driverTitle, { color: WHITE, fontSize: y(15) }]}>Go back</Text>
+                            <Text style={[styles.driverTitle, { color: WHITE, fontSize: y(15, true) }]}>Go back</Text>
                         </TouchableOpacity>
 
                     </View>
@@ -2261,6 +2375,8 @@ class CarpoolRideConfirmed extends React.Component {
             seatNumber: this.props.seatNumber,
             hours: this.props.hours,
             minutes: this.props.minutes,
+            shareCode: '------',
+            animate:true,
 
         };
         this.data = this.props.data;
@@ -2342,12 +2458,19 @@ class CarpoolRideConfirmed extends React.Component {
                 }
             },
         });
+        this._Y_START = y(55);
+        this._Y_END = -y(100);
+        this.position_ = new Animated.ValueXY({ x: 0, y: this._Y_END });
     };
 
     componentDidMount() {
         const data = this.data;
         database().ref(`carpoolTripReserve/carpool/user/${this.props.userID}`).on('child_removed', snapshot => {
             this.props.navigation.navigate("Main");
+        })
+        AsyncStorage.getItem('USER_DETAILS').then(result => {
+            const userDetails = JSON.parse(result);
+            this.setState({ shareCode: userDetails.shareCode });
         })
         Geolocation.getCurrentPosition(
             (position) => {
@@ -2706,6 +2829,24 @@ class CarpoolRideConfirmed extends React.Component {
     }
     nextDriverDistancesSetter(value, value2) {
         this.setState({ nextDriverDistances: value, originalTotalDistance: value2 });
+    };
+    animate = () => {
+        if (this.state.animate)
+            this.setState({ animate: false }, () => {
+                Animated.spring(this.position_, {
+                    toValue: { x: 0, y: this._Y_START },
+                    bounciness: 0,
+                }).start(() => {
+                    setTimeout(() => {
+                        Animated.spring(this.position_, {
+                            toValue: { x: 0, y: this._Y_END },
+                            bounciness: 0,
+                        }).start(() => {
+                            this.setState({ animate: true })
+                        });
+                    }, 2000);//HIDE BACK AFTER 2 SECONDS
+                });
+            });
     };
     componentWillUnmount() {
         Geolocation.clearWatch(this.watchID);
@@ -3107,6 +3248,11 @@ class CarpoolRideConfirmed extends React.Component {
         if (loadingComplete && this.state.navigationLoading == false)
             return (
                 <View style={styles.container}>
+                    <Animated.View style={[{ width: width, alignItems: 'center', position: 'absolute', zIndex: 10, elevation: 10 }, this.position_.getLayout()]}>
+                        <View style={{ height: y(70), borderRadius: 10, width: x(313), backgroundColor: GREEN, justifyContent: 'space-around', alignItems: 'center', paddingVertical: y(20) }}>
+                            <Text style={{ fontFamily: 'Gilroy-SemiBold', fontSize: y(14, true), color: WHITE }}>Copied to clipboard</Text>
+                        </View>
+                    </Animated.View>
                     <StatusBar backgroundColor={'#000000'} barStyle={Platform.OS == 'android' ? 'light-content' : 'dark-content'} />
                     <OfflineNotice navigation={this.props.navigation} screenName={this.props.screenName} />
                     {
@@ -3123,8 +3269,8 @@ class CarpoolRideConfirmed extends React.Component {
                             <View style={styles.cancelAlertContainer}>
                                 <View style={styles.cancelAlert}>
                                     <View style={styles.cancelAlertUpper}>
-                                        <Text style={[styles.cancelText, { fontSize: y(17), marginBottom: y(6) }]}>Leave this screen?</Text>
-                                        <Text style={[styles.cancelText, { fontSize: y(13), marginBottom: y(10), fontFamily: 'Gilroy-Regular' }]}>Leave this screen?</Text>
+                                        <Text style={[styles.cancelText, { fontSize: y(17, true), marginBottom: y(6) }]}>Leave this screen?</Text>
+                                        <Text style={[styles.cancelText, { fontSize: y(13, true), marginBottom: y(10), fontFamily: 'Gilroy-Regular' }]}>Leave this screen?</Text>
                                     </View>
                                     <View style={[{ flexDirection: 'row' }]}>
                                         <TouchableOpacity
@@ -3133,10 +3279,10 @@ class CarpoolRideConfirmed extends React.Component {
                                                 this.props.endTrip();
                                             }}
                                             style={[styles.cancelAlertLower, { borderRightWidth: 0.5, borderColor: 'rgba(64, 61, 61, 0.3)', }]}>
-                                            <Text style={[styles.cancelText, { fontSize: y(15), color: RED, marginVertical: y(15) }]}>Exit</Text>
+                                            <Text style={[styles.cancelText, { fontSize: y(15, true), color: RED, marginVertical: y(15) }]}>Exit</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity onPress={() => { this.setState({ cancelAlert: false }) }} style={[styles.cancelAlertLower, { borderLeftWidth: 0.5, borderColor: 'rgba(64, 61, 61, 0.3)', }]}>
-                                            <Text style={[styles.cancelText, { fontSize: y(15), color: GREEN, marginVertical: y(15) }]}>Stay</Text>
+                                            <Text style={[styles.cancelText, { fontSize: y(15, true), color: GREEN, marginVertical: y(15) }]}>Stay</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -3152,7 +3298,7 @@ class CarpoolRideConfirmed extends React.Component {
                                             <Icon name={'x'} size={y(26)} />
                                         </TouchableOpacity>
                                     </View>
-                                    <Text style={[styles.cancelText, { fontSize: y(17), marginBottom: y(6) }]}>Pick the driver you want to call</Text>
+                                    <Text style={[styles.cancelText, { fontSize: y(17, true), marginBottom: y(6) }]}>Pick the driver you want to call</Text>
                                     <View style={[styles.phoneContainer, { justifyContent: justifyContent_ }]}>
                                         {phones}
                                     </View>
@@ -3169,7 +3315,7 @@ class CarpoolRideConfirmed extends React.Component {
                                             <Icon name={'x'} size={y(26)} />
                                         </TouchableOpacity>
                                     </View>
-                                    <Text style={[styles.cancelText, { fontSize: y(17), marginBottom: y(6) }]}>Pick the driver you want to text</Text>
+                                    <Text style={[styles.cancelText, { fontSize: y(17, true), marginBottom: y(6) }]}>Pick the driver you want to text</Text>
                                     <View style={[styles.phoneContainer, { justifyContent: justifyContent_ }]}>
                                         {messages}
                                     </View>
@@ -3404,9 +3550,13 @@ class CarpoolRideConfirmed extends React.Component {
                             <Text style={[styles.adText, { marginTop: y(26) }]}>{'Get discounts towards your next trip by sharing your special code with your friends ! '}</Text>
                             <View style={[styles.share, { marginTop: y(10), marginBottom: y(45) }]}>
                                 <View style={styles.shareCode}>
-                                    <Text style={styles.shareCodeText}>234USER01</Text>
+                                    <Text style={styles.shareCodeText}>{this.state.shareCode}</Text>
                                 </View>
-                                <TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.animate();
+                                        Clipboard.setString(`My Perch Share Code is ${this.state.shareCode}`);
+                                    }}>
                                     <View style={styles.send}>
                                         <Icon__ name={'paper-plane'} color={WHITE} size={y(30)} />
                                     </View>

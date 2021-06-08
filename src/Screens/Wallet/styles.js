@@ -52,12 +52,12 @@ export default StyleSheet.create({
     },
     titleText: {
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(18),
+        fontSize: y(18, true),
         marginTop: y(25),
     },
     balanceText: {
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(30),
+        fontSize: y(30, true),
         color: '#4DB748',
     },
     button: {
@@ -72,7 +72,7 @@ export default StyleSheet.create({
     },
     text: {
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(15),
+        fontSize: y(15, true),
     },
     visa: {
         width: x(35),
@@ -91,7 +91,7 @@ export default StyleSheet.create({
         height: y(40),
         position: 'absolute',
         top: -x(dimensionAssert() ? 9 : 12),
-        left:-7,
+        left: -7,
     },
     optionsContainer: {
 

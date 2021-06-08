@@ -26,13 +26,13 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   sinUpText: {
-    fontSize: y(30),
+    fontSize: y(30, true),
     lineHeight: y(36),
     textAlign: 'center',
     fontFamily: 'Gilroy-SemiBold',
   },
   regularText: {
-    fontSize: y(15),
+    fontSize: y(15, true),
     lineHeight: y(25),
     textAlign: 'center',
     fontFamily: 'Gilroy-Medium',
@@ -65,7 +65,7 @@ export default StyleSheet.create({
     left: x(25),
     paddingLeft: x(14),
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     //backgroundColor:'red',
     width: x(270)
 
@@ -73,13 +73,13 @@ export default StyleSheet.create({
   error: {
     paddingHorizontal: x(12),
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(10),
+    fontSize: y(10, true),
     color: '#FF0000',
     textAlign: 'center'
   },
   messageText: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
   },
   messageView: {
     position: 'absolute',

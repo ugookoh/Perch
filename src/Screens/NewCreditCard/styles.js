@@ -10,11 +10,11 @@ export default StyleSheet.create({
     },
     text: {
         fontFamily: 'Gilroy-Bold',
-        fontSize: y(12),
+        fontSize: y(12, true),
     },
     textInput: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(15),
+        fontSize: y(15, true),
         paddingLeft: x(22),
         borderRadius: 6,
         borderWidth: 1,
@@ -37,7 +37,7 @@ export default StyleSheet.create({
     },
     textInput_: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(15),
+        fontSize: y(15, true),
         padding: 0,
         width: x(270),
         color: '#000000'
@@ -50,7 +50,7 @@ export default StyleSheet.create({
     },
     errorMessage: {
         marginTop: y(15),
-        fontSize: y(13),
+        fontSize: y(13, true),
         color: '#FF0000',
         fontFamily: 'Gilroy-SemiBold',
     },

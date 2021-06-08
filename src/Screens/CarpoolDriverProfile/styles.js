@@ -19,7 +19,7 @@ export default StyleSheet.create({
         width: y(116),
         borderRadius: 10,
         borderWidth: 2,
-        overflow:'hidden',
+        overflow: 'hidden',
     },
     profileDetails: {
         height: y(116),
@@ -38,7 +38,7 @@ export default StyleSheet.create({
     },
     carText: {
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(23),
+        fontSize: y(23, true),
     },
     security_container: {
         width: x(349),
@@ -49,11 +49,11 @@ export default StyleSheet.create({
     },
     bullet: {
         fontFamily: 'Gilroy-ExtraBold',
-        fontSize: y(15),
+        fontSize: y(15, true),
         marginRight: x(4),
     },
     bulletTip: {
-        fontSize: y(16),
+        fontSize: y(16, true),
         fontFamily: 'Gilroy-Regular',
     },
     starContainer: {
@@ -67,7 +67,7 @@ export default StyleSheet.create({
     },
     joined: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(8),
+        fontSize: y(8, true),
         top: x(4),
     },
 });

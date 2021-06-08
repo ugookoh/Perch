@@ -20,7 +20,7 @@ export default StyleSheet.create({
   },
   error: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(10),
+    fontSize: y(10, true),
     color: '#FF0000',
     bottom: dimensionAssert() ? (StatusBar.currentHeight ? x(12) : -x(6)) : (StatusBar.currentHeight ? x(45) : x(22)),
     textAlign: 'center',
@@ -31,7 +31,7 @@ export default StyleSheet.create({
     width: width,
   },
   sinUpText: {
-    fontSize: y(30),
+    fontSize: y(30, true),
     lineHeight: y(36),
     textAlign: 'center',
     fontFamily: 'Gilroy-SemiBold',
@@ -41,7 +41,7 @@ export default StyleSheet.create({
   },
   messageText: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
   },
   topInput: {
     width: x(322),
@@ -67,7 +67,7 @@ export default StyleSheet.create({
   },
   textInput: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     paddingLeft: x(10),
     color: '#000000',
   },
@@ -102,7 +102,7 @@ export default StyleSheet.create({
   pM: {
     width: x(343),
     fontFamily: 'Gilroy-Bold',
-    fontSize: y(17),
+    fontSize: y(17, true),
     marginTop: y(70)
   },
   pMView: {
@@ -114,6 +114,6 @@ export default StyleSheet.create({
   pM_: {
     width: x(343),
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(13),
+    fontSize: y(13, true),
   },
 });

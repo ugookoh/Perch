@@ -41,7 +41,7 @@ export default StyleSheet.create({
         paddingVertical: y(8),
     },
     predictionText: {
-        fontSize: y(15),
+        fontSize: y(15, true),
         fontFamily: 'Gilroy-Regular',
     },
     predictionView_: {
@@ -58,13 +58,13 @@ export default StyleSheet.create({
         top: dimensionAssert() ? y(530) : y(500)
     },
     textInput: {
-        fontSize: y(21),
+        fontSize: y(21, true),
         fontFamily: 'Gilroy-Regular',
         color: '#000000',
         width: x(260),
     },
     edit: {
-        fontSize: y(12),
+        fontSize: y(12, true),
         fontFamily: 'Gilroy-ExtraBold',
         color: GREEN,
     },

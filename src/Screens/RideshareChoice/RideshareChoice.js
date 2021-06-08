@@ -7,7 +7,7 @@ import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import AsyncStorage from '@react-native-community/async-storage';
 import * as turf from '@turf/turf';
 import database from '@react-native-firebase/database';
-import { rideshareRequestSender, reverseGeocoding, getDriversInit, OfflineNotice, x, y, height, width, dimensionAssert ,CustomLayoutLinear} from '../../Functions/Functions';
+import { rideshareRequestSender, reverseGeocoding, getDriversInit, OfflineNotice, x, y, height, width, dimensionAssert, CustomLayoutLinear } from '../../Functions/Functions';
 import Geolocation from 'react-native-geolocation-service';
 import { BarIndicator, MaterialIndicator, } from 'react-native-indicators';
 import Button from '../../Components/Button/Button';
@@ -191,7 +191,7 @@ export default class RideshareChoice extends React.Component {
         LayoutAnimation.configureNext(CustomLayoutLinear);
         return (
             <View style={styles.container}>
-                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                 <StatusBar backgroundColor={'#000000'} barStyle={Platform.OS == 'android' ? 'light-content' : 'dark-content'} />
                 {this.state.searchingForDriver ?
                     <SearchingForDriver
@@ -417,7 +417,7 @@ export default class RideshareChoice extends React.Component {
                                                 {/* </ShimmerPlaceHolder> */}
 
                                                 <ShimmerPlaceHolder autoRun={true} visible={this.state.etaSedan} style={{ marginTop: x(5), width: x(50), height: y(12) }}>
-                                                    <Text style={[styles.cost, { color: '#ACB1C0', marginTop: x(5), fontSize: y(12) }]}>{this.state.tripDurationSedan ? this.state.tripDurationSedan : ''}</Text>
+                                                    <Text style={[styles.cost, { color: '#ACB1C0', marginTop: x(5), fontSize: y(12, true) }]}>{this.state.tripDurationSedan ? this.state.tripDurationSedan : ''}</Text>
                                                 </ShimmerPlaceHolder>
                                             </View>}
 
@@ -445,7 +445,7 @@ export default class RideshareChoice extends React.Component {
                                                 {/* </ShimmerPlaceHolder> */}
 
                                                 <ShimmerPlaceHolder autoRun={true} visible={this.state.etaSuv} style={{ marginTop: x(5), width: x(50), height: y(12) }}>
-                                                    <Text style={[styles.cost, { color: '#ACB1C0', marginTop: x(5), fontSize: y(12) }]}>{this.state.tripDurationSuv ? this.state.tripDurationSuv : ''}</Text>
+                                                    <Text style={[styles.cost, { color: '#ACB1C0', marginTop: x(5), fontSize: y(12, true) }]}>{this.state.tripDurationSuv ? this.state.tripDurationSuv : ''}</Text>
                                                 </ShimmerPlaceHolder>
                                             </View>}
 
@@ -473,7 +473,7 @@ export default class RideshareChoice extends React.Component {
                                                 {/* </ShimmerPlaceHolder> */}
 
                                                 <ShimmerPlaceHolder autoRun={true} visible={this.state.etaPackage} style={{ marginTop: x(5), width: x(50), height: y(12) }}>
-                                                    <Text style={[styles.cost, { color: '#ACB1C0', marginTop: x(5), fontSize: y(12) }]}>{this.state.tripDurationPackage ? this.state.tripDurationPackage : ''}</Text>
+                                                    <Text style={[styles.cost, { color: '#ACB1C0', marginTop: x(5), fontSize: y(12, true) }]}>{this.state.tripDurationPackage ? this.state.tripDurationPackage : ''}</Text>
                                                 </ShimmerPlaceHolder>
 
                                             </View>}
@@ -571,10 +571,10 @@ class VehicleDescription extends React.Component {
                     </View>
                     <View style={{ alignItems: 'flex-end' }}>
                         {/* <ShimmerPlaceHolder autoRun={true} visible={false} style={{ width: x(50),height:y(20) }}>           FOR THE COST!*/}
-                        <Text style={[styles.vehicleDescription, { fontSize: y(20), fontFamily: 'Gilroy-SemiBold' }]}>{`$40.99`}</Text>
+                        <Text style={[styles.vehicleDescription, { fontSize: y(20, true), fontFamily: 'Gilroy-SemiBold' }]}>{`$40.99`}</Text>
                         {/* </ShimmerPlaceHolder> */}
                         <ShimmerPlaceHolder autoRun={true} visible={this.props.eta ? true : false} style={{ width: x(150), marginTop: y(5), height: y(15) }}>
-                            <Text style={[styles.vehicleDescription, { fontSize: y(15), fontFamily: 'Gilroy-SemiBold' }]}>{`Arrive at ${this.props.tripDuration ? this.props.tripDuration : ''}`}</Text>
+                            <Text style={[styles.vehicleDescription, { fontSize: y(15, true), fontFamily: 'Gilroy-SemiBold' }]}>{`Arrive at ${this.props.tripDuration ? this.props.tripDuration : ''}`}</Text>
                         </ShimmerPlaceHolder>
                     </View>
                 </View>
@@ -588,7 +588,7 @@ class VehicleDescription extends React.Component {
                 <View style={[{ opacity: 0.25, marginVertical: x(20) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
 
                 <View style={{ width: x(313), marginVertical: x(-10) }} >
-                    <Text style={[styles.vehicleTitle, { fontSize: y(18) }]}>Trip Details</Text>
+                    <Text style={[styles.vehicleTitle, { fontSize: y(18, true) }]}>Trip Details</Text>
 
                     <View style={styles.vehicleLocation}>
                         <SpecialIcon name={'swap-vertical-bold'} color={GREEN} size={x(30)} style={{ marginLeft: x(10) }} />
@@ -724,7 +724,7 @@ class SearchingForDriver extends React.Component {
                     {this.state.tripValid ?//ENGINE IS STILL SEARCHING FOR A DRIVER 
                         this.state.tripAccepted ?
                             <>
-                                <Text style={[styles.searchText, { fontFamily: 'Gilroy-SemiBold', fontSize: y(20) }]}>Ride found!</Text>
+                                <Text style={[styles.searchText, { fontFamily: 'Gilroy-SemiBold', fontSize: y(20, true) }]}>Ride found!</Text>
                                 <View style={{ height: y(100), }}>
                                     <MaterialIndicator color={GREEN} size={x(50)} count={8} />
                                 </View>

@@ -83,12 +83,12 @@ export default StyleSheet.create({
     width: y(dimensionAssert() ? 35 : 30),
     justifyContent: 'space-around',
   },
-  iosSpinnerView:{
-    backgroundColor: '#403D3D' ,
-    borderTopLeftRadius:10,
-    borderTopRightRadius:10,
-    top:y(130),
-    zIndex:4
+  iosSpinnerView: {
+    backgroundColor: '#403D3D',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    top: y(130),
+    zIndex: 4
   },
   iosSpinner: {
     paddingHorizontal: x(40),
@@ -98,8 +98,8 @@ export default StyleSheet.create({
     height: y(40),
     backgroundColor: '#403D3D',
     top: y(40),
-    borderBottomLeftRadius:10,
-    borderBottomRightRadius:10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   menuView: {
     position: 'absolute',
@@ -176,11 +176,11 @@ export default StyleSheet.create({
   doneText: {
     fontFamily: 'Gilroy-Bold',
     color: '#FFFFFF',
-    fontSize: y(15)
+    fontSize: y(15, true)
   },
   mainText: {
     fontFamily: 'Gilroy-Bold',
-    fontSize: y(20),
+    fontSize: y(20, true),
     color: '#FFF',
     marginLeft: x(16),
   },
@@ -205,12 +205,12 @@ export default StyleSheet.create({
   },
   addressMain: {
     fontFamily: 'Gilroy-Medium',
-    fontSize: y(15),
+    fontSize: y(15, true),
     width: x(280),
   },
   address2nd: {
     fontFamily: 'Gilroy-Medium',
-    fontSize: y(12),
+    fontSize: y(12, true),
     color: '#4DB748',
     width: x(280),
   },
@@ -226,7 +226,7 @@ export default StyleSheet.create({
     width: width
   },
   choice: {
-    fontSize: y(15),
+    fontSize: y(15, true),
     fontFamily: 'Gilroy-Bold',
     color: '#FFF',
     // top: -x(10),
@@ -303,7 +303,7 @@ export default StyleSheet.create({
   currentLocationText: {
     color: '#FFF',
     fontFamily: 'Gilroy-Medium',
-    fontSize: y(16),
+    fontSize: y(16, true),
   },
   locationInput: {
     height: y(28),
@@ -313,7 +313,7 @@ export default StyleSheet.create({
     position: 'absolute',
     color: '#FFF',
     fontFamily: 'Gilroy-Medium',
-    fontSize: y(16),
+    fontSize: y(16, true),
     padding: 0,
   },
   destinationInput: {
@@ -324,7 +324,7 @@ export default StyleSheet.create({
     position: 'absolute',
     color: '#FFF',
     fontFamily: 'Gilroy-Medium',
-    fontSize: y(16),
+    fontSize: y(16, true),
     padding: 0,//makes textinput visible on android
     //backgroundColor:'red',
 
@@ -359,7 +359,7 @@ export default StyleSheet.create({
   },
   suggestionHeaderText: {
     fontFamily: 'Gilroy-ExtraBold',
-    fontSize: y(20),
+    fontSize: y(20, true),
     color: '#4DB748',
     opacity: 0.57
 
@@ -372,14 +372,14 @@ export default StyleSheet.create({
   },
   mainAddress: {
     fontFamily: 'Gilroy-Medium',
-    fontSize: y(16),
+    fontSize: y(16, true),
     color: '#000000',
     maxWidth: x(310),
     marginTop: y(3),
   },
   secondaryAddress: {
     fontFamily: 'Gilroy-Medium',
-    fontSize: y(11),
+    fontSize: y(11, true),
     color: '#000000',
     maxWidth: x(310),
     marginBottom: y(5),

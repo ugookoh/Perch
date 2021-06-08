@@ -176,7 +176,7 @@ export default class RideshareHistory extends React.Component {
         }
         return (
             <View style={styles.container}>
-                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                 <View style={styles.header}>
                     <Header scrollY={this.headerInverse} name={'Ride Details'} onPress={() => {
                         this.props.route.params.loadResults();
@@ -196,17 +196,17 @@ export default class RideshareHistory extends React.Component {
                             <Text style={[styles.tripTitle, { marginTop: y(14), width: x(313), alignSelf: 'center' }]}>Trip Details</Text>
                             <View style={[styles.travel, { top: y(58) }]}>
                                 <Icon_ name={'map-pin'} size={y(10)} color={GREEN} />
-                                <Text numberOfLines={2} style={[styles.firstLayer, { position: 'relative', color: '#000000', fontSize: y(12), marginLeft: x(5), width: x(300), }]}>{this.state.data.location.description}</Text>
+                                <Text numberOfLines={2} style={[styles.firstLayer, { position: 'relative', color: '#000000', fontSize: y(12, true), marginLeft: x(5), width: x(300), }]}>{this.state.data.location.description}</Text>
                             </View>
                             <View style={styles.LtoD_Divider}><DashedDivider borderColor={GREEN} height={y(25)} width={0} borderWidth={0.5} borderRadius={0} /></View>
                             <View style={[styles.travel, { top: y(dimensionAssert() ? 100 : 94) }]}>
                                 <Icon_ name={'map-pin'} size={y(10)} color={GREEN} />
-                                <Text numberOfLines={2} style={[styles.firstLayer, { position: 'relative', color: '#000000', fontSize: y(12), marginLeft: x(5), width: x(300), }]}>{this.state.data.destination.description}</Text>
+                                <Text numberOfLines={2} style={[styles.firstLayer, { position: 'relative', color: '#000000', fontSize: y(12, true), marginLeft: x(5), width: x(300), }]}>{this.state.data.destination.description}</Text>
                             </View>
 
 
                             <View style={[styles.calendar]}>
-                                <Text style={[styles.firstLayer, { position: 'relative', color: GREEN, fontSize: y(14), marginRight: x(5), }]}>{this.state.date}</Text>
+                                <Text style={[styles.firstLayer, { position: 'relative', color: GREEN, fontSize: y(14, true), marginRight: x(5), }]}>{this.state.date}</Text>
                                 <Icon_ name={'calendar'} size={y(13)} color={GREEN} />
                             </View>
 
@@ -320,7 +320,7 @@ export default class RideshareHistory extends React.Component {
 
                             <View style={[styles.divider, {}]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
 
-                            <Text style={[styles.total, { marginTop: y(15.7), fontSize: y(18), color: '#000000', fontFamily: 'Gilroy-Regular', width: x(313) }]}>PAYMENT METHOD</Text>
+                            <Text style={[styles.total, { marginTop: y(15.7), fontSize: y(18, true), color: '#000000', fontFamily: 'Gilroy-Regular', width: x(313) }]}>PAYMENT METHOD</Text>
 
                             <View style={[styles.payment, { marginBottom: y(30) }]}>
                                 <View style={{ width: '100%', flexDirection: 'row', }}>

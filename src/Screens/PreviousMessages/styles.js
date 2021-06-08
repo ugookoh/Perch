@@ -16,17 +16,17 @@ export default StyleSheet.create({
         width: x(343),
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems:'center'
+        alignItems: 'center'
     },
     text: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(14),
+        fontSize: y(14, true),
         width: x(260),
         //backgroundColor: 'red'
     },
     date: {
         fontFamily: 'Gilroy-Bold',
-        fontSize: y(12),
+        fontSize: y(12, true),
     },
     noResults: {
         height: x(250),
@@ -34,7 +34,7 @@ export default StyleSheet.create({
         marginTop: y(dimensionAssert() ? 15 : 55),
     },
     noResultsText: {
-        fontSize: y(17),
+        fontSize: y(17, true),
         fontFamily: 'Gilroy-Regular',
         marginTop: y(10),
     },

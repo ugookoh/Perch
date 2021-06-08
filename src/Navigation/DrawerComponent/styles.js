@@ -30,7 +30,7 @@ export default StyleSheet.create({
         width: x(325),
     },
     menuText: {
-        fontSize: y(16),
+        fontSize: y(16, true),
         fontFamily: 'Gilroy-Medium',
         paddingLeft: x(14.1),
     },
@@ -61,7 +61,7 @@ export default StyleSheet.create({
         top: y(138),
         left: x(32),
         fontFamily: 'Gilroy-Bold',
-        fontSize: y(20),
+        fontSize: y(20, true),
         color: '#FFF',
     },
     tripNo: {
@@ -69,7 +69,7 @@ export default StyleSheet.create({
         top: y(dimensionAssert() ? 167 : 160),
         left: x(32),
         fontFamily: 'Gilroy-Medium',
-        fontSize: y(15),
+        fontSize: y(15, true),
         color: '#FFF',
     },
     rating: {
@@ -80,7 +80,7 @@ export default StyleSheet.create({
     },
     ratingText: {
         fontFamily: 'Gilroy-Medium',
-        fontSize: y(15),
+        fontSize: y(15, true),
         color: '#FFF',
     },
 });

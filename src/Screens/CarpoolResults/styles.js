@@ -5,7 +5,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    alignItems:'center'
+    alignItems: 'center'
   },
   numberOfSeatContainer: {
     height: y(656),
@@ -39,7 +39,7 @@ export default StyleSheet.create({
   },
   counterText: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(18),
+    fontSize: y(18, true),
     textAlign: 'center',
   },
   counterContainer: {
@@ -59,7 +59,7 @@ export default StyleSheet.create({
   },
   seatNumberText: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(20),
+    fontSize: y(20, true),
   },
   doneButton: {
     width: '100%',
@@ -72,7 +72,7 @@ export default StyleSheet.create({
   doneText: {
     color: '#FFFFFF',
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(15),
+    fontSize: y(15, true),
   },
   location: {
     flexDirection: 'row',
@@ -88,7 +88,7 @@ export default StyleSheet.create({
   },
   text: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(13),
+    fontSize: y(13, true),
     paddingLeft: x(7),
     width: x(300),
   },
@@ -108,10 +108,11 @@ export default StyleSheet.create({
   },
   sortResultText: {
     fontFamily: 'Gilroy-ExtraBold',
-    fontSize: y(17),
+    fontSize: y(16, true),
     color: '#4DB748',
   },
   dropDownIcon: {
+    bottom: y(-2, true),
     height: y(25),
     width: y(25),
     paddingLeft: x(6),
@@ -131,7 +132,7 @@ export default StyleSheet.create({
   },
   rateText: {
     fontFamily: 'Gilroy-ExtraBold',
-    fontSize: y(12),
+    fontSize: y(12, true),
     opacity: 0.5,
     position: 'absolute',
     top: y(262),
@@ -190,7 +191,7 @@ export default StyleSheet.create({
     top: y(5),
     textAlign: 'center',
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(14),
+    fontSize: y(14, true),
     color: '#4DB748'
   },
   scheduledView: {
@@ -202,15 +203,15 @@ export default StyleSheet.create({
   },
   scheduledText: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(16),
+    fontSize: y(16, true),
     marginRight: x(10),
   },
-  iosSpinnerView:{
-    backgroundColor: '#403D3D' ,
-    borderTopLeftRadius:10,
-    borderTopRightRadius:10,
-    top:y(130),
-    zIndex:4
+  iosSpinnerView: {
+    backgroundColor: '#403D3D',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    top: y(130),
+    zIndex: 4
   },
   iosSpinner: {
     paddingHorizontal: x(40),
@@ -220,7 +221,7 @@ export default StyleSheet.create({
     height: y(40),
     backgroundColor: '#403D3D',
     top: y(40),
-    borderBottomLeftRadius:10,
-    borderBottomRightRadius:10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
 });

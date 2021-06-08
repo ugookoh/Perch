@@ -21,13 +21,13 @@ export default StyleSheet.create({
     },
     mainText: {
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(22),
+        fontSize: y(22, true),
         textAlign: 'center',
         marginBottom: y(7),
     },
     subText: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(dimensionAssert() ? 13 : 15),
+        fontSize: y(dimensionAssert() ? 13 : 15, true),
         textAlign: 'center',
         marginBottom: x(15),
     },
@@ -50,7 +50,7 @@ export default StyleSheet.create({
     shareCodeText: {
         fontFamily: 'Gilroy-Bold',
         color: '#4DB748',
-        fontSize: y(15),
+        fontSize: y(15, true),
     },
     send: {
         backgroundColor: '#4DB748',

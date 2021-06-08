@@ -14,7 +14,7 @@ export default StyleSheet.create({
         height: y(dimensionAssert() ? 640 : 641),
     },
     text: {
-        fontSize: y(15),
+        fontSize: y(15, true),
         fontFamily: 'Gilroy-Regular',
         width: x(343),
     },

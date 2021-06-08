@@ -9,6 +9,10 @@ import Header from '../../Components/Header/Header';
 import Icon_ from 'react-native-vector-icons/Feather';
 import Divider from '../../Components/Divider/Divider';
 import Visa from '../../Images/svgImages/visa';
+import GooglePayLogo from '../../Images/svgImages/googlePayLogo';
+import ApplePayLogo from '../../Images/svgImages/applePayLogo';
+import MasterCard from '../../Images/svgImages/mastercard';
+import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
 import Money from '../../Images/svgImages/moneyChoice';
 import PerchWallet from '../../Images/svgImages/perchWallet';
 import StarRating from 'react-native-star-rating';
@@ -257,6 +261,7 @@ export default class CarpoolHistory extends React.Component {
         let tripBreakdown = <></>;
 
         const data = JSON.parse(this.state.data.data);
+        const mainData = this.state.data;
         const firstRating = (
             <Animated.View style={[styles.rating, { zIndex: this.ratingzIndex, backgroundColor: 'rgba(152, 151, 151, 0.7)', }]}>
                 <TouchableOpacity onPress={this.hideRating} style={styles.rating}></TouchableOpacity>
@@ -630,6 +635,56 @@ export default class CarpoolHistory extends React.Component {
             } break;
         };
 
+        let paymentMethod = <></>;
+
+        switch (mainData.paymentMethod) {
+            case 'visa': {
+                paymentMethod = <View style={{ width: '100%', flexDirection: 'row', }}>
+                    <View style={styles.visa}><Visa height={'100%'} width={'100%'} /></View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                        <Text style={[styles.cardNumber, { left: -x(5) }]}> XXXX XXXX XXXX {mainData.card.last4}</Text>
+                        <Text style={styles.cardNumber}> ${mainData.cost.total}</Text>
+                    </View>
+                </View>;
+            } break;
+            case 'mastercard': {
+                paymentMethod = <View style={{ width: '100%', flexDirection: 'row', }}>
+                    <View style={styles.visa}><MasterCard height={'100%'} width={'100%'} /></View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                        <Text style={[styles.cardNumber, { left: -x(5) }]}> XXXX XXXX XXXX {mainData.card.last4}</Text>
+                        <Text style={styles.cardNumber}> ${mainData.cost.total}</Text>
+                    </View>
+                </View>;
+            } break;
+            case 'default': {
+                paymentMethod = <View style={{ width: '100%', flexDirection: 'row', }}>
+                    <View style={styles.visa_}><GenericPaymentCard height={'100%'} width={'100%'} /></View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                        <Text style={[styles.cardNumber, { left: -x(5) }]}> XXXX XXXX XXXX {mainData.card.last4}</Text>
+                        <Text style={styles.cardNumber}> ${mainData.cost.total}</Text>
+                    </View>
+                </View>;
+            } break;
+            case 'applePay': {
+                paymentMethod = <View style={{ width: '100%', flexDirection: 'row', }}>
+                    <View style={styles.applePay}><ApplePayLogo height={'100%'} width={'100%'} /></View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                        <Text style={[styles.cardNumber, { left: -x(5) }]}> Apple Pay</Text>
+                        <Text style={styles.cardNumber}> ${mainData.cost.total}</Text>
+                    </View>
+                </View>;
+            } break;
+            case 'googlePay': {
+                paymentMethod = <View style={{ width: '100%', flexDirection: 'row', }}>
+                    <View style={styles.googlePay}><GooglePayLogo height={'100%'} width={'100%'} /></View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                        <Text style={[styles.cardNumber, { left: -x(5) }]}> Google Pay</Text>
+                        <Text style={styles.cardNumber}> ${mainData.cost.total}</Text>
+                    </View>
+                </View>;
+            } break;
+        }
+
         return (
             <View style={styles.container}>
                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
@@ -652,17 +707,17 @@ export default class CarpoolHistory extends React.Component {
                             <Text style={[styles.tripTitle, { marginTop: y(14), width: x(313), alignSelf: 'center' }]}>Trip Details</Text>
                             <View style={[styles.travel, { top: y(58) }]}>
                                 <Icon_ name={'map-pin'} size={y(10)} color={GREEN} />
-                                <Text numberOfLines={3} style={[styles.firstLayer, { color: '#000000', fontSize: y(12), marginLeft: x(5), width: x(300), }]}>{this.state.data.location.description}</Text>
+                                <Text numberOfLines={3} style={[styles.firstLayer, { color: '#000000', fontSize: y(12, true), marginLeft: x(5), width: x(300), }]}>{this.state.data.location.description}</Text>
                             </View>
                             <View style={styles.LtoD_Divider}><DashedDivider borderColor={GREEN} height={y(dimensionAssert() ? 43 : 30)} width={0} borderWidth={0.5} borderRadius={0} /></View>
                             <View style={[styles.travel, { top: y(dimensionAssert() ? 120 : 105) }]}>
                                 <Icon_ name={'map-pin'} size={y(10)} color={GREEN} />
-                                <Text numberOfLines={3} style={[styles.firstLayer, { color: '#000000', fontSize: y(12), marginLeft: x(5), width: x(300), }]}>{this.state.data.destination.description}</Text>
+                                <Text numberOfLines={3} style={[styles.firstLayer, { color: '#000000', fontSize: y(12, true), marginLeft: x(5), width: x(300), }]}>{this.state.data.destination.description}</Text>
                             </View>
 
 
                             <View style={[styles.calendar]}>
-                                <Text style={[styles.firstLayer, { color: GREEN, fontSize: y(14), marginRight: x(5), }]}>{this.state.date}</Text>
+                                <Text style={[styles.firstLayer, { color: GREEN, fontSize: y(14, true), marginRight: x(5), }]}>{this.state.date}</Text>
                                 <Icon_ name={'calendar'} size={y(13)} color={GREEN} />
                             </View>
 
@@ -695,73 +750,52 @@ export default class CarpoolHistory extends React.Component {
 
                             </MapView>
                         </View>
-                       {
-                           this.state.data.status=='CANCELLED'?
-                           <View style={styles.tripDetails}>
-                           <Text style={[styles.tripTitle, { marginVertical: y(14), width: x(313), color: '#FF0000', fontSize: y(16) }]}>This trip was cancelled</Text>
-                       </View>
-                       :<></>
-                       }
+                        {this.state.data.status == 'CANCELLED' ?
+                            <View style={styles.tripDetails}>
+                                <Text style={[styles.tripTitle, { marginVertical: y(14), width: x(313), color: '#FF0000', fontSize: y(16, true) }]}>This trip was cancelled</Text>
+                            </View>
+                            : <></>}
 
                         <View style={styles.tripDetails}>
                             <Text style={[styles.tripTitle, { marginTop: y(14), width: x(313) }]}>Cost Analysis</Text>
                             <View style={[styles.spaceout, { marginTop: y(19) }]}>
                                 <Text style={[styles.firstLayer, {}]}>Trip distance</Text>
-                                <Text style={[styles.firstLayer, {}]}>22 km</Text>
+                                <Text style={[styles.firstLayer, {}]}>{(mainData.cost.totalKilometers).toFixed(2)} km</Text>
                             </View>
 
                             <View style={[styles.spaceout, { marginTop: y(11.7) }]}>
-                                <Text style={[styles.firstLayer, {}]}>Trip cost</Text>
-                                <Text style={[styles.firstLayer, {}]}>$ 22.13</Text>
+                                <Text style={[styles.firstLayer, {}]}>Cost per km</Text>
+                                <Text style={[styles.firstLayer, {}]}>${(mainData.cost.costPerKM).toFixed(2)}</Text>
                             </View>
+                            {mainData.perchKms ?
+                                <>
+                                    <View style={[styles.spaceout, { marginTop: y(11.7) }]}>
+                                        <Text style={[styles.firstLayer, {}]}>Perch Kilometers used</Text>
+                                        <Text style={[styles.firstLayer, {}]}>{(mainData.perchKms.amount).toFixed(2)} km</Text>
+                                    </View>
+                                </> :
+                                <></>
+                            }
 
-                            <View style={[styles.spaceout, { marginTop: y(11.7) }]}>
+                            {/* <View style={[styles.spaceout, { marginTop: y(11.7) }]}>
                                 <Text style={[styles.firstLayer, {}]}>Tax</Text>
                                 <Text style={[styles.firstLayer, {}]}>$ 2.10</Text>
-                            </View>
+                            </View> */}
 
-                            <View style={[styles.divider, { marginTop: y(16.8) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
+                            <View style={[styles.divider, { marginTop: y(16.8) }]}>
+                                <Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} />
+                            </View>
 
                             <View style={[styles.spaceout, { marginVertical: y(10) }]}>
                                 <Text style={[styles.total, {}]}>TOTAL</Text>
-                                <Text style={[styles.total, {}]}>$14.15</Text>
+                                <Text style={[styles.total, {}]}>${mainData.cost ? mainData.cost.total : '--'}</Text>
                             </View>
 
                             <View style={[styles.divider, {}]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-                            <Text style={[styles.total, { marginTop: y(15.7), fontSize: y(18), color: '#000000', fontFamily: 'Gilroy-Regular', width: x(313) }]}>PAYMENT METHOD</Text>
+                            <Text style={[styles.total, { marginTop: y(15.7), fontSize: y(18, true), color: '#000000', fontFamily: 'Gilroy-Regular', width: x(313) }]}>PAYMENT METHOD</Text>
 
                             <View style={[styles.payment, { marginBottom: y(30) }]}>
-                                <View style={{ width: '100%', flexDirection: 'row', }}>
-                                    <View style={styles.visa}><Visa height={'100%'} width={'100%'} /></View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                        <Text style={[styles.cardNumber, { left: -x(15) }]}> XXXX XXXX XXX3 3456</Text>
-                                        <Text style={styles.cardNumber}> $12.00</Text>
-                                    </View>
-                                </View>
-
-                                <View style={{ width: '100%', flexDirection: 'row' }}>
-                                    <View style={styles.visa_}><Money height={'100%'} width={'100%'} /></View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                        <Text style={styles.cardNumber}> Cash</Text>
-                                        <Text style={styles.cardNumber}> $24.99</Text>
-                                    </View>
-                                </View>
-
-                                <View style={{ width: '100%', flexDirection: 'row' }}>
-                                    <View style={styles.visa_}><PerchWallet height={'100%'} width={'100%'} /></View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                        <Text style={styles.cardNumber}> Perch Wallet</Text>
-                                        <Text style={styles.cardNumber}> $12.00</Text>
-                                    </View>
-                                </View>
-
-                                <View style={{ width: '100%', flexDirection: 'row' }}>
-                                    <View style={styles.visa_}><Interac height={'100%'} width={'100%'} /></View>
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
-                                        <Text style={styles.cardNumber}> Interac e-transfer</Text>
-                                        <Text style={styles.cardNumber}> $5.00</Text>
-                                    </View>
-                                </View>
+                                {paymentMethod}
                             </View>
                         </View>
 

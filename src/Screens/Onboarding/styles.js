@@ -32,13 +32,13 @@ export default StyleSheet.create({
         bottom: 0,
     },
     title: {
-        fontSize: y(22),
+        fontSize: y(22, true),
         fontFamily: 'Gilroy-SemiBold',
         textAlign: 'center',
         maxWidth: x(343),
     },
     subtext: {
-        fontSize: y(13),
+        fontSize: y(13, true),
         fontFamily: 'Gilroy-Regular',
         textAlign: 'center',
         maxWidth: x(343),
@@ -69,7 +69,7 @@ export default StyleSheet.create({
     },
     buttonText: {
         color: '#FFFFFF',
-        fontSize: y(15),
+        fontSize: y(15, true),
         fontFamily: 'Gilroy-Bold',
     },
 

@@ -20,7 +20,7 @@ export default StyleSheet.create({
     width: width,
   },
   sinUpText: {
-    fontSize: y(30),
+    fontSize: y(30, true),
     lineHeight: y(36),
     textAlign: 'center',
     fontFamily: 'Gilroy-SemiBold',
@@ -32,14 +32,14 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   regularText: {
-    fontSize: y(15),
+    fontSize: y(15, true),
     lineHeight: y(25),
     textAlign: 'center',
     fontFamily: 'Gilroy-Medium',
   },
   messageText: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
   },
   messageView: {
     position: 'absolute',

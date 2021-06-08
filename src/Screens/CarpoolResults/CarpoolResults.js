@@ -67,23 +67,21 @@ export default class CarpoolResults extends React.Component {
 
     onRefresh() {
         const date = this.state.tomorrow ? this.state.date + _1DAY_MILLI_SECS : this.state.date;
-        this.setState({ refreshing: true, }, () => {
-            axios.post('https://us-central1-perch-01.cloudfunctions.net/carpoolChoices', {
-                location: this.state.location,
-                destination: this.state.destination,
-                seatNumber: this.state.seatNumber,
-                startTime: this.state.now ? null : { hour: new Date(date).getHours(), min: new Date(date).getMinutes() },
-                rawDate: this.state.now ? null : date,
-            })
-                .then(data => {
-                    const result = data.data;
-                    if (result.length == 0)
-                        this.setState({ results: 'NORESULTS' })
-                    else
-                        this.resultSort.call(this, result, this.state.sort);
-                })
-                .catch(err => { console.log(err.message) })
+        axios.post('https://us-central1-perch-01.cloudfunctions.net/carpoolChoices', {
+            location: this.state.location,
+            destination: this.state.destination,
+            seatNumber: this.state.seatNumber,
+            startTime: this.state.now ? null : { hour: new Date(date).getHours(), min: new Date(date).getMinutes() },
+            rawDate: this.state.now ? null : date,
         })
+            .then(data => {
+                const result = data.data;
+                if (result.length == 0)
+                    this.setState({ results: 'NORESULTS' })
+                else
+                    this.resultSort.call(this, result, this.state.sort);
+            })
+            .catch(err => { console.log(err.message) })
     };
 
     hidePicker() {
@@ -274,7 +272,7 @@ export default class CarpoolResults extends React.Component {
                                     <Icon name={'plus-circle'} size={y(30)} color={GREEN} />
                                 </TouchableOpacity>
                             </View>
-                            <TouchableOpacity style={styles.doneButton} onPress={() => { this.setState({ seatNumberFocused: false }, () => { this.onRefresh() }) }}>
+                            <TouchableOpacity style={styles.doneButton} onPress={() => { this.setState({ seatNumberFocused: false, refreshing: true, }, () => { this.onRefresh() }) }}>
                                 <Text style={styles.doneText}>Confirm</Text>
                             </TouchableOpacity>
 
@@ -326,7 +324,7 @@ export default class CarpoolResults extends React.Component {
                 >
                     <Text style={styles.sortResultText}>{this.state.sort}</Text>
                     <Animated.View style={[styles.dropDownIcon, { transform: [{ rotate: iconRotation }] }]}>
-                        <Down name={'ios-arrow-down'} color={GREEN} size={y(25)} />
+                        <Down name={'ios-arrow-down'} color={GREEN} size={y(25, true)} />
                     </Animated.View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -336,7 +334,7 @@ export default class CarpoolResults extends React.Component {
                 >
                     <Text style={styles.sortResultText}>{`${this.state.seatNumber} passenger${this.state.seatNumber == 1 ? `` : `s`}`}</Text>
                     <View style={[styles.dropDownIcon,]}>
-                        <Down name={'ios-arrow-down'} color={GREEN} size={y(25)} />
+                        <Down name={'ios-arrow-down'} color={GREEN} size={y(25, true)} />
                     </View>
                 </TouchableOpacity>
                 {this.state.now ?
@@ -378,7 +376,9 @@ export default class CarpoolResults extends React.Component {
                                                 if (toReturn)
                                                     return (
                                                         <OneStepTrip
-                                                            data={item} refreshing={this.state.refreshing} onPress={() => {
+                                                            data={item}
+                                                            refreshing={this.state.refreshing}
+                                                            onPress={() => {
                                                                 AsyncStorage.getItem('USER_DETAILS')
                                                                     .then(result => {
                                                                         const userDetails = JSON.parse(result);
@@ -404,36 +404,42 @@ export default class CarpoolResults extends React.Component {
                                             } break;
                                             case 2: {
                                                 return (
-                                                    <TwoStepTrip data={item} refreshing={this.state.refreshing} onPress={() => {
-                                                        AsyncStorage.getItem('USER_DETAILS')
-                                                            .then(result => {
-                                                                const userDetails = JSON.parse(result);
-                                                                this.props.navigation.navigate('CarpoolTripDetails', {
-                                                                    data: item, location: this.state.location, destination: this.state.destination, seatNumber: this.state.seatNumber, tripAccepted: false, userID: userDetails.userID, now: true,
-                                                                    onRefresh: () => {
-                                                                        this.onRefresh.call(this)
-                                                                    },
-                                                                    handleOnNavigateBack: () => { this.props.route.params.handleOnNavigateBack(); }
-                                                                })
-                                                            }).catch(error => { console.log(error.message) });
-                                                    }} />
+                                                    <TwoStepTrip
+                                                        data={item}
+                                                        refreshing={this.state.refreshing}
+                                                        onPress={() => {
+                                                            AsyncStorage.getItem('USER_DETAILS')
+                                                                .then(result => {
+                                                                    const userDetails = JSON.parse(result);
+                                                                    this.props.navigation.navigate('CarpoolTripDetails', {
+                                                                        data: item, location: this.state.location, destination: this.state.destination, seatNumber: this.state.seatNumber, tripAccepted: false, userID: userDetails.userID, now: true,
+                                                                        onRefresh: () => {
+                                                                            this.onRefresh.call(this)
+                                                                        },
+                                                                        handleOnNavigateBack: () => { this.props.route.params.handleOnNavigateBack(); }
+                                                                    })
+                                                                }).catch(error => { console.log(error.message) });
+                                                        }} />
                                                 )
                                             } break;
                                             case 3: {
                                                 return (
-                                                    <ThreeStepTrip data={item} refreshing={this.state.refreshing} onPress={() => {
-                                                        AsyncStorage.getItem('USER_DETAILS')
-                                                            .then(result => {
-                                                                const userDetails = JSON.parse(result);
-                                                                this.props.navigation.navigate('CarpoolTripDetails', {
-                                                                    data: item, location: this.state.location, destination: this.state.destination, seatNumber: this.state.seatNumber, tripAccepted: false, userID: userDetails.userID, now: true,
-                                                                    onRefresh: () => {
-                                                                        this.onRefresh.call(this)
-                                                                    },
-                                                                    handleOnNavigateBack: () => { this.props.route.params.handleOnNavigateBack(); }
-                                                                })
-                                                            }).catch(error => { console.log(error.message) });
-                                                    }} />
+                                                    <ThreeStepTrip
+                                                        data={item}
+                                                        refreshing={this.state.refreshing}
+                                                        onPress={() => {
+                                                            AsyncStorage.getItem('USER_DETAILS')
+                                                                .then(result => {
+                                                                    const userDetails = JSON.parse(result);
+                                                                    this.props.navigation.navigate('CarpoolTripDetails', {
+                                                                        data: item, location: this.state.location, destination: this.state.destination, seatNumber: this.state.seatNumber, tripAccepted: false, userID: userDetails.userID, now: true,
+                                                                        onRefresh: () => {
+                                                                            this.onRefresh.call(this)
+                                                                        },
+                                                                        handleOnNavigateBack: () => { this.props.route.params.handleOnNavigateBack(); }
+                                                                    })
+                                                                }).catch(error => { console.log(error.message) });
+                                                        }} />
                                                 )
                                             } break;
                                         }

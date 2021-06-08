@@ -172,7 +172,7 @@ export default class ContactUs extends React.Component {
                     </View>
 
                     <View style={[styles.formContainer, { justifyContent: 'center' }]}>
-                        <Text style={[styles.issueChoice, { textAlign: 'center', fontSize: y(18), }]}>{'Thank you for contacting us!\nWe would get back to you as soon as possible.'}</Text>
+                        <Text style={[styles.issueChoice, { textAlign: 'center', fontSize: y(18, true), }]}>{'Thank you for contacting us!\nWe would get back to you as soon as possible.'}</Text>
                     </View>
                     <View style={styles.button}><Button_ text={'Home'} width={x(343)} height={y(48)} top={0} left={0} zIndex={2} onPress={() => { this.props.navigation.navigate('Main') }} /></View>
                     <Text style={styles.pM}>Previous messages</Text>

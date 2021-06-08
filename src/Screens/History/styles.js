@@ -39,7 +39,7 @@ export default StyleSheet.create({
   },
   choiceLetter: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(15),
+    fontSize: y(15, true),
 
   },
   choiceSecond: {
@@ -48,7 +48,7 @@ export default StyleSheet.create({
   },
   date: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     color: '#4DB748',
     marginRight: x(17),
   },
@@ -99,7 +99,7 @@ export default StyleSheet.create({
   noResultsText: {
     textAlign: 'center',
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(16),
+    fontSize: y(16, true),
     marginTop: y(5),
   },
 });

@@ -34,6 +34,8 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
             choice: this.props.route.params.choice,
             usePerchKms: false,
             selected: null,
+            perchKms: 0,
+            goToAddFunds: false,
         };
 
         this.TOP_OF_TRIPS = 0;
@@ -117,6 +119,13 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
 
     componentDidMount() {
         this.loadCards();
+
+        database().ref(`perchKilometers/${this.state.userDetails.userID}/quantity`).on('value', snapshot => {
+            this.setState({ perchKms: snapshot.val().toFixed(1) })
+        })
+        database().ref(`usePerchKilometers/${this.state.userDetails.userID}`).once('value', snapshot => {
+            this.setState({ usePerchKms: snapshot.val() ? true : false })
+        })
     };
     loadCards = () => {
         database().ref(`cards/${this.state.userDetails.userID}`).once('value', snapshot => {
@@ -161,7 +170,8 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
             for (let key in this.state.cards)
                 if (this.state.cards[key] && key != 'selected')
                     cards.push(
-                        <View style={[styles.subContainer, { marginTop: y(20) }]} ///ALL CREDIT CARDS SHOULD BE LISTED UNDER HERE JUST LIKE THIS! ...STORE CREDIT CARDS IN USER OBJECT(ENCRYPED)
+                        <View style={[styles.subContainer, { marginTop: y(20) }]}
+                        //ALL CREDIT CARDS SHOULD BE LISTED UNDER HERE JUST LIKE THIS! ...STORE CREDIT CARDS IN USER OBJECT(ENCRYPED)
                         >
                             <TouchableOpacity style={styles.innerContainer}
                                 onPress={() => {
@@ -207,13 +217,26 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                         name={this.state.choice ? 'Payment Method' : 'Wallet'}
                         scrollY={this.headerInverse}
                         onPress={() => {
-                            if (this.state.choice && this.state.selected) {
-                                database().ref(`cards/${this.state.userDetails.userID}`).update({ selected: this.state.toShow })
-                                    .catch(error => { console.log(error.message) })
-                                this.props.navigation.goBack();
+                            if (this.state.goToAddFunds) {
+                                if (this.state.toShow)
+                                    database().ref(`cards/${this.state.userDetails.userID}`).update({ selected: this.state.toShow })
+                                        .catch(error => { console.log(error.message) });
+
+                                this.props.navigation.navigate('AddFunds', {
+                                    userDetails: this.state.userDetails,
+                                    refresh: (choice) => { this.setState({ choice: choice }) },
+                                    returnToAddfunds: (choice) => { this.setState({ goToAddFunds: choice, }) }
+                                });
                             }
-                            else
-                                this.props.navigation.goBack();
+                            else {
+                                if (this.state.choice && this.state.selected) {
+                                    database().ref(`cards/${this.state.userDetails.userID}`).update({ selected: this.state.toShow })
+                                        .catch(error => { console.log(error.message) })
+                                    this.props.navigation.goBack();
+                                }
+                                else
+                                    this.props.navigation.goBack();
+                            }
                         }} />
                 </View>
                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
@@ -230,10 +253,14 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                                         <View style={styles.walletImage}>
                                             <WalletImage />
                                         </View>
-                                        <Text style={styles.balanceText}>{`10.9 km`}</Text>
+                                        <Text style={styles.balanceText}>{this.state.perchKms} kms</Text>
                                         <View style={styles.button}>
                                             <Button text={'Add kilometers'} width={x(322)} height={y(48)} top={0} left={0} zIndex={2} onPress={() => {
-                                                this.props.navigation.navigate('AddFunds');
+                                                this.props.navigation.navigate('AddFunds', {
+                                                    userDetails: this.state.userDetails,
+                                                    refresh: (choice) => { this.setState({ choice: choice }) },
+                                                    returnToAddfunds: (choice) => { this.setState({ goToAddFunds: choice, }) }
+                                                });
                                             }}
                                             />
                                         </View>
@@ -242,7 +269,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                                     <View style={[styles.subContainer, { marginTop: y(20) }]}>
                                         <TouchableOpacity style={styles.innerContainer}
                                             onPress={() => {
-                                                this.props.navigation.navigate('CreditHistory');
+                                                this.props.navigation.navigate('CreditHistory', { userDetails: this.state.userDetails });
                                             }}>
                                             <Text style={styles.text}>Credit History</Text>
                                             <Icon name={'arrow-right'} size={y(12)} />
@@ -256,7 +283,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                                     <View style={styles.innerContainer}>
                                         <View style={{ flexDirection: 'row' }}>
                                             <View style={styles.logo}><Logo /></View>
-                                            <Text style={[styles.text, { marginLeft: x(40) }]}>Perch Kilometers - <Text style={{ color: GREEN }}>10.9km</Text></Text>
+                                            <Text style={[styles.text, { marginLeft: x(40) }]}>Perch Kilometers - <Text style={{ color: GREEN }}>{this.state.perchKms}km</Text></Text>
                                         </View>
                                         {/* {this.state.toShow != key ? <Icon name={'arrow-right'} size={y(12)} /> : <></>} */}
                                         <Switch
@@ -264,7 +291,11 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                                             thumbColor={this.state.sendUserLocation ? "#FFFFFF" : "#f4f3f4"}
                                             onValueChange={(value) => {
                                                 const toSet = !this.state.usePerchKms;
-                                                this.setState({ usePerchKms: toSet });
+                                                this.setState({ usePerchKms: toSet }, () => {
+                                                    database().ref(`usePerchKilometers`).update({
+                                                        [this.state.userDetails.userID]: toSet,
+                                                    })
+                                                });
                                             }}
                                             value={this.state.usePerchKms}
                                             style={{ transform: [{ scaleX: .7 }, { scaleY: .7 }], position: 'absolute', right: x(0), top: y(-8) }}

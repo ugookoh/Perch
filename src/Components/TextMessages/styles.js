@@ -18,14 +18,14 @@ export default StyleSheet.create({
         borderWidth: 1,
         borderColor: '#000000',
         borderRadius: 38,
-        overflow:'hidden',
+        overflow: 'hidden',
     },
     textBox: {
         marginLeft: x(10),
         borderRadius: 4,
         maxWidth: x(246.13),
         paddingVertical: x(6),
-        minWidth:x(55),
+        minWidth: x(55),
 
     },
     textBox_: {//for messages below the first one
@@ -39,7 +39,7 @@ export default StyleSheet.create({
         borderRadius: 4,
         maxWidth: x(286.3),
         paddingVertical: x(6),
-        minWidth:x(55),
+        minWidth: x(55),
 
     },
     _textBox_: {//for messages below the first one
@@ -51,14 +51,14 @@ export default StyleSheet.create({
     },
     time: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(9),
+        fontSize: y(9, true),
         //color: '#FFFFFF',
         position: 'absolute',
         bottom: x(2),
     },
     text: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(13),
+        fontSize: y(13, true),
         lineHeight: y(20),
         margin: x(12),
     },
@@ -66,16 +66,16 @@ export default StyleSheet.create({
         width: width,
         alignItems: 'center',
     },
-    dateSecConatiner:{
-        padding:x(5),
-        borderRadius:5,
-        backgroundColor:'#b3b3b3',
-        marginBottom:y(8),
-        marginTop:y(20),
+    dateSecConatiner: {
+        padding: x(5),
+        borderRadius: 5,
+        backgroundColor: '#b3b3b3',
+        marginBottom: y(8),
+        marginTop: y(20),
     },
-    dateText:{
-        fontFamily:'Gilroy-SemiBold',
-        fontSize:y(13),
+    dateText: {
+        fontFamily: 'Gilroy-SemiBold',
+        fontSize: y(13, true),
 
     },
 });

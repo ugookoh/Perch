@@ -41,7 +41,7 @@ export default StyleSheet.create({
     },
     rWP_Text: {
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(17),
+        fontSize: y(17, true),
         textAlign: 'center',
         color: GREEN,
     },
@@ -57,11 +57,11 @@ export default StyleSheet.create({
     },
     optionText: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(20),
+        fontSize: y(20, true),
     },
     signOut: {
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(20),
+        fontSize: y(20, true),
         color: '#FF0000',
     },
     cIC: {

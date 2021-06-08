@@ -37,14 +37,14 @@ export default StyleSheet.create({
         bottom: y(3),
         left: x(8.2),
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(22),
+        fontSize: y(22, true),
     },
     distance: {
         position: 'absolute',
         bottom: y(27),
         right: x(15),
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(15),
+        fontSize: y(15, true),
         //textAlign:'right'
     },
     time: {
@@ -52,7 +52,7 @@ export default StyleSheet.create({
         bottom: y(3),
         right: x(15),
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(15),
+        fontSize: y(15, true),
         //textAlign:'right'
     },
     tripBreakdownSingleTrip: {

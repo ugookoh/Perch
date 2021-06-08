@@ -106,7 +106,7 @@ export default class SignUp extends React.Component {
                                 <Form height={y(48)} width={x(322)} placeholder={'Email'} onChangeText={(value) => { this.setState({ email: value }) }} value={this.state.email} form={'email'} marginTop={marginTop} onEndEditing={() => { }} />
                                 <View style={[styles.view, { height: y(48), width: x(322), marginTop: marginTop }]}>
                                     <TouchableOpacity style={styles.countryCodeBox} onPress={this.showPicker}>
-                                        <Text style={{ fontFamily: 'Gilroy-Regular', fontSize: y(15), }}>{`+${this.countryCode()}`}</Text>
+                                        <Text style={{ fontFamily: 'Gilroy-Regular', fontSize: y(15, true), }}>{`+${this.countryCode()}`}</Text>
                                     </TouchableOpacity>
                                     <TextInput
                                         spellCheck={false}

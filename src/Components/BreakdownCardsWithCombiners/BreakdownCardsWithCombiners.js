@@ -75,8 +75,8 @@ export class DriverProfile extends React.Component {
 
                             {this.props.style == 'carpool' && this.props.eta ?
                                 <View style={[styles.timer,]}>
-                                    <Text style={[styles.bubbleText, { fontSize: y(19), color: this.props.color }]}>{this.props.eta}</Text>
-                                    <Text style={[styles.bubbleText, { fontSize: y(12), color: this.props.color }]}>mins</Text>
+                                    <Text style={[styles.bubbleText, { fontSize: y(19, true), color: this.props.color }]}>{this.props.eta}</Text>
+                                    <Text style={[styles.bubbleText, { fontSize: y(12, true), color: this.props.color }]}>mins</Text>
                                 </View> : <></>}
                         </View>
                     </View>
@@ -206,8 +206,8 @@ export class Card extends React.Component {
                                 <View style={[styles.bubble, { backgroundColor: this.props.color }]}>
                                     {this.props.eta ?
                                         <>
-                                            <Text style={[styles.bubbleText, { fontSize: y(19) }]}>{this.props.eta}</Text>
-                                            <Text style={[styles.bubbleText, { fontSize: y(12) }]}>mins</Text>
+                                            <Text style={[styles.bubbleText, { fontSize: y(19, true) }]}>{this.props.eta}</Text>
+                                            <Text style={[styles.bubbleText, { fontSize: y(12, true) }]}>mins</Text>
                                         </> :
                                         <Icon_Dash color={WHITE} size={y(30)} name={'dash'} />
                                     }
@@ -233,7 +233,7 @@ export class Card extends React.Component {
 
                                     {/* <View style={styles.seatLeft}>
                                         <Text style={[styles.seatNumber, { color: this.props.color, }]}>2</Text>
-                                        <Text style={[styles.seatNumber, { color: this.props.color, fontSize: y(12) }]}>{'seats'}</Text>
+                                        <Text style={[styles.seatNumber, { color: this.props.color, fontSize: y(12, true) }]}>{'seats'}</Text>
                                     </View> */}
 
                                 </View>
@@ -292,7 +292,7 @@ export class TopCombiner extends React.Component {
 
             if (this.props.data.userRating)
                 if (this.props.data.userRating[this.props.driverKey]) {
-                    text = `You rated ${this.props.data.userRating[this.props.driverKey]}`;
+                    text = `You rated ${this.props.data.userRating[this.props.driverKey]}/5`;
                     disabled = true;
                 }
 
@@ -322,7 +322,7 @@ export class TopCombiner extends React.Component {
                         </View>
 
                         <View style={[styles.historyRating,]}>
-                            <Text style={[styles.youRated, { color: '#4DB748', fontSize: y(12), marginRight: x(10) }]}>{text}</Text>
+                            <Text style={[styles.youRated, { color: '#4DB748', fontSize: y(12, true), marginRight: x(10) }]}>{text}</Text>
                             <TouchableOpacity onPress={() => { this.props.penOnPress(this.props.position) }} disabled={disabled} style={{ flexDirection: 'row' }}>
                                 <StarRating
                                     disabled={true}
@@ -394,7 +394,7 @@ export class MiddleCombiner extends React.Component {
 
             if (this.props.data.userRating)
                 if (this.props.data.userRating[this.props.driverKey]) {
-                    text = `You rated ${this.props.data.userRating[this.props.driverKey]}`;
+                    text = `You rated ${this.props.data.userRating[this.props.driverKey]}/5`;
                     disabled = true;
                 }
 
@@ -425,7 +425,7 @@ export class MiddleCombiner extends React.Component {
                         </View>
 
                         <View style={[styles.historyRating, { bottom: y(-10) }]}>
-                            <Text style={[styles.youRated, { color: color, fontSize: y(12), marginRight: x(5) }]}>{text}</Text>
+                            <Text style={[styles.youRated, { color: color, fontSize: y(12, true), marginRight: x(5) }]}>{text}</Text>
                             <TouchableOpacity onPress={() => { this.props.penOnPress(this.props.position) }} disabled={disabled} style={{ flexDirection: 'row' }}>
                                 <StarRating
                                     disabled={true}

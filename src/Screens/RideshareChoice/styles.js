@@ -73,7 +73,7 @@ export default StyleSheet.create({
   },
   textLD: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(12),
+    fontSize: y(12, true),
     width: x(245),
   },
   maps: {
@@ -109,52 +109,52 @@ export default StyleSheet.create({
     alignItems: 'center',
     width: x(90),
   },
-  etaConatiner:{
-    borderRadius:15,
-    borderWidth:2,
-    borderColor:'#f2f2f2',
-    backgroundColor:'#4DB748',
-    position:'absolute',
-    top:-x(10),
-    right:-x(10),
-    zIndex:1,
-    padding:5,
+  etaConatiner: {
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: '#f2f2f2',
+    backgroundColor: '#4DB748',
+    position: 'absolute',
+    top: -x(10),
+    right: -x(10),
+    zIndex: 1,
+    padding: 5,
   },
-  etaText:{
-    fontFamily:'Gilroy-SemiBold',
-    fontSize:y(12),
-    color:'#f2f2f2',
+  etaText: {
+    fontFamily: 'Gilroy-SemiBold',
+    fontSize: y(12, true),
+    color: '#f2f2f2',
   },
-  etaConatiner_:{
-    borderRadius:15,
-    backgroundColor:'#4DB748',
-    paddingHorizontal:x(9),
-    height:y(22),
+  etaConatiner_: {
+    borderRadius: 15,
+    backgroundColor: '#4DB748',
+    paddingHorizontal: x(9),
+    height: y(22),
   },
-  etaText_:{
-    fontFamily:'Gilroy-SemiBold',
-    fontSize:y(15),
-    color:'#FFFFFF',
+  etaText_: {
+    fontFamily: 'Gilroy-SemiBold',
+    fontSize: y(15, true),
+    color: '#FFFFFF',
   },
   title: {
     fontFamily: 'Gilroy-Bold',
-    fontSize: y(19),
+    fontSize: y(19, true),
     //position: 'absolute',
     //marginLeft: -x(32),
     marginTop: y(37)
   },
   description: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
   },
   type: {
     fontFamily: 'Gilroy-Light',
-    fontSize: y(14),
+    fontSize: y(14, true),
     marginTop: x(7),
   },
   cost: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(16),
+    fontSize: y(16, true),
     marginTop: x(10),
   },
   choice: {
@@ -163,7 +163,7 @@ export default StyleSheet.create({
     marginTop: y(14.4),
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems:'center',
+    alignItems: 'center',
 
   },
   choiceIcon: {
@@ -178,12 +178,12 @@ export default StyleSheet.create({
   },
   paymentText: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(15),
+    fontSize: y(15, true),
     top: 0,
   },
   cardNumber: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     bottom: -x(15)
   },
   visa: {
@@ -200,7 +200,7 @@ export default StyleSheet.create({
   },
   change: {
     fontFamily: 'Gilroy-ExtraBold',
-    fontSize: y(15),
+    fontSize: y(15, true),
     color: '#080EB2',
   },
   button: {
@@ -234,16 +234,16 @@ export default StyleSheet.create({
     shadowRadius: 4.65,
 
     elevation: 2,
-    alignItems:'center',
+    alignItems: 'center',
   },
-  secondaryContainerCity:{
-    width:x(100),
-    height:y(50),
-    marginVertical:y(20)
+  secondaryContainerCity: {
+    width: x(100),
+    height: y(50),
+    marginVertical: y(20)
   },
   searchText: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     textAlign: 'center',
   },
 
@@ -271,11 +271,11 @@ export default StyleSheet.create({
   vehicleTitle: {
     marginTop: y(20),
     fontFamily: 'Gilroy-Bold',
-    fontSize: y(25),
+    fontSize: y(25, true),
   },
   vehicleDescription: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
   },
   vehicleLocation: {
     width: x(313),
@@ -307,18 +307,18 @@ export default StyleSheet.create({
     height: y(37.3),
     width: x(25.13),
   },
-  city:{
-    height:y(100),
-    width:x(150),
-    marginBottom:y(25),
-    marginTop:y(90),
+  city: {
+    height: y(100),
+    width: x(150),
+    marginBottom: y(25),
+    marginTop: y(90),
   },
-  noResultText:{
-    fontFamily:'Gilroy-SemiBold',
-    fontSize:y(17),
-    textAlign:'center',
-    width:x(313),
-    marginBottom:y(10),
+  noResultText: {
+    fontFamily: 'Gilroy-SemiBold',
+    fontSize: y(17, true),
+    textAlign: 'center',
+    width: x(313),
+    marginBottom: y(10),
 
   },
 });

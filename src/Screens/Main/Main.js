@@ -12,7 +12,7 @@ import {
 } from '../../Functions/Functions';
 import SplashScreen from 'react-native-splash-screen';
 import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
-import { Animated, View, Text, TouchableOpacity, Button, Easing, TouchableWithoutFeedback, Keyboard, TextInput, PanResponder, YellowBox, Platform, StatusBar, LayoutAnimation, UIManager, BackHandler } from 'react-native';
+import { Animated, View, Text, TouchableOpacity, Button, Easing, TouchableWithoutFeedback, Keyboard, TextInput, PanResponder, YellowBox, Platform, StatusBar, LayoutAnimation, UIManager, BackHandler, Dimensions } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import AsyncStorage from '@react-native-community/async-storage';
 import database from '@react-native-firebase/database';

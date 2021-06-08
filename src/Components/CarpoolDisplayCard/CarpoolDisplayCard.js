@@ -66,12 +66,14 @@ export class OneStepTrip extends React.Component {
 
         return (
             <View style={styles.container}>
-                <TouchableWithoutFeedback onPress={() => {
-                    this.setState({ loading: true }, () => { this.props.onPress(); });
-                    setTimeout(() => {
-                        this.setState({ loading: false });
-                    }, 1000)
-                }}>
+                <TouchableWithoutFeedback
+                    disabled={this.props.refreshing}
+                    onPress={() => {
+                        this.setState({ loading: true }, () => { this.props.onPress(); });
+                        setTimeout(() => {
+                            this.setState({ loading: false });
+                        }, 1000)
+                    }}>
                     <View style={styles.card}>
                         {this.state.loading ?
                             <View style={styles.loader}>
@@ -172,12 +174,14 @@ export class TwoStepTrip extends React.Component {
 
         return (
             <View style={styles.container}>
-                <TouchableWithoutFeedback onPress={() => {
-                    this.setState({ loading: true }, () => { this.props.onPress(); });
-                    setTimeout(() => {
-                        this.setState({ loading: false });
-                    }, 1000)
-                }}>
+                <TouchableWithoutFeedback
+                    disabled={this.props.refreshing}
+                    onPress={() => {
+                        this.setState({ loading: true }, () => { this.props.onPress(); });
+                        setTimeout(() => {
+                            this.setState({ loading: false });
+                        }, 1000)
+                    }}>
                     <View style={styles.card}>
                         {this.state.loading ?
                             <View style={styles.loader}>
@@ -307,13 +311,15 @@ export class ThreeStepTrip extends React.Component {
         endHour = endHour == 0 ? endHour = 12 : endHour;
         return (
             <View style={styles.container}>
-                <TouchableWithoutFeedback onPress={() => {
-                    this.setState({ loading: true }, () => { this.props.onPress(); });
+                <TouchableWithoutFeedback
+                    disabled={this.props.refreshing}
+                    onPress={() => {
+                        this.setState({ loading: true }, () => { this.props.onPress(); });
 
-                    setTimeout(() => {
-                        this.setState({ loading: false });
-                    }, 1000)
-                }}>
+                        setTimeout(() => {
+                            this.setState({ loading: false });
+                        }, 1000)
+                    }}>
                     <View style={styles.card}>
                         {this.state.loading ?
                             <View style={styles.loader}>
