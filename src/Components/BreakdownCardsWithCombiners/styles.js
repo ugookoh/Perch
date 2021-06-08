@@ -20,7 +20,7 @@ export default StyleSheet.create({
     borderRadius: x(60),
     top: x(20),
     left: x(8),
-    overflow:'hidden',
+    overflow: 'hidden',
   },
   driverCentralize: {
     flexDirection: 'row',
@@ -36,7 +36,7 @@ export default StyleSheet.create({
     borderWidth: 2,
     marginRight: x(10),
     marginLeft: -x(65),
-    overflow:'hidden'
+    overflow: 'hidden'
   },
   nextDriverContainer: {
     justifyContent: 'center',
@@ -46,7 +46,7 @@ export default StyleSheet.create({
   },
 
   rideConfirmedText: {
-    fontSize: y(13),
+    fontSize: y(13, true),
     fontFamily: 'Gilroy-ExtraBold',
     color: '#4DB748',
   },
@@ -55,13 +55,13 @@ export default StyleSheet.create({
   },
   driverName: {
     fontFamily: 'Gilroy-Bold',
-    fontSize: y(20),
+    fontSize: y(20, true),
     marginBottom: y(dimensionAssert() ? 0 : 3),
   },
   driverTripNumber: {
     marginBottom: y(dimensionAssert() ? 0 : 3),
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     color: '#ACB1C0',
   },
 
@@ -127,11 +127,11 @@ export default StyleSheet.create({
   seatNumber: {
     textAlign: 'center',
     fontFamily: 'Gilroy-ExtraBold',
-    fontSize: y(18),
+    fontSize: y(18, true),
   },
   name: {
     fontFamily: 'Gilroy-ExtraBold',
-    fontSize: y(18),
+    fontSize: y(18, true),
     width: x(175),
   },
   seatLeft: {
@@ -144,13 +144,13 @@ export default StyleSheet.create({
   },
   car: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(15),
+    fontSize: y(15, true),
     //lineHeight:y(9),
     width: x(225),
   },
   youRated: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(12),
+    fontSize: y(12, true),
   },
   topCombiner: {
     //height: y(60),
@@ -164,7 +164,7 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   combinerTime: {
-    fontSize: y(12),
+    fontSize: y(12, true),
     fontFamily: 'Gilroy-ExtraBold',
     //position: 'absolute'
   },
@@ -193,7 +193,7 @@ export default StyleSheet.create({
     //top: y(62.3),
     //left: x(70),
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(12),
+    fontSize: y(12, true),
   },
   // carIcon: {
   //   position: 'absolute',
@@ -205,7 +205,7 @@ export default StyleSheet.create({
     //left: x(70),
     //top: y(106.3),
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(12),
+    fontSize: y(12, true),
   },
   // cardDivider: {
   //  //position: 'absolute',
@@ -213,7 +213,7 @@ export default StyleSheet.create({
   //   left: x(58.9),
   // },
   combinerText: {
-    fontSize: y(13),
+    fontSize: y(13, true),
     fontFamily: 'Gilroy-Medium',
     //position: 'absolute'
     width: x(230),
@@ -228,7 +228,7 @@ export default StyleSheet.create({
   },
 
   distanceText: {
-    fontSize: y(16),
+    fontSize: y(16, true),
     fontFamily: 'Gilroy-ExtraBold',
   },
   middleWalker: {

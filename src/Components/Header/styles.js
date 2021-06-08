@@ -17,19 +17,19 @@ export default styles = StyleSheet.create({
         shadowOpacity: 0.30,
         shadowRadius: 4.65,
         elevation: 7,
-        zIndex:7,
+        zIndex: 7,
     },
     icon: {
         position: 'absolute',
         top: y(58.75),
         left: x(21),
     },
-    iconBox:{
-        width:y(50),
+    iconBox: {
+        width: y(50),
     },
     text: {
         position: 'absolute',
-        fontSize: y(34),
+        fontSize: y(34, true),
         color: 'white',
         fontFamily: 'Gilroy-ExtraBold',
     },

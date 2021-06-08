@@ -44,12 +44,12 @@ export default StyleSheet.create({
         width: y(102.72),
         borderRadius: 1000,
         borderWidth: 2,
-        overflow:'hidden',
+        overflow: 'hidden',
     },
     driverName: {
         position: 'absolute',
         fontFamily: 'Gilroy-Bold',
-        fontSize: y(20),
+        fontSize: y(20, true),
         width: x(200),
     },
     driverTripNumber: {
@@ -57,7 +57,7 @@ export default StyleSheet.create({
         top: dimensionAssert() ? y(75) : y(71),
         left: x(133),
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(15),
+        fontSize: y(15, true),
         color: '#ACB1C0'
     },
     camera: {
@@ -112,7 +112,7 @@ export default StyleSheet.create({
     },
     textInput: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(12),
+        fontSize: y(12, true),
         width: x(275),
         top: StatusBar.currentHeight ? x(3) : -x(2),
         zIndex: 0,

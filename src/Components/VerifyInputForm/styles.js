@@ -13,6 +13,6 @@ export default StyleSheet.create({
   },
   text: {
     fontFamily: 'Gilroy-Medium',
-    fontSize: y(15),
+    fontSize: y(15, true),
   },
 });

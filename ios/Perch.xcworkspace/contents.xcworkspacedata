@@ -7,4 +7,7 @@
    <FileRef
       location = "group:/Users/edokoh9/Documents/perch/Perch/ios/Pods/Pods.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
 </Workspace>

@@ -10,16 +10,16 @@ export default StyleSheet.create({
     },
     title: {
         fontFamily: 'Gilroy-Bold',
-        fontSize: y(17),
+        fontSize: y(17, true),
         width: x(343),
     },
     subTitle: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(14),
+        fontSize: y(14, true),
         width: x(343),
     },
     box: {
-        width: x(dimensionAssert() ? 180 : 190),
+        width: x(dimensionAssert() ? 170 : 180),
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -27,16 +27,16 @@ export default StyleSheet.create({
     textInput: {
         fontFamily: 'Gilroy-Medium',
         borderRadius: 10,
-        fontSize: y(20),
+        fontSize: y(20, true),
         borderWidth: 1,
         borderColor: 'rgba(64, 61, 61, 0.5)',
         paddingVertical: x(7),
         paddingLeft: x(15),
-        width: x(80),
-        color:'#000000'
+        width: x(70),
+        color: '#000000'
     },
     kmText: {
-        fontSize: y(20),
+        fontSize: y(20, true),
         fontFamily: 'Gilroy-Medium',
     },
     subContainer: {
@@ -63,13 +63,20 @@ export default StyleSheet.create({
     },
     text: {
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(15),
+        fontSize: y(15, true),
     },
     visa: {
         width: x(35),
         height: y(30),
         position: 'absolute',
         top: -x(dimensionAssert() ? 4 : 7)
+    },
+    googlePayLogo: {
+        width: x(55),
+        height: y(40),
+        position: 'absolute',
+        top: -x(dimensionAssert() ? 9 : 12),
+        left: -7,
     },
     button: {
         marginTop: y(25),
@@ -81,8 +88,8 @@ export default StyleSheet.create({
         marginTop: y(20),
         color: '#4DB748',
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(20),
-        marginBottom: y(5),
+        fontSize: y(25, true),
+        marginBottom: y(25),
     },
     loading: {
         position: 'absolute',
@@ -116,7 +123,7 @@ export default StyleSheet.create({
     },
     conclusion: {
         fontFamily: 'Gilroy-Medium',
-        fontSize: y(16),
+        fontSize: y(16, true),
         marginTop: y(20),
         textAlign: 'center',
     },

@@ -14,7 +14,7 @@ export default StyleSheet.create({
   text: {
     fontFamily: 'Gilroy-Bold',
     color: '#FFFFFF',
-    fontSize: y(15)
+    fontSize: y(15, true)
   }
 });
 

@@ -332,8 +332,8 @@ export class OfflineNotice extends React.Component {
     return (
       <Animated.View style={[{ width: width, alignItems: 'center', position: 'absolute', zIndex: 10, elevation: 10 }, this.position.getLayout()]}>
         <View style={{ height: y(100), borderRadius: 10, width: x(313), backgroundColor: RED, justifyContent: 'space-around', alignItems: 'center', paddingVertical: y(20) }}>
-          <Text style={{ fontFamily: 'Gilroy-ExtraBold', fontSize: y(18), color: WHITE }}>There is no internet connection</Text>
-          <Text style={{ fontFamily: 'Gilroy-SemiBold', fontSize: y(14), color: WHITE }}>Your device is currently offline</Text>
+          <Text style={{ fontFamily: 'Gilroy-ExtraBold', fontSize: y(18, true), color: WHITE }}>There is no internet connection</Text>
+          <Text style={{ fontFamily: 'Gilroy-SemiBold', fontSize: y(14, true), color: WHITE }}>Your device is currently offline</Text>
         </View>
       </Animated.View>
     );
@@ -1234,31 +1234,46 @@ export function storeCard(userID, cardObject) {
       Alert.alert('Error', error.message);
     });
 }
-export function chargeCustomer(toSend, dataToSend, historyData) {
+export function chargeCustomer(toSend, dataToSend, historyData, usedPerchKms) {
   this.setState({ loading: true }, () => {
     axios.post(`https://us-central1-perch-01.cloudfunctions.net/chargeCustomer`, toSend)
       .then(result => {
         const { status, client_secret, id } = result.data;
         historyData.paymentIntentId = id;
         if (status == 'succeeded') {
-          if (this.state.now)
-            carpoolRequestHandler.call(this, dataToSend, historyData);
-          else
-            scheduledCarpoolRequestHandler.call(this, dataToSend, historyData);
+          if (usedPerchKms) {
+            perchKilometerPayment.call(this, {
+              userID: this.state.userID,
+              usedPerchKms: usedPerchKms,
+            }, dataToSend, historyData)
+          } else {
+            if (this.state.now)
+              carpoolRequestHandler.call(this, dataToSend, historyData);
+            else
+              scheduledCarpoolRequestHandler.call(this, dataToSend, historyData);
+          }
+
         }
         else if (status == 'requires_action') {
           stripe.authenticatePaymentIntent({
             clientSecret: client_secret
           }).then(data => {
             if (data.status == 'requires_confirmation') {
-              axios.post(`https://us-central1-perch-01.cloudfunctions.net/confirmStripePayment`, { paymentntentId: data.paymentIntentId, cardId: data.paymentMethodId })
+              axios.post(`https://us-central1-perch-01.cloudfunctions.net/confirmStripePayment`, { paymentIntentId: data.paymentIntentId, cardId: data.paymentMethodId })
                 .then((result_) => {
                   const status_ = result_.data.status;
                   if (status_ == 'succeeded') {
-                    if (this.state.now)
-                      carpoolRequestHandler.call(this, dataToSend, historyData);
-                    else
-                      scheduledCarpoolRequestHandler.call(this, dataToSend, historyData);
+                    if (usedPerchKms) {
+                      perchKilometerPayment.call(this, {
+                        userID: this.state.userID,
+                        usedPerchKms: usedPerchKms,
+                      }, dataToSend, historyData)
+                    } else {
+                      if (this.state.now)
+                        carpoolRequestHandler.call(this, dataToSend, historyData);
+                      else
+                        scheduledCarpoolRequestHandler.call(this, dataToSend, historyData);
+                    }
                   }
                 })
                 .catch(error => {
@@ -1291,6 +1306,97 @@ export function chargeCustomer(toSend, dataToSend, historyData) {
             onPress: () => { this.props.navigation.goBack() }
           }])
       });
+  });
+};
+
+export function buyKilometers(toSend) {
+  this.setState({ loading: true }, () => {
+    axios.post(`https://us-central1-perch-01.cloudfunctions.net/buyPerchKilometers`, { ...toSend, status: 'initial' })
+      .then(result => {
+        const { status, client_secret, id } = result.data;
+        toSend.paymentIntentId = id;
+        toSend.status = 'confirm_payment';
+
+        if (status == 'succeeded') {
+          this.setState({ paymentCompleted: true })
+        }
+        else if (status == 'requires_action') {
+          stripe.authenticatePaymentIntent({
+            clientSecret: client_secret
+          }).then(data => {
+            if (data.status == 'requires_confirmation') {
+              axios.post(`https://us-central1-perch-01.cloudfunctions.net/buyPerchKilometers`, { ...toSend, paymentIntentId: id, status: 'confirm_payment' })
+                .then((result_) => {
+                  const status_ = result_.data.status;
+                  if (status_ == 'succeeded') {
+                    this.setState({ paymentCompleted: true })
+                  }
+                })
+                .catch(error => {
+                  this.setState({ loading: false }, () => {
+                    Alert.alert(
+                      'Payment Error',
+                      `Error : ${error.message}`)
+                  });
+                })
+            }
+          }).catch(error => {
+            this.setState({ loading: false }, () => {
+              Alert.alert(
+                'Payment Error',
+                `Error : ${error.message}`)
+            });
+          })
+        }
+      })
+      .catch(error => {
+        this.setState({ loading: false }, () => {
+          Alert.alert(
+            'Payment Error',
+            `Error : ${error.message}`)
+        });
+      });
+  });
+};
+
+export function perchKilometerDifference(perchKms, totalKms, rate) {
+  if (perchKms >= totalKms) {
+    const remainingPerchKms = perchKms - totalKms;
+    return ({
+      remainingPerchKms: remainingPerchKms,
+      remainingTotalKms: 0,
+      usedPerchKms: totalKms,
+      remainingCost: 0,
+    })
+  } else {
+    const remainingTotalKms = totalKms - perchKms + (totalKms - perchKms < 1.5 && totalKms - perchKms > 0 ? 1.5 - (totalKms - perchKms) : 0);
+
+    return ({
+      remainingPerchKms: 0 + (totalKms - perchKms < 1.5 && totalKms - perchKms > 0 ? 1.5 - (totalKms - perchKms) : 0),
+      remainingTotalKms: remainingTotalKms,
+      usedPerchKms: perchKms - (totalKms - perchKms < 1.5 && totalKms - perchKms > 0 ? 1.5 - (totalKms - perchKms) : 0),
+      remainingCost: (remainingTotalKms * rate)
+    })
+  }
+};
+
+export function perchKilometerPayment(toSend, dataToSend, historyData) {
+  this.setState({ loading: true }, () => {
+    axios.post(`https://us-central1-perch-01.cloudfunctions.net/chargeCustomerPerchKms`, toSend)
+      .then((result) => {//----PAYMENT IS COMPLETE, SEND PROCESS FOR DRIVER TO ACCESS----//
+        if (this.state.now)
+          carpoolRequestHandler.call(this, dataToSend, { ...historyData, perchKms: { amount: toSend.usedPerchKms, rate: result.data.rate } });
+        else
+          scheduledCarpoolRequestHandler.call(this, dataToSend, { ...historyData, perchKms: { amount: toSend.usedPerchKms, rate: result.data.rate } });
+      })
+      .catch(error => {
+        Alert.alert('Perch Kilometer error', `Error: ${error.message}. Please contact us for further assistance and refunds`, [
+          {
+            text: 'Ok',
+            onPress: () => { this.props.navigation.goBack() }
+          }
+        ])
+      })
   });
 };
 
@@ -1437,11 +1543,14 @@ export function dimensionAssert() {
 export function x(data) {
   return (data / 375) * width;
 };
-export function y(data) {
+export function y(data, isFontSize) {
   // if (height < 800)
   //   return ((data / 812) * height) + 3;
   // else
-  return ((data / 812) * height) + 3;
+  if (isFontSize && height >= 812) {
+    return (data + 3);
+  } else
+    return ((data / 812) * height) + 3;
 };
 export const CustomLayoutLinear = {
   duration: 200,

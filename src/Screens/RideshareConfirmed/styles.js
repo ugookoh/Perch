@@ -101,14 +101,14 @@ export default StyleSheet.create({
         top: dimensionAssert() ? y(30) : y(StatusBar.currentHeight ? 30 : 36),
         left: x(133),
         fontFamily: 'Gilroy-Bold',
-        fontSize: y(20)
+        fontSize: y(20, true)
     },
     driverTripNumber: {
         position: 'absolute',
         top: dimensionAssert() ? y(75) : y(71),
         left: x(133),
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(15),
+        fontSize: y(15, true),
         color: '#ACB1C0'
     },
     star: {
@@ -129,7 +129,7 @@ export default StyleSheet.create({
         right: 0,
     },
     rideConfirmedText: {
-        fontSize: y(13),
+        fontSize: y(13, true),
         fontFamily: 'Gilroy-ExtraBold',
         color: '#FFFFFF',
     },
@@ -137,7 +137,7 @@ export default StyleSheet.create({
         //position: 'absolute',
         //left: x(17),
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(17),
+        fontSize: y(17, true),
         width: x(240),
     },
     bubble: {
@@ -193,7 +193,7 @@ export default StyleSheet.create({
     },
     cardNumber: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(15),
+        fontSize: y(15, true),
         //bottom:-x(15)
     },
     visa: {
@@ -205,7 +205,7 @@ export default StyleSheet.create({
     cancel: {
         color: '#FF001D',
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(15),
+        fontSize: y(15, true),
 
     },
     selection: {
@@ -216,7 +216,7 @@ export default StyleSheet.create({
     },
     adText: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(15),
+        fontSize: y(15, true),
         width: x(313)
     },
     share: {
@@ -238,7 +238,7 @@ export default StyleSheet.create({
     shareCodeText: {
         fontFamily: 'Gilroy-Bold',
         color: '#4DB748',
-        fontSize: y(15),
+        fontSize: y(15, true),
     },
     send: {
         backgroundColor: '#4DB748',
@@ -255,7 +255,7 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     switchText: {
-        fontSize: y(16),
+        fontSize: y(16, true),
         fontFamily: 'Gilroy-Regular',
     },
     ratingContainer: {
@@ -271,40 +271,40 @@ export default StyleSheet.create({
     ratingCancel: {
         width: x(313),
         flexDirection: 'row-reverse',
-        marginTop:y(50),
+        marginTop: y(50),
     },
     ratingPhoto: {
         //borderColor:`#4DB748`,
-        borderWidth:3,
-        width:x(200),
-        height:x(200),
-        borderRadius:x(200)
+        borderWidth: 3,
+        width: x(200),
+        height: x(200),
+        borderRadius: x(200)
     },
-    ratingName:{
-        fontFamily:'Gilroy-SemiBold',
-        fontSize:y(23),
-        textAlign:'center',
-        marginTop:y(18),
+    ratingName: {
+        fontFamily: 'Gilroy-SemiBold',
+        fontSize: y(23, true),
+        textAlign: 'center',
+        marginTop: y(18),
     },
-    ratingQuestion:{
-        fontFamily:'Gilroy-Regular',
-        fontSize:y(16),
-        textAlign:'center',
+    ratingQuestion: {
+        fontFamily: 'Gilroy-Regular',
+        fontSize: y(16, true),
+        textAlign: 'center',
     },
-    star:{
-        width:y(250),
-        marginTop:y(20),
+    star: {
+        width: y(250),
+        marginTop: y(20),
     },
-    button:{
-        height:y(48),
-        width:x(313),
-        marginTop:y(50),
-        zIndex:1,
+    button: {
+        height: y(48),
+        width: x(313),
+        marginTop: y(50),
+        zIndex: 1,
     },
-    carInCity:{
-        position:'absolute',
-        bottom:-x(100),
-        width:x(340),
-        height:y(400),
+    carInCity: {
+        position: 'absolute',
+        bottom: -x(100),
+        width: x(340),
+        height: y(400),
     },
 });

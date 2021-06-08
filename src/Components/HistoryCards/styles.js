@@ -43,7 +43,7 @@ export default StyleSheet.create({
   firstLayer: {
     fontFamily: 'Gilroy-Medium',
     color: '#000000',
-    fontSize: y(dimensionAssert() ? 11 : 12),
+    fontSize: y(dimensionAssert() ? 11 : 12, true),
     marginLeft: x(5),
     width: x(298),
     bottom: x(dimensionAssert() ? 2 : 0),
@@ -77,21 +77,21 @@ export default StyleSheet.create({
   },
   distance: {
     fontFamily: 'Gilroy-Medium',
-    fontSize: y(16),
+    fontSize: y(16, true),
     top: y(4)
   },
   cost: {
     fontFamily: 'Gilroy-ExtraBold',
-    fontSize: y(20),
+    fontSize: y(20, true),
     color: '#4DB748'
   },
   description: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(17),
+    fontSize: y(17, true),
   },
   date: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     color: '#ACB1C0'
   },
 });

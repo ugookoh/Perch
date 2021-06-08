@@ -29,6 +29,7 @@ export class CarpoolCard extends React.Component {
     render() {
         if (this.props.data.data) {
             const data = JSON.parse(this.props.data.data);
+            const mainData=this.props.data;
             let tripBreakdown = <></>;
             const WIDTH_ = x(313);
             let totalDistance = 0;
@@ -107,7 +108,7 @@ export class CarpoolCard extends React.Component {
                             <View style={[styles.divider, {}]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
                             <View style={[styles.spaceView, { bottom: y(3), marginTop: y(dimensionAssert() ? 27 : 25), marginBottom: y(6) }]}>
                                 <Text style={styles.distance}>{totalDistance}</Text>
-                                <Text style={styles.cost}>$ 4.99</Text>
+                                <Text style={styles.cost}>${mainData.cost ? mainData.cost.total : '--'}</Text>
                             </View>
                         </>
                     </TouchableOpacity>
@@ -170,7 +171,7 @@ export class RideShareCard extends React.Component {
                                 <></>}
 
                             <View style={[{ width: x(313), marginTop: y(6) }]}>
-                                <Text style={[styles.date, { color: BLACK, }]}>{car} <Text style={[styles.date, { fontSize: y(dimensionAssert() ? 10 : 12), color: BLACK }]}>{this.props.data.carDetails ? this.props.data.carDetails.plateNumber : ''}</Text></Text>
+                                <Text style={[styles.date, { color: BLACK, }]}>{car} <Text style={[styles.date, { fontSize: y(dimensionAssert() ? 10 : 12, true), color: BLACK }]}>{this.props.data.carDetails ? this.props.data.carDetails.plateNumber : ''}</Text></Text>
                                 <View style={{ flexDirection: 'row', top: y(dimensionAssert() ? -1 : 4) }}>
                                     <StarRating
                                         disabled={true}
@@ -180,7 +181,7 @@ export class RideShareCard extends React.Component {
                                         emptyStarColor={GOLD}
                                         starSize={y(13)}
                                     />
-                                    <Text style={[styles.date, { fontSize: y(12), marginLeft: x(5) }]}>{this.props.date}</Text>
+                                    <Text style={[styles.date, { fontSize: y(12, true), marginLeft: x(5) }]}>{this.props.date}</Text>
                                 </View>
                             </View>
 

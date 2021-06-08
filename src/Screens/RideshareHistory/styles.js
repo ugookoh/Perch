@@ -114,7 +114,7 @@ export default StyleSheet.create({
     elevation: 5,
     borderRadius: 10,
     marginBottom: 20,
-    alignItems:'center',
+    alignItems: 'center',
   },
   background: {
     backgroundColor: '#FFFFFF',
@@ -127,7 +127,7 @@ export default StyleSheet.create({
     marginTop: x(10),
     width: x(313),
     flexDirection: 'row',
-    alignItems:'center'
+    alignItems: 'center'
 
   },
   profileFrame: {
@@ -138,11 +138,11 @@ export default StyleSheet.create({
   },
   driverName: {
     fontFamily: 'Gilroy-Bold',
-    fontSize: y(20)
+    fontSize: y(20, true)
   },
   driverTripNumber: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     color: '#ACB1C0'
   },
   star: {
@@ -151,13 +151,13 @@ export default StyleSheet.create({
   tripTitle: {
     fontFamily: 'Gilroy-ExtraBold',
     color: '#000000',
-    fontSize: y(20),
+    fontSize: y(20, true),
     zIndex: 2,
   },
   firstLayer: {
     fontFamily: 'Gilroy-Medium',
     color: '#000000',
-    fontSize: y(15),
+    fontSize: y(15, true),
     zIndex: 2,
   },
   divider: {
@@ -170,7 +170,7 @@ export default StyleSheet.create({
   total: {
     fontFamily: 'Gilroy-ExtraBold',
     color: '#000000',
-    fontSize: y(22),
+    fontSize: y(22, true),
     zIndex: 2,
     color: '#4DB748'
   },
@@ -181,7 +181,7 @@ export default StyleSheet.create({
   },
   cardNumber: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     bottom: -x(15)
   },
   visa: {

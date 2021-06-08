@@ -85,7 +85,7 @@ export default StyleSheet.create({
     right: x(23.4)
   },
   LtoD_Divider: {
-    left: x(dimensionAssert()? 20:21.5),
+    left: x(dimensionAssert() ? 20 : 21.5),
     top: y(dimensionAssert() ? 72 : 70),
     position: 'absolute'
   },
@@ -148,14 +148,14 @@ export default StyleSheet.create({
   tripTitle: {
     fontFamily: 'Gilroy-ExtraBold',
     color: '#000000',
-    fontSize: y(20),
+    fontSize: y(20, true),
     zIndex: 2,
   },
   firstLayer: {
     fontFamily: 'Gilroy-Medium',
     color: '#000000',
 
-    fontSize: y(15),
+    fontSize: y(15, true),
     zIndex: 2,
   },
   divider: {
@@ -168,7 +168,7 @@ export default StyleSheet.create({
   total: {
     fontFamily: 'Gilroy-ExtraBold',
     color: '#000000',
-    fontSize: y(22),
+    fontSize: y(22, true),
     zIndex: 2,
     color: '#4DB748'
   },
@@ -178,19 +178,33 @@ export default StyleSheet.create({
   },
   cardNumber: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     bottom: -x(15)
   },
   visa: {
     height: y(33.13),
     width: x(42.2),
-    bottom: -x(8),
-    left: -x(12),
+    bottom: -x(6),
+    left: -x(5),
   },
   visa_: {
+    height: y(30.13),
+    width: x(21.2),
+    bottom: -x(7),
+    //left: -x(15),
+    marginRight: x(10),
+  },
+  applePay: {
     height: y(33.13),
-    width: x(25.2),
-    bottom: -x(8),
-    left: -x(5),
+    width: x(35.2),
+    bottom: -x(7),
+    marginRight: x(10),
+  },
+  googlePay: {
+    height: y(30.13),
+    width: x(48.2),
+    bottom: -x(7),
+    marginLeft:-x(7),
+    marginRight:x(2),
   },
 });

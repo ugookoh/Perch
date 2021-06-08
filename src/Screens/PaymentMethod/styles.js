@@ -32,7 +32,7 @@ export default StyleSheet.create({
         },
         shadowOpacity: 0.19,
         shadowRadius: 4.65,
-        elevation:3,
+        elevation: 3,
     },
     icon: {
         height: x(23),
@@ -46,7 +46,7 @@ export default StyleSheet.create({
     },
     boxType: {
         fontFamily: 'Gilroy-Medium',
-        fontSize: y(15),
+        fontSize: y(15, true),
         position: 'absolute',
         left: x(63),
     },

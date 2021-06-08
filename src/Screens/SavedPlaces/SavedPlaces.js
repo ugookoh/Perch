@@ -84,7 +84,7 @@ export default class SavedPlaces extends React.Component {
                         <Fontisto name={'map-marker-alt'} color={GREEN} size={y(20)} style={styles.icon} />
                         <View style={styles.predictionView_}>
                             <Text style={styles.predictionText}>{value.mainText}</Text>
-                            <Text style={[styles.predictionText, { fontSize: y(12), marginTop: x(1) }]}>{value.description}</Text>
+                            <Text style={[styles.predictionText, { fontSize: y(12, true), marginTop: x(1) }]}>{value.description}</Text>
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -97,7 +97,7 @@ export default class SavedPlaces extends React.Component {
                 onPress={() => { Keyboard.dismiss() }}
             >
                 <View style={styles.container}>
-                     <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                    <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                     <Header name={'Saved Places'} scrollY={this.state.scrollY} onPress={() => {
                         this.props.route.params.onReturn();
                         this.props.navigation.goBack();

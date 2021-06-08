@@ -17,11 +17,11 @@ export default StyleSheet.create({
     },
     text: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(21),
+        fontSize: y(21, true),
     },
     delete: {
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(21),
+        fontSize: y(21, true),
         color: '#FF0000',
     },
 

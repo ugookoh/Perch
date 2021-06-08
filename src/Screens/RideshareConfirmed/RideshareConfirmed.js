@@ -304,7 +304,7 @@ export default class RideshareConfirmed extends React.Component {
 
         return (
             <View style={styles.container}>
-                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                 <StatusBar backgroundColor={'#000000'} barStyle={Platform.OS == 'android' ? 'light-content' : 'dark-content'} />
                 <TouchableOpacity style={[styles.zoomIcon, { right: x(10), top: y(dimensionAssert() ? 300 : 330) }]}
                     onPress={() => {
@@ -451,8 +451,8 @@ export default class RideshareConfirmed extends React.Component {
                         <View style={styles.bubble}>
                             {this.state.eta ?
                                 <>
-                                    <Text style={[styles.time, { fontSize: y(25) }]}>{this.state.eta}</Text>
-                                    <Text style={[styles.time, { fontSize: y(17) }]}>mins</Text>
+                                    <Text style={[styles.time, { fontSize: y(25, true) }]}>{this.state.eta}</Text>
+                                    <Text style={[styles.time, { fontSize: y(17, true) }]}>mins</Text>
                                 </> :
                                 <Icon_Dash color={WHITE} size={y(50)} name={'dash'} />}
                         </View>
@@ -506,20 +506,20 @@ export default class RideshareConfirmed extends React.Component {
                     <View style={[{ marginVertical: y(18), opacity: 0.25 }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
 
                     <View style={{ width: x(313), marginBottom: y(3) }}>
-                        <Text style={{ fontSize: y(17), fontFamily: 'Gilroy-SemiBold', marginVertical: y(3) }}>Destination</Text>
+                        <Text style={{ fontSize: y(17, true), fontFamily: 'Gilroy-SemiBold', marginVertical: y(3) }}>Destination</Text>
                     </View>
                     <View style={styles.address}>
                         <Icon_ name={'map-pin'} size={y(25)} style={{ opacity: 0.5, }} />
                         <View style={{ marginLeft: x(5), }}>
-                            <Text style={[styles.addressText, { fontSize: y(15), width: x(283), }]}>{this.state.destination.description}</Text>
-                            <Text style={[styles.addressText, { fontSize: y(13), marginTop: y(3) }]}>Arrive at <Text style={[styles.addressText, { fontWeight: '500', color: GREEN }]}>{this.state.tripDuration ? this.state.tripDuration : ''}</Text></Text>
+                            <Text style={[styles.addressText, { fontSize: y(15, true), width: x(283), }]}>{this.state.destination.description}</Text>
+                            <Text style={[styles.addressText, { fontSize: y(13, true), marginTop: y(3) }]}>Arrive at <Text style={[styles.addressText, { fontWeight: '500', color: GREEN }]}>{this.state.tripDuration ? this.state.tripDuration : ''}</Text></Text>
                         </View>
                     </View>
 
                     <View style={[{ marginVertical: y(18), opacity: 0.25 }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
 
                     <View style={{ width: x(313), marginBottom: y(3) }}>
-                        <Text style={{ fontSize: y(17), fontFamily: 'Gilroy-SemiBold', }}>Payment</Text>
+                        <Text style={{ fontSize: y(17, true), fontFamily: 'Gilroy-SemiBold', }}>Payment</Text>
                     </View>
                     <View style={styles.payments}>
 

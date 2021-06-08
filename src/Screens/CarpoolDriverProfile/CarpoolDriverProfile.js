@@ -38,7 +38,7 @@ export default class CarpoolDriverProfile extends React.Component {
                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                 <Header scrollY={this.state.scrollY} name={'Driver Profile'} onPress={this.props.navigation.goBack} />
                 <View style={styles.container1}>
-                    <View style={[styles.profilePic, this.state.url ? { borderWidth: 0 } : {borderWidth: 0}]}>
+                    <View style={[styles.profilePic, this.state.url ? { borderWidth: 0 } : { borderWidth: 0 }]}>
                         {
                             this.state.url ?
                                 <Image
@@ -53,8 +53,8 @@ export default class CarpoolDriverProfile extends React.Component {
                         }
                     </View>
                     <View style={styles.profileDetails}>
-                        <Text style={[styles.mainText, { fontSize: y(25) }]}>{this.state.driver.name}</Text>
-                        <Text style={[styles.mainText, { fontSize: y(15), }]}>{`${Number(this.state.driver.history.rating).toFixed(1)} • ${this.state.driver.history.tripNumber} trips`}</Text>
+                        <Text style={[styles.mainText, { fontSize: y(25, true) }]}>{this.state.driver.name}</Text>
+                        <Text style={[styles.mainText, { fontSize: y(15, true), }]}>{`${Number(this.state.driver.history.rating).toFixed(1)} • ${this.state.driver.history.tripNumber} trips`}</Text>
                         <View style={styles.star_joined}>
                             <View style={styles.starContainer}>
                                 <StarRating
@@ -76,7 +76,7 @@ export default class CarpoolDriverProfile extends React.Component {
                     <Text style={[styles.carText, { color: GREEN }]}>{this.state.driver.carDetails.plateNumber}</Text>
                 </View>
                 <View style={styles.security_container}>
-                    <Text style={[styles.carText, { fontSize: y(18), marginBottom: y(4) }]}>Important Security Tips</Text>
+                    <Text style={[styles.carText, { fontSize: y(18, true), marginBottom: y(4) }]}>Important Security Tips</Text>
                     <View style={{ marginBottom: y(12) }}><Divider height={0.5} width={x(349)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
                     <View style={styles.bulletView}>
                         <Text style={styles.bullet}>•</Text>

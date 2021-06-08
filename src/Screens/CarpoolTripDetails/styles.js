@@ -23,7 +23,7 @@ export default StyleSheet.create({
     height: y(140),
     borderRadius: 5,
     backgroundColor: '#ffffff',
-    flexDirection:'column',
+    flexDirection: 'column',
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -33,12 +33,12 @@ export default StyleSheet.create({
     shadowRadius: 4.65,
 
     elevation: 2,
-    padding:5
+    padding: 5
   },
-  cancelLoadingText:{
-    fontFamily:'Gilroy-Medium',
-    fontSize:y(15),
-    textAlign:'center',
+  cancelLoadingText: {
+    fontFamily: 'Gilroy-Medium',
+    fontSize: y(15, true),
+    textAlign: 'center',
 
 
   },
@@ -74,11 +74,11 @@ export default StyleSheet.create({
   },
   driverTitle: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(18),
+    fontSize: y(18, true),
   },
   driverName: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     width: x(220)
   },
   driverRow: {
@@ -177,7 +177,7 @@ export default StyleSheet.create({
     elevation: 11,
   },
   bubbleText: {
-    fontSize: y(14),
+    fontSize: y(14, true),
     color: '#FFFFFF',
     fontFamily: 'Gilroy-ExtraBold',
   },
@@ -185,7 +185,7 @@ export default StyleSheet.create({
     fontFamily: 'Gilroy-ExtraBold',
     color: '#000000',
     position: 'absolute',
-    fontSize: y(20),
+    fontSize: y(20, true),
     zIndex: 2,
   },
   textContainer: {
@@ -196,7 +196,7 @@ export default StyleSheet.create({
   firstLayer: {
     fontFamily: 'Gilroy-Medium',
     color: '#000000',
-    fontSize: y(15),
+    fontSize: y(15, true),
     zIndex: 2,
   },
   divider: {
@@ -209,7 +209,7 @@ export default StyleSheet.create({
   total: {
     fontFamily: 'Gilroy-ExtraBold',
     color: '#000000',
-    fontSize: y(18),
+    fontSize: y(18, true),
     zIndex: 2,
   },
   payment: {
@@ -223,7 +223,7 @@ export default StyleSheet.create({
   },
   cardNumber: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     bottom: -x(15)
   },
   visa: {
@@ -240,12 +240,12 @@ export default StyleSheet.create({
   },
   paymentText: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
   },
   change: {
 
     fontFamily: 'Gilroy-ExtraBold',
-    fontSize: y(15),
+    fontSize: y(15, true),
     color: '#080EB2',
   },
   icon: {
@@ -311,7 +311,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   switchText: {
-    fontSize: y(16),
+    fontSize: y(16, true),
     fontFamily: 'Gilroy-Regular',
   },
   cancelAlertContainer: {
@@ -356,7 +356,7 @@ export default StyleSheet.create({
   },
   adText: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(15),
+    fontSize: y(15, true),
     width: x(313)
   },
   share: {
@@ -378,7 +378,7 @@ export default StyleSheet.create({
   shareCodeText: {
     fontFamily: 'Gilroy-Bold',
     color: '#4DB748',
-    fontSize: y(15),
+    fontSize: y(15, true),
   },
   send: {
     backgroundColor: '#4DB748',
@@ -405,7 +405,7 @@ export default StyleSheet.create({
   },
   ratingTitle: {
     fontFamily: 'Gilroy-Bold',
-    fontSize: y(20),
+    fontSize: y(20, true),
     width: x(313)
   },
 
@@ -438,7 +438,7 @@ export default StyleSheet.create({
   },
   ratingDriverName: {
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(16),
+    fontSize: y(16, true),
   },
   cancelIcon: {
     width: "100%",
@@ -460,13 +460,13 @@ export default StyleSheet.create({
   },
   phoneText: {
     fontFamily: 'Gilroy-Regular',
-    fontSize: y(13),
+    fontSize: y(13, true),
     maxWidth: x(70),
   },
   phoneText_: {
     marginTop: y(5),
     fontFamily: 'Gilroy-SemiBold',
-    fontSize: y(13),
+    fontSize: y(13, true),
 
   },
   startTrip: {

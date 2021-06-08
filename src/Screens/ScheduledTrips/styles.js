@@ -9,7 +9,7 @@ export default StyleSheet.create({
     },
     _title: {
         fontFamily: 'Gilroy-ExtraBold',
-        fontSize: y(20),
+        fontSize: y(20, true),
         color: 'rgba(77, 183, 72, 0.7)',
         width: x(343),
     },
@@ -37,7 +37,7 @@ export default StyleSheet.create({
         top: y(5),
         textAlign: 'center',
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(14),
+        fontSize: y(14, true),
         color: '#4DB748'
     },
 });

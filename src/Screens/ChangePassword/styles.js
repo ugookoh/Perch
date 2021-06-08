@@ -21,7 +21,7 @@ export default StyleSheet.create({
     },
     textInput: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(15),
+        fontSize: y(15, true),
         color: '#000000',
         height: y(48),
         width: x(322),
@@ -33,19 +33,19 @@ export default StyleSheet.create({
     },
     fP: {
         fontFamily: 'Gilroy-Medium',
-        fontSize: y(15),
+        fontSize: y(15, true),
         bottom: x(-3)
     },
     vE: {
         fontFamily: 'Gilroy-ExtraBold',
-        fontSize: y(15),
+        fontSize: y(15, true),
         textDecorationLine: 'underline',
         color: GREEN,
         marginLeft: x(5),
     },
     error: {
         fontFamily: 'Gilroy-SemiBold',
-        fontSize: y(15),
+        fontSize: y(15, true),
         color: RED,
         textAlign: 'center',
 

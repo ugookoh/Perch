@@ -9,8 +9,8 @@ export default StyleSheet.create({
     },
     textInput: {
         fontFamily: 'Gilroy-Regular',
-        fontSize: y(15),
+        fontSize: y(15, true),
         paddingLeft: x(22),
-        color:'#000000',
+        color: '#000000',
     },
 });
