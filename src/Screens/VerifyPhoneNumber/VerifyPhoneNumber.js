@@ -1,12 +1,11 @@
 import React from 'react';
-import styles from './styles';
-import { Text, View, StatusBar, Dimensions, TouchableOpacity, KeyboardAvoidingView, SafeAreaView, Alert, Platform } from 'react-native';
-import { OfflineNotice, x, y, height, width, dimensionAssert, sendVerification } from '../../Functions/Functions';
-import Logo from '../../Images/svgImages/logo';
+import { Alert, SafeAreaView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import Button from '../../Components/Button/Button';
-import VerifyInputForm from '../../Components/VerifyInputForm/VerifyInputForm';
 import OnScreenKeyboard from '../../Components/OnScreenKeyboard/OnScreenKeyboard';
-import database from '@react-native-firebase/database';
+import VerifyInputForm from '../../Components/VerifyInputForm/VerifyInputForm';
+import { OfflineNotice, sendVerification, width, x, y } from '../../Functions/Functions';
+import Logo from '../../Images/svgImages/logo';
+import styles from './styles';
 export default class VerifyPhoneNumber extends React.Component {
     constructor(props) {
         super(props);

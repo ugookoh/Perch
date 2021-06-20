@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './styles';
 import { YellowBox, View, Text, Animated, TextInput, FlatList, Keyboard, StatusBar, Platform, LayoutAnimation, UIManager, Alert } from 'react-native';
-import { OfflineNotice, makeid, Notifications, x, y, height, width, dimensionAssert, CustomLayoutLinear } from '../../Functions/Functions';
+import { OfflineNotice, makeid, Notifications, x, y, height, width, dimensionAssert, CustomLayoutLinear, colors } from '../../Functions/Functions';
 import database from '@react-native-firebase/database';
 import ImagePicker from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
@@ -13,7 +13,6 @@ import StarRating from 'react-native-star-rating';
 import { Message, UserMessage, DayMonthYear } from '../../Components/TextMessages/TextMessages';
 import axios from 'axios';
 import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
-const [GREEN, WHITE, GREY] = ['#4DB748', '#FFFFFF', '#F5F5F5'];
 const BLOCKER_HEIGHT = (dimensionAssert() ? y(65) / 3 : y(189) / 2);
 const DRIVER_PROFILE_HEIGHT_HIDDEN = -y(132);
 
@@ -508,7 +507,7 @@ export default class Chat extends React.Component {
                             />
                             <View style={styles.send}>
                                 <TouchableOpacity onPress={() => { this.sendMessage.call(this) }} >
-                                    <Icon_ name={'paper-plane'} color={GREEN} size={y(30)} />
+                                    <Icon_ name={'paper-plane'} color={colors.GREEN} size={y(30)} />
                                 </TouchableOpacity>
                             </View>
 

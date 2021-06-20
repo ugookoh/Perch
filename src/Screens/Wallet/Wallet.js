@@ -1,20 +1,18 @@
-import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, ScrollView, Platform, StatusBar, Alert, PanResponder, LayoutAnimation, UIManager, Switch } from 'react-native';
-import { OfflineNotice, x, y, height, width, deleteCard, CustomLayoutLinear } from '../../Functions/Functions';
-import Header from '../../Components/Header/Header';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import WalletImage from '../../Images/svgImages/wallet';
-import Logo from '../../Images/svgImages/logo';
-import Visa from '../../Images/svgImages/visa';
-import MasterCard from '../../Images/svgImages/mastercard';
-import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
-import ApplePayLogo from '../../Images/svgImages/applePayLogo';
-import GooglePaylogo from '../../Images/svgImages/googlePayLogo';
-import Button from '../../Components/Button/Button';
-import Divider from '../../Components/Divider/Divider';
 import database from '@react-native-firebase/database';
-const [GREEN, WHITE, GREY, RED] = ['#4DB748', '#FFFFFF', '#918686', '#FF0000'];
+import React from 'react';
+import { Alert, Animated, LayoutAnimation, PanResponder, Platform, Switch, Text, TouchableOpacity, UIManager, View } from 'react-native';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import Button from '../../Components/Button/Button';
+import Header from '../../Components/Header/Header';
+import { CustomLayoutLinear, deleteCard, height, OfflineNotice, x, y } from '../../Functions/Functions';
+import ApplePayLogo from '../../Images/svgImages/applePayLogo';
+import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
+import GooglePaylogo from '../../Images/svgImages/googlePayLogo';
+import Logo from '../../Images/svgImages/logo';
+import MasterCard from '../../Images/svgImages/mastercard';
+import Visa from '../../Images/svgImages/visa';
+import WalletImage from '../../Images/svgImages/wallet';
+import styles from './styles';
 const X_CONSTANT = 0;
 const Y_START = y(20);
 
@@ -191,20 +189,20 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                                     <Text style={[styles.text, { marginLeft: x(40) }]}>•••• •••• •••• {key} - {('0' + this.state.cards[key].card.expMonth).slice(-2)}/{this.state.cards[key].card.expYear}</Text>
                                 </View>
                                 {this.state.toShow != key && !this.state.choice ? <Icon name={'arrow-right'} size={y(12)} /> : <></>}
-                                {this.state.toShow == key && this.state.choice ? <Icon name={'check'} size={y(15)} color={GREEN} /> : <></>}
+                                {this.state.toShow == key && this.state.choice ? <Icon name={'check'} size={y(15)} color={colors.GREEN} /> : <></>}
                             </TouchableOpacity>
                             {this.state.toShow == key && !this.state.choice ?
                                 <View style={styles.optionsContainer}>
-                                    <TouchableOpacity style={[styles.options, { backgroundColor: WHITE }]} onPress={() => {
+                                    <TouchableOpacity style={[styles.options, { backgroundColor: colors.WHITE }]} onPress={() => {
                                         if (!this.state.choice)
                                             this.setState({ toShow: null });
                                     }}>
-                                        <Text style={[styles.text, { color: GREEN }]}>Close</Text>
+                                        <Text style={[styles.text, { color: colors.GREEN }]}>Close</Text>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity style={[styles.options, { backgroundColor: RED }]}
+                                    <TouchableOpacity style={[styles.options, { backgroundColor: colors.RED }]}
                                         onPress={this.deleteCreditCard}>
-                                        <Text style={[styles.text, { color: WHITE }]}>Delete</Text>
+                                        <Text style={[styles.text, { color: colors.WHITE }]}>Delete</Text>
                                     </TouchableOpacity>
                                 </View> :
                                 <></>}
@@ -283,7 +281,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                                     <View style={styles.innerContainer}>
                                         <View style={{ flexDirection: 'row' }}>
                                             <View style={styles.logo}><Logo /></View>
-                                            <Text style={[styles.text, { marginLeft: x(40) }]}>Perch Kilometers - <Text style={{ color: GREEN }}>{this.state.perchKms}km</Text></Text>
+                                            <Text style={[styles.text, { marginLeft: x(40) }]}>Perch Kilometers - <Text style={{ color: colors.GREEN }}>{this.state.perchKms}km</Text></Text>
                                         </View>
                                         {/* {this.state.toShow != key ? <Icon name={'arrow-right'} size={y(12)} /> : <></>} */}
                                         <Switch
@@ -314,7 +312,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                                                 <View style={styles.googlePayLogo}><GooglePaylogo /></View>}
                                             <Text style={[styles.text, { marginLeft: x(45) }]}>{Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}</Text>
                                         </View>
-                                        {this.state.toShow == 'applePay' || this.state.toShow == 'googlePay' ? <Icon name={'check'} size={y(15)} color={GREEN} /> : <></>}
+                                        {this.state.toShow == 'applePay' || this.state.toShow == 'googlePay' ? <Icon name={'check'} size={y(15)} color={colors.GREEN} /> : <></>}
                                     </TouchableOpacity>
                                 </View>
 

@@ -1,12 +1,11 @@
-import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, FlatList, Platform, StatusBar, Alert, PanResponder, LayoutAnimation, UIManager, } from 'react-native';
-import { OfflineNotice, makeid, x, y, width, height, dimensionAssert } from '../../Functions/Functions';
-import Header from '../../Components/Header/Header';
 import database from '@react-native-firebase/database';
+import React from 'react';
+import { Animated, FlatList, Text, View } from 'react-native';
+import { MaterialIndicator } from 'react-native-indicators';
 import Divider from '../../Components/Divider/Divider';
-import { MaterialIndicator } from 'react-native-indicators'
-const [GREEN, WHITE, GREY, RED] = ['#4DB748', '#FFFFFF', '#918686', '#FF0000'];
+import Header from '../../Components/Header/Header';
+import { colors, dimensionAssert, OfflineNotice, x, y } from '../../Functions/Functions';
+import styles from './styles';
 
 export default class CreditHistory extends React.Component {
     constructor(props) {
@@ -28,7 +27,6 @@ export default class CreditHistory extends React.Component {
                 if (key != 'quantity')
                     notifications.push(data[key])
                 this.setState({ results: notifications.sort((a, b) => { return b.timestamp - a.timestamp }) })
-
             }
         })
     };
@@ -64,7 +62,7 @@ export default class CreditHistory extends React.Component {
 
                             /> :
                             <View style={{ flex: 1 }}>
-                                <MaterialIndicator color={GREEN} size={y(70)} style={{ bottom: x(dimensionAssert() ? 50 : 60) }} />
+                                <MaterialIndicator color={colors.GREEN} size={y(70)} style={{ bottom: x(dimensionAssert() ? 50 : 60) }} />
                             </View>}
                     </View>
                 </View>

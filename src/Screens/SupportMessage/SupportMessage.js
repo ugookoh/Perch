@@ -1,8 +1,8 @@
 import React from 'react';
-import styles from './styles';
-import { TouchableWithoutFeedback, Animated, Text, View, TextInput, Dimensions, TouchableOpacity, ScrollView, Keyboard, KeyboardAvoidingView, Button, StatusBar, Platform, Alert } from 'react-native';
-import { OfflineNotice, dateformat, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
+import { Animated, ScrollView, Text, View } from 'react-native';
 import Header from '../../Components/Header/Header';
+import { dateformat, OfflineNotice, width, y } from '../../Functions/Functions';
+import styles from './styles';
 
 export default class SupportMessage extends React.Component {
     constructor(props) {

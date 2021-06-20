@@ -21,10 +21,25 @@ stripe.setOptions({
 
 const GOOGLE_KEY = 'AIzaSyCBmmCb6Lkhbj6LR5eCi2Lz2ocbpyW6kb4';
 const polyline = require('@mapbox/polyline');// for decoding polylines
-const [WHITE, RED, GREEN] = ['#FFFFFF', '#FF0000', '#4DB748'];
 
 export const [height, width] = [Dimensions.get('window').height - (Platform.OS === 'android' ? (Dimensions.get('screen').height == Dimensions.get('window').height ? StatusBar.currentHeight : 0) : 0), Dimensions.get('window').width];
 
+export const colors = {
+  GREEN: "#4DB748",
+  BLUE: "#1970A7",
+  PURPLE: "#A031AF",
+  GREEN_: "rgba(77, 183, 72, 0.3)",
+  BLUE_: "rgba(25, 112, 167, 0.3)",
+  PURPLE_: "rgba(160, 49, 175, 0.3)",
+  GREY: "#403D3D",
+  WHITE: "#FFFFFF",
+  RED: "#FF0000",
+  GOLD: "#FFAA00",
+  GREENMAKER: "#82cd7e",
+  BLUEMAKER: "#64b5e8",
+  PURPLEMAKER: "#cc74d8",
+  GREY_LIGHT: "#FDFCF7",
+};
 //GET TOKEN AND SEND IT TO THE DATABASE ON MAIN
 export function getFirebaseMessagingToken() {
   AsyncStorage.getItem('USER_DETAILS')
@@ -331,9 +346,9 @@ export class OfflineNotice extends React.Component {
   render() {
     return (
       <Animated.View style={[{ width: width, alignItems: 'center', position: 'absolute', zIndex: 10, elevation: 10 }, this.position.getLayout()]}>
-        <View style={{ height: y(100), borderRadius: 10, width: x(313), backgroundColor: RED, justifyContent: 'space-around', alignItems: 'center', paddingVertical: y(20) }}>
-          <Text style={{ fontFamily: 'Gilroy-ExtraBold', fontSize: y(18, true), color: WHITE }}>There is no internet connection</Text>
-          <Text style={{ fontFamily: 'Gilroy-SemiBold', fontSize: y(14, true), color: WHITE }}>Your device is currently offline</Text>
+        <View style={{ height: y(100), borderRadius: 10, width: x(313), backgroundColor: colors.RED, justifyContent: 'space-around', alignItems: 'center', paddingVertical: y(20) }}>
+          <Text style={{ fontFamily: 'Gilroy-ExtraBold', fontSize: y(18, true), color: colors.WHITE }}>There is no internet connection</Text>
+          <Text style={{ fontFamily: 'Gilroy-SemiBold', fontSize: y(14, true), color: colors.WHITE }}>Your device is currently offline</Text>
         </View>
       </Animated.View>
     );
@@ -657,8 +672,9 @@ export function getLocation(mainText, description, id, fieldID, screen) {
           AsyncStorage.getItem('USER_DETAILS')
             .then(result => {
               let userDetails = JSON.parse(result);
-
+              let title = '';
               if (fieldID == 'home') {
+                title = 'homeAddress';
                 userDetails.homeAddress = {
                   latitude: lat,
                   longitude: lng,
@@ -669,6 +685,7 @@ export function getLocation(mainText, description, id, fieldID, screen) {
                 this.setState({ homeAddress: userDetails.homeAddress, home: userDetails.homeAddress.mainText });
               }
               else if (fieldID == 'work') {
+                title = 'workAddress';
                 userDetails.workAddress = {
                   latitude: lat,
                   longitude: lng,
@@ -682,9 +699,19 @@ export function getLocation(mainText, description, id, fieldID, screen) {
               AsyncStorage.setItem('USER_DETAILS', JSON.stringify(userDetails))
                 .catch(error => { console.log(error.message) })
 
-              database().ref(`users/${[userDetails.userID]}`).update({
-                ...userDetails
-              }).catch(error => { console.log(error.message) })
+              if (title != '')
+                axios.post('https://us-central1-perch-01.cloudfunctions.net/updateUserDetails', {
+                  userID: userDetails.userID,
+                  fieldsToUpdate: {
+                    [title]: {
+                      latitude: lat,
+                      longitude: lng,
+                      mainText: mainText,
+                      description: description,
+                      place_id: id,
+                    }
+                  }
+                }).catch(error => { Alert.alert('Error', error.message) })
 
             }).catch(error => { console.log(error.message) })
         })
@@ -1402,7 +1429,30 @@ export function perchKilometerPayment(toSend, dataToSend, historyData) {
 
 export function deleteCard(userID, last4, selected) {
   axios.post(`https://us-central1-perch-01.cloudfunctions.net/deleteStripeCard`, { userID: userID, last4: last4, selected: selected });
-}
+};
+export function calculateZone(aH, bH, aM, bM, oldzone) {
+  let newzone;
+
+  switch (oldzone) {
+    case 'AM': { newzone = 'PM' } break;
+    case 'PM': { newzone = 'AM' } break;
+  };
+
+  if (((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60)) > 12)
+    return newzone;
+  else
+    return oldzone
+};
+export function calculateTime(aH, bH, aM, bM) {
+  const re = ((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60)) > 12 ?
+    ((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60)) - 12 :
+    ((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60));
+
+  return re;
+};
+export function nN(d) {
+  return Number(d);
+};
 //CALCULATE DISTANCE IN METERS
 export function polylineLenght(data) {
   let distance = 0;
@@ -1488,7 +1538,7 @@ export async function openBrowser(URL) {
       // Android Properties
       showTitle: true,
       toolbarColor: 'rgb(64, 64, 64)',
-      secondaryToolbarColor: WHITE,
+      secondaryToolbarColor: colors.WHITE,
       enableUrlBarHiding: true,
       enableDefaultShare: true,
       forceCloseOnRedirection: true,
@@ -1592,5 +1642,14 @@ export function dateformat(time) {
   const d = time.substring(slash2 + 1, slash3);
 
   return `${d}/${Number(m) + 1}/${y}`;
+};
+export function secondsToHms(d) {
+  d = Number(d);
+  var h = Math.floor(d / 3600);
+  var m = Math.floor(d % 3600 / 60);
+  var s = Math.floor(d % 3600 % 60);
+
+
+  return { hours: h, minutes: m };
 };
 export const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

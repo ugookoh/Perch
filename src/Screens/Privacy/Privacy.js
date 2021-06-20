@@ -1,15 +1,12 @@
 import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, Keyboard, TouchableWithoutFeedback, Platform, StatusBar, Linking } from 'react-native';
-import { OfflineNotice, openBrowser, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
+import { Animated, Linking, Platform, Text, TouchableOpacity, View } from 'react-native';
 import AndroidOpenSettings from 'react-native-android-open-settings';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Header from '../../Components/Header/Header';
-import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
-import Woman from '../../Images/svgImages/woman';
 import Divider from '../../Components/Divider/Divider';
-const [GREEN, WHITE, GREY] = ['#4DB748', '#FFFFFF', '#918686'];
-
+import Header from '../../Components/Header/Header';
+import { OfflineNotice, openBrowser, x, y } from '../../Functions/Functions';
+import Woman from '../../Images/svgImages/woman';
+import styles from './styles';
 
 export default class Privacy extends React.Component {
     constructor() {
@@ -22,7 +19,7 @@ export default class Privacy extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                 <Header name={'Privacy'} scrollY={this.state.scrollY} onPress={() => { this.props.navigation.goBack() }} />
 
                 <TouchableOpacity

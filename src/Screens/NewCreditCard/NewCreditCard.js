@@ -1,15 +1,11 @@
 import React from 'react';
-import styles from './styles';
-import axios from 'axios';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, Keyboard, Platform, StatusBar, Alert, PanResponder, LayoutAnimation, UIManager, TouchableWithoutFeedback } from 'react-native';
-import { OfflineNotice, x, y, height, width, storeCard, completePayment } from '../../Functions/Functions';
-import Header from '../../Components/Header/Header';
+import { Alert, Animated, Keyboard, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-import WalletImage from '../../Images/svgImages/wallet';
 import stripe from 'tipsi-stripe';
 import Button from '../../Components/Button/Button';
-import Divider from '../../Components/Divider/Divider';
-const [GREEN, WHITE, GREY, RED] = ['#4DB748', '#FFFFFF', '#918686', '#FF0000'];
+import Header from '../../Components/Header/Header';
+import { OfflineNotice, storeCard, x, y } from '../../Functions/Functions';
+import styles from './styles';
 stripe.setOptions({
     publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
     merchantId: 'merchant.com.perch',

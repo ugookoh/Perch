@@ -1,13 +1,12 @@
-import React from 'react';
-import styles from './styles';
-import { Text, View, StatusBar, Dimensions, TouchableOpacity, KeyboardAvoidingView, SafeAreaView, Keyboard, Platform, Animated, Alert } from 'react-native';
-import { OfflineNotice, signOut, x, y, height, width, sendVerification } from '../../Functions/Functions';
-import Header from '../../Components/Header/Header';
 import axios from 'axios';
+import React from 'react';
+import { Alert, Animated, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import Button from '../../Components/Button/Button';
-import VerifyInputForm from '../../Components/VerifyInputForm/VerifyInputForm';
+import Header from '../../Components/Header/Header';
 import OnScreenKeyboard from '../../Components/OnScreenKeyboard/OnScreenKeyboard';
-
+import VerifyInputForm from '../../Components/VerifyInputForm/VerifyInputForm';
+import { OfflineNotice, sendVerification, width, x, y } from '../../Functions/Functions';
+import styles from './styles';
 
 export default class VerifyDetails extends React.Component {
     constructor(props) {

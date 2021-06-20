@@ -1,14 +1,12 @@
-import React from 'react';
-import styles from './styles';
-import { View, Text, Dimensions, Image, Animated, StatusBar, Platform } from 'react-native';
-import Header from '../../Components/Header/Header';
-import Divider from '../../Components/Divider/Divider';
-import StarRating from 'react-native-star-rating';
-import { OfflineNotice, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
-import storage from '@react-native-firebase/storage';
 import database from '@react-native-firebase/database';
-const [GREEN, WHITE, GOLD] = ['#4DB748', '#FFFFFF', '#FFAA00'];
-
+import storage from '@react-native-firebase/storage';
+import React from 'react';
+import { Animated, Image, Text, View } from 'react-native';
+import StarRating from 'react-native-star-rating';
+import Divider from '../../Components/Divider/Divider';
+import Header from '../../Components/Header/Header';
+import { OfflineNotice, x, y, colors } from '../../Functions/Functions';
+import styles from './styles';
 
 export default class CarpoolDriverProfile extends React.Component {
     constructor(props) {
@@ -61,8 +59,8 @@ export default class CarpoolDriverProfile extends React.Component {
                                     disabled={true}
                                     maxStars={5}
                                     rating={this.state.driver.history.rating}
-                                    fullStarColor={GOLD}
-                                    emptyStarColor={GOLD}
+                                    fullStarColor={colors.GOLD}
+                                    emptyStarColor={colors.GOLD}
                                     starSize={y(16)}
                                 />
                             </View>
@@ -73,7 +71,7 @@ export default class CarpoolDriverProfile extends React.Component {
                 <View style={[styles.divider,]}><Divider height={0.5} width={x(349)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
                 <View style={styles.carDetails}>
                     <Text style={styles.carText}>{`${this.state.driver.carDetails.color} ${this.state.driver.carDetails.year} ${this.state.driver.carDetails.make} ${this.state.driver.carDetails.model}`}</Text>
-                    <Text style={[styles.carText, { color: GREEN }]}>{this.state.driver.carDetails.plateNumber}</Text>
+                    <Text style={[styles.carText, { color: colors.GREEN }]}>{this.state.driver.carDetails.plateNumber}</Text>
                 </View>
                 <View style={styles.security_container}>
                     <Text style={[styles.carText, { fontSize: y(18, true), marginBottom: y(4) }]}>Important Security Tips</Text>

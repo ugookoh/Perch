@@ -1,37 +1,41 @@
-import React from 'react';
-import styles from './styles';
-import {
-    Alert,
-    permissionLocation,
-    isUserLoggedIn,
-    debouncer, getLocation,
-    searchHistoryList, reverseGeocoding,
-    OfflineNotice,
-    makeid, x, y, height, width, dimensionAssert, CustomLayoutLinear,
-    getFirebaseMessagingToken
-} from '../../Functions/Functions';
-import SplashScreen from 'react-native-splash-screen';
-import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
-import { Animated, View, Text, TouchableOpacity, Button, Easing, TouchableWithoutFeedback, Keyboard, TextInput, PanResponder, YellowBox, Platform, StatusBar, LayoutAnimation, UIManager, BackHandler, Dimensions } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
 import AsyncStorage from '@react-native-community/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import database from '@react-native-firebase/database';
-const polyline = require('@mapbox/polyline');// for decoding polylines
-import Menu from '../../Images/svgImages/menu';
-import axios from 'axios';
-import CarpoolIcon from '../../Images/svgImages/carpoolIcon';
-import RideshareIcon from '../../Images/svgImages/rideshareIcon';
+import React from 'react';
+import {
+    Animated,
+    BackHandler, Button, Easing,
+    Keyboard,
+    LayoutAnimation, PanResponder,
+    Platform, StatusBar, Text,
+    TextInput, TouchableOpacity,
+    TouchableWithoutFeedback,
+    UIManager, View,
+    YellowBox
+} from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
-import Pin from '../../Images/svgImages/pin';
-import Divider from '../../Components/Divider/Divider';
-import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Polyline, Polygon } from 'react-native-maps';
+import SplashScreen from 'react-native-splash-screen';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon_ from 'react-native-vector-icons/FontAwesome';
-import Icon__ from 'react-native-vector-icons/MaterialIcons';
-import Drawer from '../../Navigation/DrawerComponent/DrawerComponent';
-const [GREEN, BLUE, PURPLE, GREEN_, BLUE_, PURPLE_, GREY, WHITE, RED] = ['#4DB748', '#1970A7', '#A031AF', 'rgba(77, 183, 72, 0.3)', 'rgba(25, 112, 167, 0.3)', 'rgba(160, 49, 175, 0.3)', '#403D3D', '#FFFFFF', '#FF0000'];
+import Divider from '../../Components/Divider/Divider';
+import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
 import MapStyle from '../../Components/MapStyle/MapStyle.json';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {
+    colors, CustomLayoutLinear, debouncer,
+    dimensionAssert,
+    getFirebaseMessagingToken, getLocation,
+    height, isUserLoggedIn,
+    makeid, OfflineNotice, permissionLocation,
+    reverseGeocoding, searchHistoryList,
+    width, x, y
+} from '../../Functions/Functions';
+import Menu from '../../Images/svgImages/menu';
+import Pin from '../../Images/svgImages/pin';
+import Drawer from '../../Navigation/DrawerComponent/DrawerComponent';
+import styles from './styles';
+const polyline = require('@mapbox/polyline');// for decoding polylines
 
 const X_OUT = 0;
 const X_IN = -x(325);
@@ -579,7 +583,7 @@ export default class Main extends React.Component {
                             });
                         }}
                     >
-                        <Icon_ name={'location-arrow'} size={y(21)} color={GREEN} />
+                        <Icon_ name={'location-arrow'} size={y(21)} color={colors.GREEN} />
                     </TouchableOpacity>
 
 
@@ -709,7 +713,7 @@ export default class Main extends React.Component {
                                             this.props.navigation.navigate('ScheduledTrips', { userDetails: this.state.userDetails })
                                     }
                                 }}>
-                                    <Icon name={'clock'} size={y(19)} style={styles.sIcon} color={GREEN} />
+                                    <Icon name={'clock'} size={y(19)} style={styles.sIcon} color={colors.GREEN} />
                                 </TouchableOpacity> :
                                 <></>
                             }
@@ -813,7 +817,7 @@ export default class Main extends React.Component {
                                     mode={'time'}
                                     is24Hour={false}
                                     display={'spinner'}
-                                    style={{ width: x(320), backgroundColor: GREY, top: y(40) }}
+                                    style={{ width: x(320), backgroundColor: colors.GREY, top: y(40) }}
                                     onChange={(event, date) => {
                                         //this.setState({ getTime: false })
                                         const d = event.nativeEvent.timestamp;
@@ -863,8 +867,7 @@ export default class Main extends React.Component {
             </TouchableWithoutFeedback >
         );
     }
-}
-
+};
 class LowerSection extends React.Component {
     constructor() {
         super();
@@ -975,8 +978,7 @@ class LowerSection extends React.Component {
 
         );
     }
-}
-
+};
 class LocationItem extends React.Component {
     constructor() {
         super();
@@ -1003,7 +1005,6 @@ class LocationItem extends React.Component {
         );
     }
 };
-
 YellowBox.ignoreWarnings([
     'Non-serializable values were found in the navigation state',
     'Cannot update during an existing state transition'

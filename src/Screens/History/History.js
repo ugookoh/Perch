@@ -1,17 +1,14 @@
-import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, FlatList, Button, Platform, StatusBar, ScrollView } from 'react-native';
 import { Picker } from '@react-native-community/picker';
-import Header from '../../Components/Header/Header';
-import Icon from 'react-native-vector-icons/Ionicons';
-import CatcusNoResults from '../../Images/svgImages/cactusNoResults';
-import { MaterialIndicator, } from 'react-native-indicators';
-import { CarpoolCard, RideShareCard } from '../../Components/HistoryCards/HistoryCards';
-import { OfflineNotice, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
 import database from '@react-native-firebase/database';
-
-const [GREEN, WHITE, GREY] = ['#4DB748', '#FFFFFF', '#918686'];
-const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+import React from 'react';
+import { Animated, Button, FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { MaterialIndicator } from 'react-native-indicators';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Header from '../../Components/Header/Header';
+import { CarpoolCard, RideShareCard } from '../../Components/HistoryCards/HistoryCards';
+import { colors, dimensionAssert, monthNames, OfflineNotice, x, y } from '../../Functions/Functions';
+import CatcusNoResults from '../../Images/svgImages/cactusNoResults';
+import styles from './styles';
 
 export default class History extends React.Component {
     constructor(props) {
@@ -218,7 +215,7 @@ export default class History extends React.Component {
                                 </View>
                             :
                             <View>
-                                <MaterialIndicator color={GREEN} size={y(70)} style={{ bottom: x(dimensionAssert() ? 50 : 60) }} />
+                                <MaterialIndicator color={colors.GREEN} size={y(70)} style={{ bottom: x(dimensionAssert() ? 50 : 60) }} />
                             </View>}
                     </View>
                 </View>

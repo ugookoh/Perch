@@ -1,17 +1,23 @@
-import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, Keyboard, TouchableWithoutFeedback, LayoutAnimation, UIManager, Platform, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import Header from '../../Components/Header/Header';
-import Fontisto from 'react-native-vector-icons/Fontisto';
+import React from 'react';
+import {
+    Animated, Keyboard, LayoutAnimation,
+    Platform, Text, TextInput,
+    TouchableOpacity, TouchableWithoutFeedback,
+    UIManager, View
+} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
-import { debouncer, getLocation, OfflineNotice, x, y, height, width, dimensionAssert, CustomLayoutLinear } from '../../Functions/Functions';
-import CarInCity from '../../Images/svgImages/carInCity';
-import WorkChair from '../../Images/svgImages/workChair';
-import Home from '../../Images/svgImages/home';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import Divider from '../../Components/Divider/Divider';
-const [GREEN, WHITE, GREY] = ['#4DB748', '#FFFFFF', '#918686'];
+import Header from '../../Components/Header/Header';
+import {
+    colors, CustomLayoutLinear, debouncer,
+    getLocation, OfflineNotice, x, y
+} from '../../Functions/Functions';
+import CarInCity from '../../Images/svgImages/carInCity';
+import Home from '../../Images/svgImages/home';
+import WorkChair from '../../Images/svgImages/workChair';
+import styles from './styles';
 
 export default class SavedPlaces extends React.Component {
     constructor() {
@@ -81,7 +87,7 @@ export default class SavedPlaces extends React.Component {
                     }
                 }}>
                     <View style={styles.predictionView}>
-                        <Fontisto name={'map-marker-alt'} color={GREEN} size={y(20)} style={styles.icon} />
+                        <Fontisto name={'map-marker-alt'} color={colors.GREEN} size={y(20)} style={styles.icon} />
                         <View style={styles.predictionView_}>
                             <Text style={styles.predictionText}>{value.mainText}</Text>
                             <Text style={[styles.predictionText, { fontSize: y(12, true), marginTop: x(1) }]}>{value.description}</Text>

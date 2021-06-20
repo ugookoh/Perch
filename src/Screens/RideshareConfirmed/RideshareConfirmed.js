@@ -1,36 +1,42 @@
-import React from 'react';
-import styles from './styles';
-import { TouchableWithoutFeedback, View, Text, TouchableOpacity, Animated, Dimensions, PanResponder, Platform, StatusBar, Switch } from 'react-native';
-import { AnimatedPolylineSingleLine } from '../../Components/AnimatedPolyline/AnimatedPolyline';
-import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, } from 'react-native-maps';
-import Button from '../../Components/Button/Button';
 import database from '@react-native-firebase/database';
 import * as turf from '@turf/turf';
-import { DriverProfile } from '../../Components/BreakdownCardsWithCombiners/BreakdownCardsWithCombiners';
-import { etaRideshare, Notifications, rideshareRatingHandler, callNumber, OfflineNotice, x, y, height, width, dimensionAssert, distanceCalculator } from '../../Functions/Functions';
+import React from 'react';
+import {
+    Animated, PanResponder,
+    Platform, StatusBar, Switch,
+    Text, TouchableOpacity, View
+} from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import PushNotification from 'react-native-push-notification';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
-import Geolocation from 'react-native-geolocation-service';
-import MapStyle from '../../Components/MapStyle/MapStyle.json';
-import Divider from '../../Components/Divider/Divider';
-import Visa from '../../Images/svgImages/visa';
-import Money from '../../Images/svgImages/moneyChoice';
-import PerchWallet from '../../Images/svgImages/perchWallet';
 import StarRating from 'react-native-star-rating';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Icon_ from 'react-native-vector-icons/Feather';
 import Icon__ from 'react-native-vector-icons/Entypo';
+import Icon_ from 'react-native-vector-icons/Feather';
 import SpecialIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import GreenIcon from '../../Images/svgImages/greenIcon';
 import Icon_Dash from 'react-native-vector-icons/Octicons';
+import { AnimatedPolylineSingleLine } from '../../Components/AnimatedPolyline/AnimatedPolyline';
+import { DriverProfile } from '../../Components/BreakdownCardsWithCombiners/BreakdownCardsWithCombiners';
+import Button from '../../Components/Button/Button';
+import Divider from '../../Components/Divider/Divider';
+import MapStyle from '../../Components/MapStyle/MapStyle.json';
+import {
+    colors,
+    callNumber, dimensionAssert,
+    etaRideshare, height,
+    Notifications, OfflineNotice,
+    rideshareRatingHandler, width, x, y
+} from '../../Functions/Functions';
 import CarInCity from '../../Images/svgImages/carInCity';
+import GreenIcon from '../../Images/svgImages/greenIcon';
+import Money from '../../Images/svgImages/moneyChoice';
+import PerchWallet from '../../Images/svgImages/perchWallet';
+import Visa from '../../Images/svgImages/visa';
+import styles from './styles';
 
-//import Clipboard from "@react-native-community/clipboard";
-const [GREEN, WHITE, GREY, GREEN_, GREENMAKER] = ['#4DB748', '#FFFFFF', '#918686', 'rgba(77, 183, 72, 0.6)', '#136009'];
 const Y_START = -x(12);
 const X_CONSTANT = 0;
-
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.008339428281933124;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -340,13 +346,13 @@ export default class RideshareConfirmed extends React.Component {
 
                     }}
                 >
-                    <MaterialIcons name={'my-location'} size={y(21)} color={GREEN} />
+                    <MaterialIcons name={'my-location'} size={y(21)} color={colors.GREEN} />
                 </TouchableOpacity>
                 {/* <TouchableOpacity style={[styles.menu,]}
                     onPress={() => { this.props.navigation.goBack(); }}
                 >
                     <View>
-                        <Icon name={'ios-arrow-back'} color={WHITE} size={x(28)} />
+                        <Icon name={'ios-arrow-back'} color={colors.WHITE} size={x(28)} />
                     </View>
                 </TouchableOpacity> */}
                 <Animated.View style={{ transform: [{ scale: scale_ }] }}>
@@ -399,18 +405,18 @@ export default class RideshareConfirmed extends React.Component {
                         }}
                     >
                         <Marker coordinate={{ latitude: this.state.location.latitude, longitude: this.state.location.longitude }}>
-                            <SpecialIcon name={'dot-circle-o'} size={y(20)} color={GREENMAKER} />
+                            <SpecialIcon name={'dot-circle-o'} size={y(20)} color={colors.GREENMAKER} />
                         </Marker>
                         {this.state.mapReadyState ?
                             <AnimatedPolylineSingleLine
                                 coordinates={([[this.state.location.latitude, this.state.location.longitude], ...this.state.polyline, [this.state.destination.latitude, this.state.destination.longitude],]).map((v => { return { latitude: v[0], longitude: v[1] } }))}
-                                strokeColorMove={GREEN}
-                                strokeColor={GREENMAKER}
+                                strokeColorMove={colors.GREEN}
+                                strokeColor={colors.GREENMAKER}
                                 strokeWidth={4}
                             //interval={10}
                             /> : <></>}
                         <Marker coordinate={{ latitude: this.state.destination.latitude, longitude: this.state.destination.longitude }}>
-                            <SpecialIcon name={'stop-circle-o'} size={y(20)} color={GREENMAKER} />
+                            <SpecialIcon name={'stop-circle-o'} size={y(20)} color={colors.GREENMAKER} />
                         </Marker>
                         {this.state.driverLocation ?
                             <Marker.Animated
@@ -431,7 +437,7 @@ export default class RideshareConfirmed extends React.Component {
                     <View style={styles.driverCentralize}>
 
                         <DriverProfile
-                            color={GREEN}
+                            color={colors.GREEN}
                             driver={this.state.driverDetails ? this.state.driverDetails : null}
                             eta={this.state.eta}
                             style={'rideshare'}
@@ -445,7 +451,7 @@ export default class RideshareConfirmed extends React.Component {
                             </ShimmerPlaceHolder>
 
                             <ShimmerPlaceHolder autoRun={true} visible={this.state.loading} style={{ width: x(80), height: y(17), marginTop: y(5) }}>
-                                <Text style={[styles.car, { fontFamily: 'Gilroy-SemiBold', marginTop: y(5), color: GREEN }]}>{this.state.driverDetails ? this.state.driverDetails.carDetails.plateNumber : ''}</Text>
+                                <Text style={[styles.car, { fontFamily: 'Gilroy-SemiBold', marginTop: y(5), color: colors.GREEN }]}>{this.state.driverDetails ? this.state.driverDetails.carDetails.plateNumber : ''}</Text>
                             </ShimmerPlaceHolder>
                         </View>
                         <View style={styles.bubble}>
@@ -454,7 +460,7 @@ export default class RideshareConfirmed extends React.Component {
                                     <Text style={[styles.time, { fontSize: y(25, true) }]}>{this.state.eta}</Text>
                                     <Text style={[styles.time, { fontSize: y(17, true) }]}>mins</Text>
                                 </> :
-                                <Icon_Dash color={WHITE} size={y(50)} name={'dash'} />}
+                                <Icon_Dash color={colors.WHITE} size={y(50)} name={'dash'} />}
                         </View>
 
                     </View>
@@ -485,7 +491,7 @@ export default class RideshareConfirmed extends React.Component {
                                 callNumber(this.state.driverDetails.phoneNumber);
                         }}>
                             <View style={styles.block}>
-                                <Icon_ name={'phone'} color={WHITE} size={y(20)} />
+                                <Icon_ name={'phone'} color={colors.WHITE} size={y(20)} />
                             </View>
                         </TouchableOpacity>
 
@@ -498,7 +504,7 @@ export default class RideshareConfirmed extends React.Component {
                             })
                         }}>
                             <View style={styles.block}>
-                                <Icon_ name={'mail'} color={WHITE} size={y(20)} />
+                                <Icon_ name={'mail'} color={colors.WHITE} size={y(20)} />
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -512,7 +518,7 @@ export default class RideshareConfirmed extends React.Component {
                         <Icon_ name={'map-pin'} size={y(25)} style={{ opacity: 0.5, }} />
                         <View style={{ marginLeft: x(5), }}>
                             <Text style={[styles.addressText, { fontSize: y(15, true), width: x(283), }]}>{this.state.destination.description}</Text>
-                            <Text style={[styles.addressText, { fontSize: y(13, true), marginTop: y(3) }]}>Arrive at <Text style={[styles.addressText, { fontWeight: '500', color: GREEN }]}>{this.state.tripDuration ? this.state.tripDuration : ''}</Text></Text>
+                            <Text style={[styles.addressText, { fontSize: y(13, true), marginTop: y(3) }]}>Arrive at <Text style={[styles.addressText, { fontWeight: '500', color: colors.GREEN }]}>{this.state.tripDuration ? this.state.tripDuration : ''}</Text></Text>
                         </View>
                     </View>
 
@@ -546,7 +552,7 @@ export default class RideshareConfirmed extends React.Component {
                         </View>
                         <TouchableOpacity>
                             <View style={styles.send}>
-                                <Icon__ name={'paper-plane'} color={WHITE} size={y(30)} />
+                                <Icon__ name={'paper-plane'} color={colors.WHITE} size={y(30)} />
                             </View>
                         </TouchableOpacity>
                     </View>

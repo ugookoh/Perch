@@ -1,35 +1,38 @@
-import React from 'react';
-import styles from './styles';
-import { TouchableWithoutFeedback, View, Text, TouchableOpacity, Animated, Dimensions, PanResponder, Platform, StatusBar, Easing, PixelRatio, LayoutAnimation, UIManager, } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Callout, Polyline } from 'react-native-maps';
-import { AnimatedPolylineSingleLine } from '../../Components/AnimatedPolyline/AnimatedPolyline';
-import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import AsyncStorage from '@react-native-community/async-storage';
-import * as turf from '@turf/turf';
 import database from '@react-native-firebase/database';
-import { rideshareRequestSender, reverseGeocoding, getDriversInit, OfflineNotice, x, y, height, width, dimensionAssert, CustomLayoutLinear } from '../../Functions/Functions';
+import * as turf from '@turf/turf';
+import React from 'react';
+import { Animated, Easing, LayoutAnimation, PixelRatio, Platform, StatusBar, Text, TouchableOpacity, UIManager, View } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import { BarIndicator, MaterialIndicator, } from 'react-native-indicators';
+import { BarIndicator, MaterialIndicator } from 'react-native-indicators';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
+import X_Icon from 'react-native-vector-icons/Feather';
+import Icon__ from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
+import SpecialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon_ from 'react-native-vector-icons/MaterialIcons';
+import { AnimatedPolylineSingleLine } from '../../Components/AnimatedPolyline/AnimatedPolyline';
 import Button from '../../Components/Button/Button';
-import MapStyle from '../../Components/MapStyle/MapStyle.json';
 import Divider from '../../Components/Divider/Divider';
-import Visa from '../../Images/svgImages/visa';
-import Money from '../../Images/svgImages/moneyChoice';
-import PerchWallet from '../../Images/svgImages/perchWallet';
-import SedanChoice from '../../Images/svgImages/sedanChoice';
-import LuxuryChoice from '../../Images/svgImages/luxuryChoice';
-import PackageChoice from '../../Images/svgImages/packageChoice';
+import MapStyle from '../../Components/MapStyle/MapStyle.json';
+import {
+    colors, CustomLayoutLinear,
+    dimensionAssert, getDriversInit,
+    height, OfflineNotice,
+    reverseGeocoding, rideshareRequestSender,
+    width, x, y
+} from '../../Functions/Functions';
 import CityNoResults from '../../Images/svgImages/cityNoResults';
 import Interac from '../../Images/svgImages/interac';
-import CarMapIcon from '../../Images/svgImages/carMapIcon';
+import Money from '../../Images/svgImages/moneyChoice';
+import PackageChoice from '../../Images/svgImages/packageChoice';
+import PerchWallet from '../../Images/svgImages/perchWallet';
 import Pin from '../../Images/svgImages/pin';
+import SedanChoice from '../../Images/svgImages/sedanChoice';
 import SuvChoice from '../../Images/svgImages/suvChoice';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Icon_ from 'react-native-vector-icons/MaterialIcons';
-import Icon__ from 'react-native-vector-icons/FontAwesome';
-import X_Icon from 'react-native-vector-icons/Feather';
-import SpecialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-const [GREEN, WHITE, GREY, GREEN_, GREENMAKER] = ['#4DB748', '#FFFFFF', '#918686', 'rgba(77, 183, 72, 0.6)', '#136009'];
+import Visa from '../../Images/svgImages/visa';
+import styles from './styles';
 
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.008339428281933124;
@@ -221,7 +224,7 @@ export default class RideshareChoice extends React.Component {
                     : <></>}
                 <TouchableOpacity style={[styles.menu,]} onPress={this.props.navigation.goBack}>
                     <View>
-                        <Icon name={'ios-arrow-back'} color={WHITE} size={x(28)} />
+                        <Icon name={'ios-arrow-back'} color={colors.WHITE} size={x(28)} />
                     </View>
                 </TouchableOpacity>
 
@@ -264,13 +267,13 @@ export default class RideshareChoice extends React.Component {
                             }
                         }}
                     >
-                        <Icon_ name={'my-location'} size={y(21)} color={GREEN} />
+                        <Icon_ name={'my-location'} size={y(21)} color={colors.GREEN} />
                     </TouchableOpacity>
                 </Animated.View>
                 {this.state.confirmCurrentLocation ?
                     <></> :
                     <Animated.View style={[styles.containerLD, { top: zoomTop, left: x(10) }]}>
-                        <SpecialIcon name={'swap-vertical-bold'} color={GREEN} size={x(20)} style={{ marginLeft: x(10) }} />
+                        <SpecialIcon name={'swap-vertical-bold'} color={colors.GREEN} size={x(20)} style={{ marginLeft: x(10) }} />
 
                         <View style={{ marginLeft: x(15) }}>
                             <TouchableOpacity onPress={() => {
@@ -337,19 +340,19 @@ export default class RideshareChoice extends React.Component {
                     }}
                 >
                     <Marker coordinate={{ latitude: this.state.location.latitude, longitude: this.state.location.longitude }}>
-                        <Icon__ name={'dot-circle-o'} size={y(20)} color={GREENMAKER} />
+                        <Icon__ name={'dot-circle-o'} size={y(20)} color={colors.GREENMAKER} />
                     </Marker>
                     {this.state.mapReadyState ?
                         <AnimatedPolylineSingleLine
                             coordinates={([[this.state.location.latitude, this.state.location.longitude], ...this.state.polyline, [this.state.destination.latitude, this.state.destination.longitude],]).map((v => { return { latitude: v[0], longitude: v[1] } }))}
-                            strokeColorMove={GREEN}
-                            strokeColor={GREENMAKER}
+                            strokeColorMove={colors.GREEN}
+                            strokeColor={colors.GREENMAKER}
                             strokeWidth={4}
                         //interval={10}
                         /> : <></>}
                     <Marker coordinate={{ latitude: this.state.destination.latitude, longitude: this.state.destination.longitude }}>
 
-                        <Icon__ name={'stop-circle-o'} size={y(20)} color={GREENMAKER} />
+                        <Icon__ name={'stop-circle-o'} size={y(20)} color={colors.GREENMAKER} />
                     </Marker>
                 </MapView>
 
@@ -378,7 +381,7 @@ export default class RideshareChoice extends React.Component {
                                             this.props.route.params.onReturn('L');
                                             this.props.navigation.goBack();
                                         }}>
-                                        <SpecialIcon name={'magnify'} color={GREEN} size={y(30)} style={{ marginHorizontal: x(10) }} />
+                                        <SpecialIcon name={'magnify'} color={colors.GREEN} size={y(30)} style={{ marginHorizontal: x(10) }} />
                                         <Text style={[styles.description, { width: x(250), }]} numberOfLines={1}>{this.state.location.description}</Text>
                                     </TouchableOpacity>
                                     <View style={styles.button}><Button text={'Confirm Pickup location'} width={x(313)} height={y(48)} top={0} left={0} zIndex={2} loading={this.state.finalLoading}
@@ -591,7 +594,7 @@ class VehicleDescription extends React.Component {
                     <Text style={[styles.vehicleTitle, { fontSize: y(18, true) }]}>Trip Details</Text>
 
                     <View style={styles.vehicleLocation}>
-                        <SpecialIcon name={'swap-vertical-bold'} color={GREEN} size={x(30)} style={{ marginLeft: x(10) }} />
+                        <SpecialIcon name={'swap-vertical-bold'} color={colors.GREEN} size={x(30)} style={{ marginLeft: x(10) }} />
 
                         <View style={{ marginLeft: x(20) }}>
                             <Text numberOfLines={1} style={[styles.vehicleDescription, { width: x(240), marginTop: y(10) }]}>{this.props.location.description}</Text>
@@ -726,13 +729,13 @@ class SearchingForDriver extends React.Component {
                             <>
                                 <Text style={[styles.searchText, { fontFamily: 'Gilroy-SemiBold', fontSize: y(20, true) }]}>Ride found!</Text>
                                 <View style={{ height: y(100), }}>
-                                    <MaterialIndicator color={GREEN} size={x(50)} count={8} />
+                                    <MaterialIndicator color={colors.GREEN} size={x(50)} count={8} />
                                 </View>
                             </> :
                             <>
                                 <Animated.Text style={[styles.searchText, { opacity: this.opacity, fontFamily: 'Gilroy-SemiBold' }]}>Searching for a Perch driver in your area to pair you with</Animated.Text>
                                 <View style={{ height: y(100), }}>
-                                    <BarIndicator color={GREEN} size={x(40)} count={8} />
+                                    <BarIndicator color={colors.GREEN} size={x(40)} count={8} />
                                 </View>
                             </> ://ENGINE HAS FINISHED SEARCHING, NO AVAILABLE DRIVERS
                         <>

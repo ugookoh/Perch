@@ -1,13 +1,11 @@
-import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, ScrollView, Button, Platform, StatusBar, Alert } from 'react-native';
-import { OfflineNotice, makeid, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
-import Header from '../../Components/Header/Header';
 import Clipboard from '@react-native-community/clipboard';
-import GetFreeRidesImage from '../../Images/svgImages/getFreeRides';
-import Divider from '../../Components/Divider/Divider';
+import React from 'react';
+import { Animated, Text, TouchableOpacity, View } from 'react-native';
 import Icon__ from 'react-native-vector-icons/Entypo';
-const [GREEN, WHITE, GREY, LIGHT_GREEN] = ['#4DB748', '#FFFFFF', '#918686', '#4db847'];
+import Header from '../../Components/Header/Header';
+import { OfflineNotice, width, x, y } from '../../Functions/Functions';
+import GetFreeRidesImage from '../../Images/svgImages/getFreeRides';
+import styles from './styles';
 
 export default class GetFreeRides extends React.Component {
     constructor(props) {
@@ -53,8 +51,8 @@ export default class GetFreeRides extends React.Component {
         return (
             <View style={styles.container}>
                 <Animated.View style={[{ width: width, alignItems: 'center', position: 'absolute', zIndex: 10, elevation: 10 }, this.position.getLayout()]}>
-                    <View style={{ height: y(70), borderRadius: 10, width: x(313), backgroundColor: WHITE, justifyContent: 'space-around', alignItems: 'center', paddingVertical: y(20) }}>
-                        <Text style={{ fontFamily: 'Gilroy-SemiBold', fontSize: y(14, true), color: GREEN }}>Copied to clipboard</Text>
+                    <View style={{ height: y(70), borderRadius: 10, width: x(313), backgroundColor: colors.WHITE, justifyContent: 'space-around', alignItems: 'center', paddingVertical: y(20) }}>
+                        <Text style={{ fontFamily: 'Gilroy-SemiBold', fontSize: y(14, true), color: colors.GREEN }}>Copied to clipboard</Text>
                     </View>
                 </Animated.View>
                 <View style={{ zIndex: 1, }}>
@@ -77,7 +75,7 @@ export default class GetFreeRides extends React.Component {
                             Clipboard.setString(`My Perch Share Code is ${this.state.userDetails.shareCode}`);
                         }}>
                             <View style={styles.send}>
-                                <Icon__ name={'paper-plane'} color={WHITE} size={y(30)} />
+                                <Icon__ name={'paper-plane'} color={colors.WHITE} size={y(30)} />
                             </View>
                         </TouchableOpacity>
                     </View>

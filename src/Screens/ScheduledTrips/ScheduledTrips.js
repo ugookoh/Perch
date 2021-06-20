@@ -1,15 +1,14 @@
-import React from 'react';
-import styles from './styles';
-import { FlatList, Animated, Text, View, TextInput, Dimensions, TouchableOpacity, ScrollView, Keyboard, KeyboardAvoidingView, Button, StatusBar, Platform, Alert } from 'react-native';
-import { OfflineNotice, sendFeedback, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
-import Header from '../../Components/Header/Header';
-import { OneStepTrip } from '../../Components/CarpoolDisplayCard/CarpoolDisplayCard';
-import { MaterialIndicator } from 'react-native-indicators';
 import database from '@react-native-firebase/database';
-import CatcusNoResults from '../../Images/svgImages/cactusNoResults';
+import React from 'react';
+import { Animated, FlatList, Text, View } from 'react-native';
+import { MaterialIndicator } from 'react-native-indicators';
+import { OneStepTrip } from '../../Components/CarpoolDisplayCard/CarpoolDisplayCard';
 import Divider from '../../Components/Divider/Divider';
+import Header from '../../Components/Header/Header';
+import { OfflineNotice, x, y, colors } from '../../Functions/Functions';
+import CatcusNoResults from '../../Images/svgImages/cactusNoResults';
+import styles from './styles';
 
-const [GREEN, WHITE, GREY] = ['#4DB748', '#FFFFFF', '#918686'];
 
 export default class ScheduledTrips extends React.Component {
     constructor(props) {
@@ -138,7 +137,7 @@ export default class ScheduledTrips extends React.Component {
                                             }} />
                                     </View>
                             :
-                            <MaterialIndicator color={GREEN} size={y(100)} style={{ top: -y(40) }} />
+                            <MaterialIndicator color={colors.GREEN} size={y(100)} style={{ top: -y(40) }} />
                     }
                 </View>
             </View>
