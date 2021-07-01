@@ -7,7 +7,11 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import stripe from 'tipsi-stripe';
 import Button from '../../Components/Button/Button';
 import Header from '../../Components/Header/Header';
-import { buyKilometers, OfflineNotice, x, y, colors } from '../../Functions/Functions';
+import {
+    buyKilometers,
+    OfflineNotice,
+    x, y, colors
+} from '../../Functions/Functions';
 import ApplePayLogo from '../../Images/svgImages/applePayLogo';
 import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
 import GooglePaylogo from '../../Images/svgImages/googlePayLogo';

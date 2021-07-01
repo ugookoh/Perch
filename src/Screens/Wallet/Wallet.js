@@ -4,7 +4,7 @@ import { Alert, Animated, LayoutAnimation, PanResponder, Platform, Switch, Text,
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import Button from '../../Components/Button/Button';
 import Header from '../../Components/Header/Header';
-import { CustomLayoutLinear, deleteCard, height, OfflineNotice, x, y } from '../../Functions/Functions';
+import { CustomLayoutLinear, deleteCard, height, OfflineNotice, x, y, colors } from '../../Functions/Functions';
 import ApplePayLogo from '../../Images/svgImages/applePayLogo';
 import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
 import GooglePaylogo from '../../Images/svgImages/googlePayLogo';

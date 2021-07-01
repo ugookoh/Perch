@@ -28,7 +28,7 @@ import GreenIcon from '../../Images/svgImages/greenIcon';
 import PurpleIcon from '../../Images/svgImages/purpleIcon';
 import styles from './styles';
 import DriverRating from './DriverRating';
-
+import SvgComponent from './SvgComponent';
 const X_CONSTANT = 0;
 const Y_START_ = y(dimensionAssert() ? 360 : 425);
 const ASPECT_RATIO = width / height;

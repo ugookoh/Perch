@@ -3,7 +3,7 @@ import React from 'react';
 import { Animated, Text, TouchableOpacity, View } from 'react-native';
 import Icon__ from 'react-native-vector-icons/Entypo';
 import Header from '../../Components/Header/Header';
-import { OfflineNotice, width, x, y } from '../../Functions/Functions';
+import { OfflineNotice, width, x, y,colors } from '../../Functions/Functions';
 import GetFreeRidesImage from '../../Images/svgImages/getFreeRides';
 import styles from './styles';
 

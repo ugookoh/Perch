@@ -12,7 +12,11 @@ import Down from 'react-native-vector-icons/Ionicons';
 import { OneStepTrip, ThreeStepTrip, TwoStepTrip } from '../../Components/CarpoolDisplayCard/CarpoolDisplayCard';
 import Divider from '../../Components/Divider/Divider';
 import Header from '../../Components/Header/Header';
-import { colors, dimensionAssert, OfflineNotice, x, y, nN, secondsToHms, calculateTime, calculateZone, getTime } from '../../Functions/Functions';
+import {
+    calculateTime, calculateZone, colors,
+    dimensionAssert, nN, OfflineNotice,
+    secondsToHms, x, y
+} from '../../Functions/Functions';
 import CatcusNoResults from '../../Images/svgImages/cactusNoResults';
 import styles from './styles';
 const _1DAY_MILLI_SECS = 86400000;//ms
@@ -158,8 +162,8 @@ export default class CarpoolResults extends React.Component {
                 function compare(a_, b_) {
 
                     let a, b;
-                    a = getTime(a_, false);
-                    b = getTime(b_, false);
+                    a = getTime_(a_, false);
+                    b = getTime_(b_, false);
 
 
 
@@ -530,7 +534,7 @@ export default class CarpoolResults extends React.Component {
     }
 };
 
-function getTime(data_, del) {
+function getTime_(data_, del) {
     const data = data_;
     const minutes = new Date().getMinutes();
     const hours = new Date().getHours();

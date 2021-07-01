@@ -6,7 +6,6 @@ import { Alert, Animated, BackHandler, PanResponder, Platform, StatusBar, Text, 
 import Geolocation from 'react-native-geolocation-service';
 import KeepAwake from 'react-native-keep-awake';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
-import Svg, { G, Path } from "react-native-svg";
 import Icon from 'react-native-vector-icons/Feather';
 import Icon_ from 'react-native-vector-icons/FontAwesome';
 import stripe from 'tipsi-stripe';
@@ -16,6 +15,7 @@ import Button from '../../Components/Button/Button';
 import Divider from '../../Components/Divider/Divider';
 import Header from '../../Components/Header/Header';
 import MapStyle from '../../Components/MapStyle/MapStyle.json';
+import SvgComponent from './SvgComponent';
 
 import {
     calculateTime, calculateZone, carpoolRequestHandler,
@@ -2044,29 +2044,4 @@ export default class CarpoolTripDetails extends React.Component {
                 />
             );
     };
-};
-function SvgComponent() {
-    return (
-        <Svg width={16} height={24} viewBox="0 0 14 20" fill={colors.GREY}>
-            <G data-name="Group 3003">
-                <Path
-                    data-name="pin_sharp_circle-[#625]"
-                    d="M7 0a7 7 0 00-7 7c0 3.866 7 13 7 13s7-9.134 7-13a7 7 0 00-7-7"
-                    fillRule="evenodd"
-                />
-                <G data-name="Page-1">
-                    <G data-name="Dribbble-Light-Preview">
-                        <G data-name="icons">
-                            <Path
-                                data-name="pin_sharp_circle-[#625]"
-                                d="M7 7.635a1 1 0 111-1 1 1 0 01-1 1m0-4a3 3 0 103 3 3 3 0 00-3-3"
-                                fill="#fff"
-                                fillRule="evenodd"
-                            />
-                        </G>
-                    </G>
-                </G>
-            </G>
-        </Svg>
-    );
 };

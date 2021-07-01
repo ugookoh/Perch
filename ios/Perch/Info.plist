@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>org.reactjs.native.example.PerchRides</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -17,11 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>org.reactjs.native.example.PerchRides</string>
-	</array>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -48,10 +48,6 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Perch requires camera access to take photos</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Perch would like access to your photo gallery</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Perch would like to save photos to your photo gallery</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Perch requires your location to provide you with real-time updates during trips to facilitate pickups, journeys and more</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -60,6 +56,10 @@
 	<string>Perch requires your location to provide you with real-time updates during trips to facilitate pickups, journeys and more</string>
 	<key>NSMotionUsageDescription</key>
 	<string>App requires motion tracking</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Perch would like to save photos to your photo gallery</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Perch would like access to your photo gallery</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Comfortaa-Bold.ttf</string>
