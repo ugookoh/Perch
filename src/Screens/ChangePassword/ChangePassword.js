@@ -1,12 +1,9 @@
 import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Platform, LayoutAnimation, UIManager, StatusBar } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Header from '../../Components/Header/Header';
-import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
+import { Animated, Keyboard, KeyboardAvoidingView, LayoutAnimation, Platform, StatusBar, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, UIManager, View } from 'react-native';
 import Button from '../../Components/Button/Button';
-import { OfflineNotice, changePassword, x, y, height, width, dimensionAssert, CustomLayoutLinear, sendPasswordResetLink } from '../../Functions/Functions';
-const [GREEN, WHITE, RED] = ['#4DB748', '#FFFFFF', '#FF0000'];
+import Header from '../../Components/Header/Header';
+import { changePassword, CustomLayoutLinear, OfflineNotice, sendPasswordResetLink, width, x, y } from '../../Functions/Functions';
+import styles from './styles';
 
 
 export default class ChangePassword extends React.Component {

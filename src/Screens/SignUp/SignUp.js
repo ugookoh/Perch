@@ -1,13 +1,21 @@
-import React from 'react';
-import styles from './styles';
-import { Text, View, StatusBar, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, LayoutAnimation, UIManager, Animated, TextInput, Button as Button_ } from 'react-native';
-import { createUserDetails, OfflineNotice, x, y, height, width, dimensionAssert, CustomLayoutLinear } from '../../Functions/Functions';
 import AsyncStorage from '@react-native-community/async-storage';
-import Logo from '../../Images/svgImages/logo';
+import { Picker } from '@react-native-community/picker';
+import React from 'react';
+import {
+    Animated, Button as Button_,
+    Keyboard, KeyboardAvoidingView,
+    LayoutAnimation, Platform,
+    StatusBar, Text, TextInput, TouchableOpacity,
+    TouchableWithoutFeedback, UIManager, View
+} from 'react-native';
 import Button from '../../Components/Button/Button';
 import Form from '../../Components/SignUpForm/SignUpForm';
-import { Picker } from '@react-native-community/picker';
-const [GREEN, WHITE, GREY] = ['#4DB748', '#FFFFFF', '#918686'];
+import {
+    createUserDetails, CustomLayoutLinear,
+    dimensionAssert, OfflineNotice, x, y
+} from '../../Functions/Functions';
+import Logo from '../../Images/svgImages/logo';
+import styles from './styles';
 
 export default class SignUp extends React.Component {
     constructor() {

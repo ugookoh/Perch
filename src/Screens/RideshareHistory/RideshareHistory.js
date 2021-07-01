@@ -1,29 +1,26 @@
 import React from 'react';
-import styles from './styles';
-import { TouchableWithoutFeedback, View, Text, TouchableOpacity, Animated, Dimensions, PanResponder, Platform, StatusBar } from 'react-native';
-import { OfflineNotice, rideshareRatingHandler, polylineLenght, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
-
-import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Polyline } from 'react-native-maps';
-import MapStyle from '../../Components/MapStyle/MapStyle.json';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Icon_Pen from 'react-native-vector-icons/FontAwesome5';
-import Header from '../../Components/Header/Header';
+import { Animated, PanResponder, Text, TouchableOpacity, View } from 'react-native';
+import Dash from 'react-native-dash';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import StarRating from 'react-native-star-rating';
 import Icon_ from 'react-native-vector-icons/Feather';
+import Icon__ from 'react-native-vector-icons/FontAwesome';
+import Icon_Pen from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/Ionicons';
+import DashedDivider from '../../Components/DashedDivider/DashedDivider';
 import Divider from '../../Components/Divider/Divider';
-import Visa from '../../Images/svgImages/visa';
+import Header from '../../Components/Header/Header';
+import MapStyle from '../../Components/MapStyle/MapStyle.json';
+import {
+    colors,
+    dimensionAssert, height, OfflineNotice, rideshareRatingHandler,
+    x, y
+} from '../../Functions/Functions';
+import Interac from '../../Images/svgImages/interac';
 import Money from '../../Images/svgImages/moneyChoice';
 import PerchWallet from '../../Images/svgImages/perchWallet';
-import Interac from '../../Images/svgImages/interac';
-import Icon__ from 'react-native-vector-icons/FontAwesome';
-import StarRating from 'react-native-star-rating';
-import DashedDivider from '../../Components/DashedDivider/DashedDivider';
-import Dash from 'react-native-dash';
-import database from '@react-native-firebase/database';
-import { CarpoolHistoryCard, TopCombiner, MiddleCombiner, BottomCombiner } from '../../Components/BreakdownCardsWithCombiners/BreakdownCardsWithCombiners';
-
-const [GREEN, BLUE, PURPLE, GOLD, GREENMAKER] = ['#4DB748', '#1970A7', '#A031AF', '#FFAA00', '#136009'];
-
-
+import Visa from '../../Images/svgImages/visa';
+import styles from './styles';
 
 const X_CONSTANT = 0;
 const Y_START = y(20);
@@ -34,7 +31,7 @@ export default class RideshareHistory extends React.Component {
             scrollY: new Animated.Value(0),
             starCount: this.props.route.params.data.userRating ? this.props.route.params.data.userRating : 0,
             currenStarDisplay: 0,
-            currentStarColor: GOLD,
+            currentStarColor: colors.GOLD,
             data: this.props.route.params.data,
             date: this.props.route.params.date,
             historyRef: this.props.route.params.historyRef,
@@ -195,19 +192,19 @@ export default class RideshareHistory extends React.Component {
                         <View style={styles.mapGroup}>
                             <Text style={[styles.tripTitle, { marginTop: y(14), width: x(313), alignSelf: 'center' }]}>Trip Details</Text>
                             <View style={[styles.travel, { top: y(58) }]}>
-                                <Icon_ name={'map-pin'} size={y(10)} color={GREEN} />
+                                <Icon_ name={'map-pin'} size={y(10)} color={colors.GREEN} />
                                 <Text numberOfLines={2} style={[styles.firstLayer, { position: 'relative', color: '#000000', fontSize: y(12, true), marginLeft: x(5), width: x(300), }]}>{this.state.data.location.description}</Text>
                             </View>
-                            <View style={styles.LtoD_Divider}><DashedDivider borderColor={GREEN} height={y(25)} width={0} borderWidth={0.5} borderRadius={0} /></View>
+                            <View style={styles.LtoD_Divider}><DashedDivider borderColor={colors.GREEN} height={y(25)} width={0} borderWidth={0.5} borderRadius={0} /></View>
                             <View style={[styles.travel, { top: y(dimensionAssert() ? 100 : 94) }]}>
-                                <Icon_ name={'map-pin'} size={y(10)} color={GREEN} />
+                                <Icon_ name={'map-pin'} size={y(10)} color={colors.GREEN} />
                                 <Text numberOfLines={2} style={[styles.firstLayer, { position: 'relative', color: '#000000', fontSize: y(12, true), marginLeft: x(5), width: x(300), }]}>{this.state.data.destination.description}</Text>
                             </View>
 
 
                             <View style={[styles.calendar]}>
-                                <Text style={[styles.firstLayer, { position: 'relative', color: GREEN, fontSize: y(14, true), marginRight: x(5), }]}>{this.state.date}</Text>
-                                <Icon_ name={'calendar'} size={y(13)} color={GREEN} />
+                                <Text style={[styles.firstLayer, { position: 'relative', color: colors.GREEN, fontSize: y(14, true), marginRight: x(5), }]}>{this.state.date}</Text>
+                                <Icon_ name={'calendar'} size={y(13)} color={colors.GREEN} />
                             </View>
 
                             <MapView
@@ -236,15 +233,15 @@ export default class RideshareHistory extends React.Component {
                                 rotateEnabled={false}
                             >
                                 <Marker coordinate={{ latitude: this.state.data.location.latitude, longitude: this.state.data.location.longitude }}>
-                                    <Icon__ name={'dot-circle-o'} size={y(15)} color={GREENMAKER} />
+                                    <Icon__ name={'dot-circle-o'} size={y(15)} color={colors.GREENMAKER} />
                                 </Marker>
                                 <Polyline
                                     coordinates={polyline}
-                                    strokeColor={GREENMAKER}
+                                    strokeColor={colors.GREENMAKER}
                                     strokeWidth={2}
                                 />
                                 <Marker coordinate={{ latitude: this.state.data.destination.latitude, longitude: this.state.data.destination.longitude }}>
-                                    <Icon__ name={'stop-circle-o'} size={y(15)} color={GREENMAKER} />
+                                    <Icon__ name={'stop-circle-o'} size={y(15)} color={colors.GREENMAKER} />
                                 </Marker>
 
                             </MapView>
@@ -284,8 +281,8 @@ export default class RideshareHistory extends React.Component {
                                             disabled={true}
                                             maxStars={5}
                                             rating={this.state.starCount}
-                                            fullStarColor={GOLD}
-                                            emptyStarColor={GOLD}
+                                            fullStarColor={colors.GOLD}
+                                            emptyStarColor={colors.GOLD}
                                             starSize={y(12)}
                                         />
                                         {disabled == false ?

@@ -1,59 +1,46 @@
-import React from 'react';
-import styles from './styles';
-import { BackHandler, View, Text, TouchableOpacity, Animated, Alert, PanResponder, Platform, StatusBar, Easing, LayoutAnimation, UIManager, Switch, Image } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Callout, Polyline } from 'react-native-maps';
-import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import { MaterialIndicator } from 'react-native-indicators';
-import {
-    carpoolRequestHandler,
-    carpoolRatingHandler,
-    callNumber,
-    OfflineNotice,
-    x, y, width, height, dimensionAssert, CustomLayoutLinear,
-    scheduledCarpoolRequestHandler,
-    scheduledCarpoolRequestCanceller,
-    startScheduledRiderTrip,
-    cancelTrip,
-    cancelScheduledTrip,
-    chargeCustomer,
-    perchKilometerDifference,
-    perchKilometerPayment,
-} from '../../Functions/Functions';
-import Svg, { Path, G } from "react-native-svg";
-import Header from '../../Components/Header/Header';
+import database from '@react-native-firebase/database';
+import * as turf from '@turf/turf'; //for encoding polylines
+import React from 'react';
+import { Alert, Animated, BackHandler, PanResponder, Platform, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import KeepAwake from 'react-native-keep-awake';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import Icon from 'react-native-vector-icons/Feather';
+import Icon_ from 'react-native-vector-icons/FontAwesome';
+import stripe from 'tipsi-stripe';
+import { AnimatedPolylineMultipleLine, AnimatedPolylineSingleLine } from '../../Components/AnimatedPolyline/AnimatedPolyline';
+import { BottomCombiner, Card, MiddleCombiner, TopCombiner } from '../../Components/BreakdownCardsWithCombiners/BreakdownCardsWithCombiners';
 import Button from '../../Components/Button/Button';
 import Divider from '../../Components/Divider/Divider';
-import Visa from '../../Images/svgImages/visa';
+import Header from '../../Components/Header/Header';
+import MapStyle from '../../Components/MapStyle/MapStyle.json';
+import SvgComponent from './SvgComponent';
+
+import {
+    calculateTime, calculateZone, carpoolRequestHandler,
+    chargeCustomer, dimensionAssert, eTARefresh, height,
+    nN, OfflineNotice,
+    perchKilometerDifference,
+    perchKilometerPayment, scheduledCarpoolRequestCanceller, scheduledCarpoolRequestHandler,
+    secondsToHms, width, x, y, colors
+} from '../../Functions/Functions';
+
+import ApplePayLogo from '../../Images/svgImages/applePayLogo';
+import BlueIcon from '../../Images/svgImages/blueIcon';
+import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
+import GooglePayLogo from '../../Images/svgImages/googlePayLogo';
+import GreenIcon from '../../Images/svgImages/greenIcon';
 import MasterCard from '../../Images/svgImages/mastercard';
 import Money from '../../Images/svgImages/moneyChoice';
 import PerchWallet from '../../Images/svgImages/perchWallet';
-import Interac from '../../Images/svgImages/interac';
-import { Card, TopCombiner, MiddleCombiner, BottomCombiner, DriverProfile } from '../../Components/BreakdownCardsWithCombiners/BreakdownCardsWithCombiners';
-import MapStyle from '../../Components/MapStyle/MapStyle.json';
-import Geolocation from 'react-native-geolocation-service';
-import { eTARefresh } from '../../Functions/Functions';
-import * as turf from '@turf/turf';//for encoding polylines
-import database from '@react-native-firebase/database';
-import { AnimatedPolylineSingleLine, AnimatedPolylineMultipleLine } from '../../Components/AnimatedPolyline/AnimatedPolyline';
-const [GREEN, BLUE, PURPLE, GREEN_, BLUE_, PURPLE_, GREY, WHITE, RED] = ['#4DB748', '#1970A7', '#A031AF', 'rgba(77, 183, 72, 0.3)', 'rgba(25, 112, 167, 0.3)', 'rgba(160, 49, 175, 0.3)', '#403D3D', '#FFFFFF', '#FF0000'];
-const [GREENMAKER, BLUEMAKER, PURPLEMAKER] = [`#82cd7e`, '#64b5e8', '#cc74d8'];
-import GreenIcon from '../../Images/svgImages/greenIcon';
-import ApplePayLogo from '../../Images/svgImages/applePayLogo';
-import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
-import BlueIcon from '../../Images/svgImages/blueIcon';
 import PurpleIcon from '../../Images/svgImages/purpleIcon';
-import Icon from 'react-native-vector-icons/Feather';
-import Icon_ from 'react-native-vector-icons/FontAwesome';
-import StarRating from 'react-native-star-rating';
-import Icon__ from 'react-native-vector-icons/Entypo';
-import CarpoolSlider from '../../Components/CarpoolSlider/CarpoolSlider';
-import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
-import KeepAwake from 'react-native-keep-awake';
-import storage from '@react-native-firebase/storage';
-import GooglePayLogo from '../../Images/svgImages/googlePayLogo';
-import Clipboard from '@react-native-community/clipboard';
-import stripe from 'tipsi-stripe';
+import Visa from '../../Images/svgImages/visa';
+
+import styles from './styles';
+import CarpoolRideConfirmed from './CarpoolRideConfirmed';
+import Drivers from './Drivers';
+
 stripe.setOptions({
     publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
     merchantId: 'merchant.com.perch',
@@ -63,8 +50,6 @@ const MAX_HEADER_HEIGHT = y(156);
 const MIN_HEADER_HEIGHT = y(96.5);
 const X_CONSTANT = 0;
 const Y_START = y(364);
-const Y_START_ = y(dimensionAssert() ? 360 : 425);
-
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.008339428281933124;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -941,7 +926,7 @@ export default class CarpoolTripDetails extends React.Component {
                     (<View style={{ top: y(68), paddingBottom: y(82) }}>
                         <TopCombiner start={this.state.location.description} time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`} distance={data.travelDetails.walkFromL.distance.value} />
                         <View style={{ zIndex: 2 }}>
-                            <Card color={GREEN} onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver1 }) }}
+                            <Card color={colors.GREEN} onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver1 }) }}
                                 filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
                                 stopA={data.travelDetails.stop1A}
                                 stopB={data.travelDetails.stop1B}
@@ -961,31 +946,31 @@ export default class CarpoolTripDetails extends React.Component {
                             coordinates={data.firstPolyline.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREEN_}
+                            strokeColor={colors.GREEN_}
                             strokeWidth={4}
                         />
                         <Marker coordinate={{ latitude: data.firstLeg[0][0], longitude: data.firstLeg[0][1] }}//TRIP WE ARE JOINING
                         >
-                            <Icon_ name={'circle'} color={GREEN} size={12} />
+                            <Icon_ name={'circle'} color={colors.GREEN} size={12} />
                         </Marker>
                         <AnimatedPolylineSingleLine
                             coordinates={data.firstLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColorMove={GREENMAKER}
-                            strokeColor={GREEN}
+                            strokeColorMove={colors.GREENMAKER}
+                            strokeColor={colors.GREEN}
                             strokeWidth={4}
                         //interval={10}
                         />
                         <Marker coordinate={{ latitude: data.firstLeg[data.firstLeg.length - 1][0], longitude: data.firstLeg[data.firstLeg.length - 1][1] }}>
-                            <Icon_ name={'circle'} color={GREEN} size={12} />
+                            <Icon_ name={'circle'} color={colors.GREEN} size={12} />
                         </Marker>
 
                         <Polyline //WALK POLYLINES
                             coordinates={data.walk1.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={4}
                             lineDashPattern={[20, 10]}
                         />
@@ -993,7 +978,7 @@ export default class CarpoolTripDetails extends React.Component {
                             coordinates={data.walk2.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={4}
                             lineDashPattern={[20, 10]}
                         />
@@ -1090,7 +1075,7 @@ export default class CarpoolTripDetails extends React.Component {
                         <TopCombiner start={this.state.location.description} time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`} distance={data.travelDetails.walkFromL.distance.value} />
                         <View style={{ zIndex: 2 }}>
                             <Card
-                                color={GREEN}
+                                color={colors.GREEN}
                                 onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver1 }) }}
                                 filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
                                 stopA={data.travelDetails.stop1A}
@@ -1107,7 +1092,7 @@ export default class CarpoolTripDetails extends React.Component {
                         <MiddleCombiner start={this.state.location.description} distance={data.travelDetails.walk.distance.value} />
                         <View style={{ zIndex: 2 }}>
                             <Card
-                                color={BLUE}
+                                color={colors.BLUE}
                                 onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver2 }) }}
                                 filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
                                 stopA={data.travelDetails.stop2A}
@@ -1130,14 +1115,14 @@ export default class CarpoolTripDetails extends React.Component {
                             coordinates={data.firstPolyline.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREEN_}
+                            strokeColor={colors.GREEN_}
                             strokeWidth={4}
                         />
                         <Polyline
                             coordinates={data.secondPolyline.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={BLUE_}
+                            strokeColor={colors.BLUE_}
                             strokeWidth={4}
                         />
 
@@ -1145,21 +1130,21 @@ export default class CarpoolTripDetails extends React.Component {
                         }
                             style={{ zIndex: 0, elevation: 0 }}
                         >
-                            <Icon_ name={'circle'} color={GREEN} size={12} />
+                            <Icon_ name={'circle'} color={colors.GREEN} size={12} />
                         </Marker>
                         {/* <Polyline
                             coordinates={data.firstLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREEN}
+                            strokeColor={colors.GREEN}
                             strokeWidth={4}
                         /> */}
                         <AnimatedPolylineMultipleLine
                             coordinates={data.firstLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColorMove={GREENMAKER}
-                            strokeColor={GREEN}
+                            strokeColorMove={colors.GREENMAKER}
+                            strokeColor={colors.GREEN}
                             strokeWidth={4}
                             start1st={this.state.start1st}
                             start2nd={this.state.startSecond1}
@@ -1171,26 +1156,26 @@ export default class CarpoolTripDetails extends React.Component {
                             <Marker coordinate={{ latitude: data.firstLeg[data.firstLeg.length - 1][0], longitude: data.firstLeg[data.firstLeg.length - 1][1] }}
                                 style={{ zIndex: 0, elevation: 0 }}
                             >
-                                <Icon_ name={'circle'} color={GREEN} size={12} />
+                                <Icon_ name={'circle'} color={colors.GREEN} size={12} />
                             </Marker> : <></>}
                         <Marker coordinate={{ latitude: data.secondLeg[0][0], longitude: data.secondLeg[0][1] }}
                             style={{ zIndex: 0, elevation: 0 }}
                         >
-                            <Icon_ name={'circle'} color={BLUE} size={12} />
+                            <Icon_ name={'circle'} color={colors.BLUE} size={12} />
                         </Marker>
                         {/* <Polyline
                             coordinates={data.secondLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={BLUE}
+                            strokeColor={colors.BLUE}
                             strokeWidth={4}
                         /> */}
                         <AnimatedPolylineMultipleLine
                             coordinates={data.secondLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColorMove={BLUEMAKER}
-                            strokeColor={BLUE}
+                            strokeColorMove={colors.BLUEMAKER}
+                            strokeColor={colors.BLUE}
                             strokeWidth={4}
                             start1st={this.state.start2nd}
                             start2nd={this.state.startSecond2}
@@ -1202,14 +1187,14 @@ export default class CarpoolTripDetails extends React.Component {
                         <Marker coordinate={{ latitude: data.secondLeg[data.secondLeg.length - 1][0], longitude: data.secondLeg[data.secondLeg.length - 1][1] }}
                             style={{ zIndex: 0, elevation: 0 }}
                         >
-                            <Icon_ name={'circle'} color={BLUE} size={12} />
+                            <Icon_ name={'circle'} color={colors.BLUE} size={12} />
                         </Marker>
 
                         <Polyline //WALK POLYLINES
                             coordinates={data.walk1.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={4}
                             lineDashPattern={[20, 10]}
                         />
@@ -1217,7 +1202,7 @@ export default class CarpoolTripDetails extends React.Component {
                             coordinates={data.walk2.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={4}
                             lineDashPattern={[20, 10]}
                         />
@@ -1225,7 +1210,7 @@ export default class CarpoolTripDetails extends React.Component {
                             coordinates={data.walk3.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={4}
                             lineDashPattern={[20, 10]}
                         />
@@ -1357,7 +1342,7 @@ export default class CarpoolTripDetails extends React.Component {
                         <TopCombiner start={this.state.location.description} time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`} distance={data.travelDetails.walkFromL.distance.value} />
                         <View style={{ zIndex: 2 }}>
                             <Card
-                                color={GREEN}
+                                color={colors.GREEN}
                                 onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver1 }) }}
                                 filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
                                 stopA={data.travelDetails.stop1A}
@@ -1374,7 +1359,7 @@ export default class CarpoolTripDetails extends React.Component {
                         <MiddleCombiner start={this.state.location.description} distance={data.travelDetails.walk1.distance.value} />
                         <View style={{ zIndex: 2 }}>
                             <Card
-                                color={BLUE}
+                                color={colors.BLUE}
                                 onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver2 }) }}
                                 filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
                                 stopA={data.travelDetails.stop2A}
@@ -1390,7 +1375,7 @@ export default class CarpoolTripDetails extends React.Component {
                         </View>
                         <MiddleCombiner start={this.state.location.description} distance={data.travelDetails.walk2.distance.value} />
                         <View style={{ zIndex: 2 }}>
-                            <Card color={PURPLE}
+                            <Card color={colors.PURPLE}
                                 onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver3 }) }}
                                 filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
                                 stopA={data.travelDetails.stop3A}
@@ -1413,21 +1398,21 @@ export default class CarpoolTripDetails extends React.Component {
                             coordinates={data.firstPolyline.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREEN_}
+                            strokeColor={colors.GREEN_}
                             strokeWidth={4}
                         />
                         <Polyline
                             coordinates={data.secondPolyline.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={BLUE_}
+                            strokeColor={colors.BLUE_}
                             strokeWidth={4}
                         />
                         <Polyline
                             coordinates={data.thirdPolyline.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={PURPLE_}
+                            strokeColor={colors.PURPLE_}
                             strokeWidth={4}
                         />
 
@@ -1435,21 +1420,21 @@ export default class CarpoolTripDetails extends React.Component {
 
                         <Marker coordinate={{ latitude: data.firstLeg[0][0], longitude: data.firstLeg[0][1] }}//TRIP WE ARE JOINING
                         >
-                            <Icon_ name={'circle'} color={GREEN} size={12} />
+                            <Icon_ name={'circle'} color={colors.GREEN} size={12} />
                         </Marker>
                         {/* <Polyline
                             coordinates={data.firstLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREEN}
+                            strokeColor={colors.GREEN}
                             strokeWidth={4}
                         /> */}
                         <AnimatedPolylineMultipleLine
                             coordinates={data.firstLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColorMove={GREENMAKER}
-                            strokeColor={GREEN}
+                            strokeColorMove={colors.GREENMAKER}
+                            strokeColor={colors.GREEN}
                             strokeWidth={4}
                             start1st={this.state.start1st}
                             start2nd={this.state.startSecond1}
@@ -1459,24 +1444,24 @@ export default class CarpoolTripDetails extends React.Component {
                         />
                         {(data.firstLeg[data.firstLeg.length - 1][0] != data.secondLeg[0][0] && data.firstLeg[data.firstLeg.length - 1][1] != data.secondLeg[0][1]) ?
                             <Marker coordinate={{ latitude: data.firstLeg[data.firstLeg.length - 1][0], longitude: data.firstLeg[data.firstLeg.length - 1][1] }}>
-                                <Icon_ name={'circle'} color={GREEN} size={12} />
+                                <Icon_ name={'circle'} color={colors.GREEN} size={12} />
                             </Marker> : <></>}
                         <Marker coordinate={{ latitude: data.secondLeg[0][0], longitude: data.secondLeg[0][1] }}>
-                            <Icon_ name={'circle'} color={BLUE} size={12} />
+                            <Icon_ name={'circle'} color={colors.BLUE} size={12} />
                         </Marker>
                         {/* <Polyline
                             coordinates={data.secondLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={BLUE}
+                            strokeColor={colors.BLUE}
                             strokeWidth={4}
                         /> */}
                         <AnimatedPolylineMultipleLine
                             coordinates={data.secondLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColorMove={BLUEMAKER}
-                            strokeColor={BLUE}
+                            strokeColorMove={colors.BLUEMAKER}
+                            strokeColor={colors.BLUE}
                             strokeWidth={4}
                             start1st={this.state.start2nd}
                             start2nd={this.state.startSecond2}
@@ -1487,24 +1472,24 @@ export default class CarpoolTripDetails extends React.Component {
                         />
                         {(data.secondLeg[data.secondLeg.length - 1][0] != data.thirdLeg[0][0] && data.secondLeg[data.secondLeg.length - 1][1] != data.thirdLeg[0][1]) ?
                             <Marker coordinate={{ latitude: data.secondLeg[data.secondLeg.length - 1][0], longitude: data.secondLeg[data.secondLeg.length - 1][1] }}>
-                                <Icon_ name={'circle'} color={BLUE} size={12} />
+                                <Icon_ name={'circle'} color={colors.BLUE} size={12} />
                             </Marker> : <></>}
                         <Marker coordinate={{ latitude: data.thirdLeg[0][0], longitude: data.thirdLeg[0][1] }}>
-                            <Icon_ name={'circle'} color={PURPLE} size={12} />
+                            <Icon_ name={'circle'} color={colors.PURPLE} size={12} />
                         </Marker>
                         {/* <Polyline
                             coordinates={data.thirdLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={PURPLE}
+                            strokeColor={colors.PURPLE}
                             strokeWidth={4}
                         /> */}
                         <AnimatedPolylineMultipleLine
                             coordinates={data.thirdLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColorMove={PURPLEMAKER}
-                            strokeColor={PURPLE}
+                            strokeColorMove={colors.PURPLEMAKER}
+                            strokeColor={colors.PURPLE}
                             strokeWidth={4}
                             start1st={this.state.start3rd}
                             start2nd={this.state.startSecond3}
@@ -1514,7 +1499,7 @@ export default class CarpoolTripDetails extends React.Component {
                         //interval={10}
                         />
                         <Marker coordinate={{ latitude: data.thirdLeg[data.thirdLeg.length - 1][0], longitude: data.thirdLeg[data.thirdLeg.length - 1][1] }}>
-                            <Icon_ name={'circle'} color={PURPLE} size={12} />
+                            <Icon_ name={'circle'} color={colors.PURPLE} size={12} />
                         </Marker>
 
 
@@ -1522,7 +1507,7 @@ export default class CarpoolTripDetails extends React.Component {
                             coordinates={data.walk1.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={4}
                             lineDashPattern={[20, 10]}
                         />
@@ -1530,7 +1515,7 @@ export default class CarpoolTripDetails extends React.Component {
                             coordinates={data.walk2.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={4}
                             lineDashPattern={[20, 10]}
                         />
@@ -1538,7 +1523,7 @@ export default class CarpoolTripDetails extends React.Component {
                             coordinates={data.walk3.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={4}
                             lineDashPattern={[20, 10]}
                         />
@@ -1546,7 +1531,7 @@ export default class CarpoolTripDetails extends React.Component {
                             coordinates={data.walk4.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={4}
                             lineDashPattern={[20, 10]}
                         />
@@ -1586,11 +1571,11 @@ export default class CarpoolTripDetails extends React.Component {
                         /> :
                         <></>}
                     <TouchableOpacity style={[styles.zoomIcon, { top: y(180), right: x(10) }]} onPress={this.zoomIn.bind(this)}>
-                        <Icon name={'zoom-in'} size={y(21)} color={GREEN} />
+                        <Icon name={'zoom-in'} size={y(21)} color={colors.GREEN} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={[styles.zoomIcon, { top: y(dimensionAssert() ? 245 : 235), right: x(10) }]} onPress={this.zoomOut.bind(this)}>
-                        <Icon name={'zoom-out'} size={y(21)} color={GREEN} />
+                        <Icon name={'zoom-out'} size={y(21)} color={colors.GREEN} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={[styles.zoomIcon, { top: y(dimensionAssert() ? 310 : 290), right: x(10) }]}
@@ -1616,7 +1601,7 @@ export default class CarpoolTripDetails extends React.Component {
                             });
                         }}
                     >
-                        <Icon_ name={'location-arrow'} size={y(21)} color={GREEN} />
+                        <Icon_ name={'location-arrow'} size={y(21)} color={colors.GREEN} />
                     </TouchableOpacity>
 
 
@@ -1645,7 +1630,7 @@ export default class CarpoolTripDetails extends React.Component {
                                 identifier={'mkL'}
                                 style={{ zIndex: 1, elevation: 1 }}
                             >
-                                <Icon_ name={'circle'} color={GREY} size={y(15)} />
+                                <Icon_ name={'circle'} color={colors.GREY} size={y(15)} />
                             </Marker>
 
                             <Marker //DESTINATION
@@ -1729,7 +1714,7 @@ export default class CarpoolTripDetails extends React.Component {
                                         </View>
                                         <View style={[styles.textContainer, { marginTop: y(10) }]}>
                                             <Text style={[styles.firstLayer,]}>Available Perch Kilometers </Text>
-                                            <Text style={[styles.firstLayer, { color: GREEN, fontFamily: 'Gilroy-Bold' }]}>{(this.state.perchKms).toFixed(2)} kms</Text>
+                                            <Text style={[styles.firstLayer, { color: colors.GREEN, fontFamily: 'Gilroy-Bold' }]}>{(this.state.perchKms).toFixed(2)} kms</Text>
                                         </View>
                                     </> :
                                     <></>}
@@ -2059,1678 +2044,4 @@ export default class CarpoolTripDetails extends React.Component {
                 />
             );
     };
-};
-
-class Drivers extends React.Component {
-    constructor() {
-        super();
-
-        if (Platform.OS === 'android') {
-            UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
-        };
-
-        this.state = {
-            complete1: false,
-            complete2: false,
-            complete3: false,
-            declined: false,
-        };
-        this.progress1 = new Animated.Value(0);
-        this.progress2 = new Animated.Value(0);
-        this.progress3 = new Animated.Value(0);
-    };
-    componentDidMount() {//PUT LISTENERS FOR ACCEPTANCE OR DENAIL HERE
-        AsyncStorage.getItem('USER_DETAILS').then(result => {
-            const userDetails = JSON.parse(result);
-            switch (this.props.steps) {
-                case 1: {
-                    database().ref(`/carpoolRequestsFromUsers/${this.props.data.key}/${userDetails.userID}/status`).on('value', snapshot => {
-                        if (snapshot.val() == 'ACCEPTED')
-                            this.progress1_.call(this);
-                        else if (snapshot.val() == 'CANCELLED')
-                            this.setState({ declined: true });
-                    });
-                } break;
-                case 2: {
-                    database().ref(`/carpoolRequestsFromUsers/${this.props.data.start}/${userDetails.userID}/status`).on('value', snapshot => {
-                        if (snapshot.val() == 'ACCEPTED')
-                            this.progress1_.call(this);
-                        else if (snapshot.val() == 'CANCELLED')
-                            this.setState({ declined: true });
-                    });
-
-                    database().ref(`/carpoolRequestsFromUsers/${this.props.data.end}/${userDetails.userID}/status`).on('value', snapshot => {
-                        if (snapshot.val() == 'ACCEPTED')
-                            this.progress2_.call(this);
-                        else if (snapshot.val() == 'CANCELLED')
-                            this.setState({ declined: true });
-                    });
-                } break;
-                case 3: {
-                    database().ref(`/carpoolRequestsFromUsers/${this.props.data.start}/${userDetails.userID}/status`).on('value', snapshot => {
-                        if (snapshot.val() == 'ACCEPTED')
-                            this.progress1_.call(this);
-                        else if (snapshot.val() == 'CANCELLED')
-                            this.setState({ declined: true });
-                    });
-
-                    database().ref(`/carpoolRequestsFromUsers/${this.props.data.middle}/${userDetails.userID}/status`).on('value', snapshot => {
-                        if (snapshot.val() == 'ACCEPTED')
-                            this.progress2_.call(this);
-                        else if (snapshot.val() == 'CANCELLED')
-                            this.setState({ declined: true });
-                    });
-
-                    database().ref(`/carpoolRequestsFromUsers/${this.props.data.end}/${userDetails.userID}/status`).on('value', snapshot => {
-                        if (snapshot.val() == 'ACCEPTED')
-                            this.progress3_.call(this);
-                        else if (snapshot.val() == 'CANCELLED')
-                            this.setState({ declined: true });
-                    });
-                } break;
-            };
-
-        }).catch(error => { console.log(error.message) });
-    };
-    progress1_() {
-        this.setState({ complete1: true })
-        Animated.timing(this.progress1, {
-            toValue: 1,
-            duration: 1000,
-            easing: Easing.linear,
-            useNativeDriver: true,
-        }).start();
-    };
-    progress2_() {
-        this.setState({ complete2: true })
-        Animated.timing(this.progress2, {
-            toValue: 1,
-            duration: 1000,
-            easing: Easing.linear,
-            useNativeDriver: true,
-        }).start();
-    };
-    progress3_() {
-        this.setState({ complete3: true })
-        Animated.timing(this.progress3, {
-            toValue: 1,
-            duration: 1000,
-            easing: Easing.linear,
-            useNativeDriver: true,
-        }).start();
-    };
-
-    render() {
-
-        let toDisplay = <></>, finished = false;
-        switch (this.props.steps) {
-            case 1: {
-                if (this.state.complete1)
-                    finished = true;
-                else
-                    finished = false;
-
-                toDisplay =
-                    <View style={styles.driverRow}>
-                        <Text style={[styles.driverName, { color: GREEN, marginVertical: y(10) }]}>{this.props.driver1 ? this.props.driver1.firstName : ''}</Text>
-                        {this.state.complete1 ?
-                            <View style={{ position: 'absolute', right: -x(17), top: -x(12) }}>
-                                <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress1} style={{ width: x(50), height: x(50) }}
-                                    colorFilters={[{
-                                        keypath: "Shape Layer 3",
-                                        color: GREEN,
-                                    }, {
-                                        keypath: "Shape Layer 4",
-                                        color: GREEN,
-                                    }]} />
-                            </View> :
-                            <View>
-                                <MaterialIndicator color={GREEN} size={x(20)} />
-                            </View>
-                        }
-                    </View>
-            } break;
-            case 2: {
-                if (this.state.complete1 && this.state.complete2)
-                    finished = true;
-                else
-                    finished = false;
-
-                toDisplay =
-                    <>
-                        <View style={styles.driverRow}>
-                            <Text style={[styles.driverName, { color: GREEN, marginTop: y(10) }]}>{this.props.driver1 ? this.props.driver1.firstName : ''}</Text>
-                            {this.state.complete1 ?
-                                <View style={{ position: 'absolute', right: -x(17), top: -x(12) }}>
-                                    <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress1} style={{ width: x(50), height: x(50) }}
-                                        colorFilters={[{
-                                            keypath: "Shape Layer 3",
-                                            color: GREEN,
-                                        }, {
-                                            keypath: "Shape Layer 4",
-                                            color: GREEN,
-                                        }]} />
-                                </View> :
-                                <View>
-                                    <MaterialIndicator color={GREEN} size={x(20)} />
-                                </View>
-                            }
-                        </View>
-                        <View style={styles.driverRow}>
-                            <Text style={[styles.driverName, { color: BLUE, marginBottom: y(10), marginTop: y(5) }]}>{this.props.driver2 ? this.props.driver2.firstName : ''}</Text>
-                            {this.state.complete2 ?
-                                <View style={{ position: 'absolute', right: -x(17), top: -x(12) }}>
-                                    <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress2} style={{ width: x(50), height: x(50) }}
-                                        colorFilters={[{
-                                            keypath: "Shape Layer 3",
-                                            color: BLUE,
-                                        }, {
-                                            keypath: "Shape Layer 4",
-                                            color: BLUE,
-                                        }]} />
-                                </View> :
-                                <View>
-                                    <MaterialIndicator color={BLUE} size={x(20)} />
-                                </View>
-                            }
-                        </View>
-
-                    </>
-            } break;
-            case 3: {
-                if (this.state.complete1 && this.state.complete2 && this.state.complete3)
-                    finished = true;
-                else
-                    finished = false;
-
-                toDisplay =
-                    <>
-                        <View style={styles.driverRow}>
-                            <Text style={[styles.driverName, { color: GREEN, marginTop: y(10) }]}>{this.props.driver1 ? this.props.driver1.firstName : ''}</Text>
-                            {this.state.complete1 ?
-                                <View style={{ position: 'absolute', right: -x(17), top: -x(12) }}>
-                                    <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress1} style={{ width: x(50), height: x(50) }}
-                                        colorFilters={[{
-                                            keypath: "Shape Layer 3",
-                                            color: GREEN,
-                                        }, {
-                                            keypath: "Shape Layer 4",
-                                            color: GREEN,
-                                        }]} />
-                                </View> :
-                                <View>
-                                    <MaterialIndicator color={GREEN} size={x(20)} />
-                                </View>
-                            }
-                        </View>
-                        <View style={styles.driverRow}>
-                            <Text style={[styles.driverName, { color: BLUE, marginVertical: y(5) }]}>{this.props.driver2 ? this.props.driver2.firstName : ''}</Text>
-                            {this.state.complete2 ?
-                                <View style={{ position: 'absolute', right: -x(17), top: -x(12), }}>
-                                    <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress2} style={{ width: x(50), height: x(50) }}
-                                        colorFilters={[{
-                                            keypath: "Shape Layer 3",
-                                            color: BLUE,
-                                        }, {
-                                            keypath: "Shape Layer 4",
-                                            color: BLUE,
-                                        }]} />
-                                </View> :
-                                <View>
-                                    <MaterialIndicator color={BLUE} size={x(20)} />
-                                </View>
-                            }
-                        </View>
-
-                        <View style={styles.driverRow}>
-                            <Text style={[styles.driverName, { color: PURPLE, marginBottom: y(10) }]}>{this.props.driver3 ? this.props.driver3.firstName : ''}</Text>
-                            {this.state.complete3 ?
-                                <View style={{ position: 'absolute', right: -x(17), top: -x(12) }}>
-                                    <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress3} style={{ width: x(50), height: x(50) }}
-                                        colorFilters={[{
-                                            keypath: "Shape Layer 3",
-                                            color: PURPLE,
-                                        }, {
-                                            keypath: "Shape Layer 4",
-                                            color: PURPLE,
-                                        }]} />
-                                </View> :
-                                <View>
-                                    <MaterialIndicator color={PURPLE} size={x(20)} />
-                                </View>
-                            }
-                        </View>
-                    </>
-            } break;
-        };
-
-        if (Platform.OS == 'ios')
-            if (finished)
-                LayoutAnimation.configureNext(CustomLayoutLinear);
-
-        if (finished)
-            this.props.navigate();
-
-        if (this.props.tripActive && this.state.declined == false)
-            return (
-                <View style={styles.driverContainer}>
-                    {finished == false ?
-                        <View style={styles.secondaryDriverConatiner_}>
-                            {this.props.now ?
-                                <Text style={[styles.driverTitle, { textAlign: 'center', marginVertical: y(5) }]}>Waiting for drivers to accept the ride request</Text> :
-                                <Text style={[styles.driverTitle, { textAlign: 'center', marginVertical: y(5) }]}>Sending ride request to drivers</Text>
-                            }
-                            {toDisplay}
-                            {this.props.now ?
-                                <Text style={[styles.driverName, { textAlign: 'center', marginBottom: y(5), fontSize: y(12, true) }]}>Drivers will accept within <Text style={{ fontWeight: '700', }}>3 minutes</Text> and the trip would begin. If your trip is not accepted, you would be refunded fully</Text> :
-                                <Text style={[styles.driverName, { textAlign: 'center', marginBottom: y(5), fontSize: y(12, true) }]}>We would send you a notification when this driver accepts your ride request. If your trip is not accepted, you would be refunded fully</Text>}
-
-                        </View> :
-                        <View style={[styles.secondaryDriverConatiner_, { justifyContent: 'center', alignItems: 'center', width: x(100), height: x(100) }]}>
-                            <MaterialIndicator color={GREEN} size={x(50)} />
-                        </View>
-                    }
-                </View>
-            );
-        else {
-            return (
-                <View style={styles.driverContainer}>
-                    <View style={styles.secondaryDriverConatiner_}>
-                        <Text style={[styles.driverTitle, { textAlign: 'center', marginVertical: y(5), fontSize: y(16, true) }]}>Sadly a driver could not accept your request , please pick another trip</Text>
-                        <TouchableOpacity style={styles.backButton} onPress={this.props.onPress}>
-                            <Text style={[styles.driverTitle, { color: WHITE, fontSize: y(15, true) }]}>Go back</Text>
-                        </TouchableOpacity>
-
-                    </View>
-                </View>
-            );
-        }
-    };
-};
-
-class CarpoolRideConfirmed extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            sendUserLocation: true,
-            remainingDistance: null,
-            nextDriverDistances: null,
-            originalTotalDistance: null,
-            dateText: this.props.dateText,
-            cancelAlert: false,
-
-            driver1Rating: 0,
-            driver2Rating: 0,
-            driver3Rating: 0,
-
-            loading: false,
-            cancelLoading: false,
-            callScreen: false,
-            messageScreen: false,
-            navigationLoading: false,
-
-            location: this.props.location,
-            destination: this.props.destination,
-            seatNumber: this.props.seatNumber,
-            hours: this.props.hours,
-            minutes: this.props.minutes,
-            shareCode: '------',
-            animate:true,
-
-        };
-        this.data = this.props.data;
-        this.ratingTop = new Animated.Value(height);
-        this.ratingShown = false;
-        this.value;
-        this.direction;
-        this.headerInverse = new Animated.Value(-Y_START_);
-        this.position = new Animated.ValueXY({ x: X_CONSTANT, y: Y_START_ });//This is the value we are animating to.
-        this.position.y.addListener(({ value }) => {
-            this.headerInverse.setValue(-value);
-            if (value >= Y_START_ && this.direction === 'downwards') {
-                this.position.stopAnimation(() => {
-                    this.direction = 'upwards';
-
-                    const Y_POSITION = Number(value);
-                    if ((Y_POSITION > Y_START_ && this.direction === 'upwards'))
-                        Animated.spring(this.position, {
-                            toValue: { x: X_CONSTANT, y: Y_START_ },
-                        }).start();
-                });
-            }
-            else if ((value <= this.TOP_OF_TRIPS) && this.direction === 'upwards') {
-                this.direction = 'downwards';
-                this.position.stopAnimation(() => {
-                    if (value < this.TOP_OF_TRIPS)
-                        Animated.spring(this.position, {
-                            toValue: { x: X_CONSTANT, y: (this.TOP_OF_TRIPS + 1) },
-                        }).start();
-                })
-            }
-
-        });
-
-        this.panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: (event, gestureState) => true,
-            onMoveShouldSetPanResponder: (e, gestureState) => {
-                return Math.abs(gestureState.dx) >= 10 || Math.abs(gestureState.dy) >= 10;
-
-            },
-            onPanResponderGrant: (evt, gestureState) => {
-                this.position.stopAnimation();
-                this.position.setOffset({ x: X_CONSTANT, y: this.position.y._value });   //SETS IT TO THE POSITION
-                this.position.setValue({ x: 0, y: 0 });
-                this.value = Number(JSON.stringify(this.position.y));
-            },
-            onPanResponderMove: (evt, gestureState) => {
-                this.position.stopAnimation();
-                const Y_POSITION = (this.value + gestureState.dy);
-                if (Y_POSITION <= Y_START_ && Y_POSITION >= this.TOP_OF_TRIPS)
-                    this.position.setValue({ x: X_CONSTANT, y: (gestureState.dy) });
-
-                if (Math.sign(gestureState.vy) == 1) //going down
-                    this.direction = 'downwards';
-                else if (Math.sign(gestureState.vy) == -1)//going upwards
-                    this.direction = 'upwards';
-
-            },
-            onPanResponderRelease: (evt, gestureState) => {
-                this.position.flattenOffset();
-
-                const Y_POSITION = Number(JSON.stringify(this.position.y));
-                if (Y_POSITION < Y_START_) {
-                    Animated.decay(this.position, {
-                        velocity: { x: 0, y: gestureState.vy }, // velocity from gesture release
-                    }).start();
-
-                    if (Math.sign(gestureState.vy) == 1) //going down
-                        this.direction = 'downwards';
-                    else if (Math.sign(gestureState.vy) == -1)//going upwards
-                        this.direction = 'upwards';
-
-                }
-                else if (Y_POSITION > Y_START_) {
-                    this.direction = 'upwards';
-                    Animated.spring(this.position, {
-                        toValue: { x: X_CONSTANT, y: Y_START_ }, // velocity from gesture release
-                    }).start();
-                }
-            },
-        });
-        this._Y_START = y(55);
-        this._Y_END = -y(100);
-        this.position_ = new Animated.ValueXY({ x: 0, y: this._Y_END });
-    };
-
-    componentDidMount() {
-        const data = this.data;
-        database().ref(`carpoolTripReserve/carpool/user/${this.props.userID}`).on('child_removed', snapshot => {
-            this.props.navigation.navigate("Main");
-        })
-        AsyncStorage.getItem('USER_DETAILS').then(result => {
-            const userDetails = JSON.parse(result);
-            this.setState({ shareCode: userDetails.shareCode });
-        })
-        Geolocation.getCurrentPosition(
-            (position) => {
-                database().ref(`userLocation/${this.props.userID}`).set({
-                    location: { latitude: position.coords.latitude, longitude: position.coords.longitude },
-                    shareLocation: true,
-                }).catch(e => { console.log(e.message) });
-            },
-            (error) => {
-                console.log(error.code, error.message);
-                Geolocation.requestAuthorization();
-            },
-            {
-                distanceFilter: 10,
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
-            }
-        ).catch((error) => {
-            console.log(error.code, error.message);
-            Geolocation.requestAuthorization();
-        });
-
-        this.watchID = Geolocation.watchPosition(position => {//THIS HAPPENS AS THE USER MOVES OR CHANGES LOCATION
-            if (this.timeoutFunction && this.state.sendUserLocation) {
-                database().ref(`userLocation/${this.props.userID}`).set({
-                    location: { latitude: position.coords.latitude, longitude: position.coords.longitude },
-                    shareLocation: true,
-                }).catch(e => { console.log(e.message) });
-
-                this.timeoutFunction = false;
-            }
-        },
-            error => (console.log(error.message)),
-            {
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
-                distanceFilter: 10,
-            }
-        );
-
-        this.timeout = setInterval(() => {
-            this.timeoutFunction = true;
-        }, 10000);
-
-
-
-
-
-        //CHATS
-        switch (data.steps) {
-            case 1: {
-                this.keys1 = [];
-                this.firstMessagesGotten1 = false;
-                database().ref(`chats/${this.props.userID}-${data.key}/`).once('value', snap => {
-                    this.keys1 = Object.keys(snap.val() || {});
-                    if (snap.val()) {
-                        let arrayToAppend = [], i = 0;
-                        snap.forEach(val => {
-                            arrayToAppend[i] = val.val();
-                            i++;
-                        });
-
-                        this.firstMessagesGotten1 = true;
-                    }
-                    else {
-                        this.firstMessagesGotten1 = true;
-
-                    }
-                });
-                database().ref(`chats/${this.state.userID}-${this.state.driverID}/`).on('child_added', snapshot => {
-
-                    if (this.firstMessagesGotten1 && this.keys1.includes(snapshot.key) == false) {
-
-                        if (snapshot.val().sender == 'O')
-                            this.sendNotification(this.state.driverDetails ? this.state.driverDetails.name : 'Driver', snapshot.val().m) //ENABLE DEEP LINKING
-
-                    };
-                });
-            } break
-            case 2: {
-                this.keys1 = [];
-                this.firstMessagesGotten1 = false;
-                database().ref(`chats/${this.props.userID}-${data.start}/`).once('value', snap => {
-                    this.keys1 = Object.keys(snap.val() || {});
-                    if (snap.val()) {
-                        let arrayToAppend = [], i = 0;
-                        snap.forEach(val => {
-                            arrayToAppend[i] = val.val();
-                            i++;
-                        });
-
-                        this.firstMessagesGotten1 = true;
-                    }
-                    else {
-                        this.firstMessagesGotten1 = true;
-
-                    }
-                });
-                database().ref(`chats/${this.state.userID}-${this.state.driverID}/`).on('child_added', snapshot => {
-
-                    if (this.firstMessagesGotten1 && this.keys1.includes(snapshot.key) == false) {
-
-                        if (snapshot.val().sender == 'O')
-                            this.sendNotification(this.state.driverDetails ? this.state.driverDetails.name : 'Driver', snapshot.val().m) //ENABLE DEEP LINKING
-
-                    };
-                });
-                this.keys2 = [];
-                this.firstMessagesGotten2 = false;
-                database().ref(`chats/${this.props.userID}-${data.end}/`).once('value', snap => {
-                    this.keys2 = Object.keys(snap.val() || {});
-                    if (snap.val()) {
-                        let arrayToAppend = [], i = 0;
-                        snap.forEach(val => {
-                            arrayToAppend[i] = val.val();
-                            i++;
-                        });
-
-                        this.firstMessagesGotten2 = true;
-                    }
-                    else {
-                        this.firstMessagesGotten2 = true;
-
-                    }
-                });
-                database().ref(`chats/${this.state.userID}-${this.state.driverID}/`).on('child_added', snapshot => {
-
-                    if (this.firstMessagesGotten2 && this.keys2.includes(snapshot.key) == false) {
-
-                        if (snapshot.val().sender == 'O')
-                            this.sendNotification(this.state.driverDetails ? this.state.driverDetails.name : 'Driver', snapshot.val().m) //ENABLE DEEP LINKING
-
-                    };
-                });
-            } break;
-            case 3: {
-                this.keys1 = [];
-                this.firstMessagesGotten1 = false;
-                database().ref(`chats/${this.props.userID}-${data.start}/`).once('value', snap => {
-                    this.keys1 = Object.keys(snap.val() || {});
-                    if (snap.val()) {
-                        let arrayToAppend = [], i = 0;
-                        snap.forEach(val => {
-                            arrayToAppend[i] = val.val();
-                            i++;
-                        });
-
-                        this.firstMessagesGotten1 = true;
-                    }
-                    else {
-                        this.firstMessagesGotten1 = true;
-
-                    }
-                });
-                database().ref(`chats/${this.state.userID}-${this.state.driverID}/`).on('child_added', snapshot => {
-
-                    if (this.firstMessagesGotten1 && this.keys1.includes(snapshot.key) == false) {
-
-                        if (snapshot.val().sender == 'O')
-                            this.sendNotification(this.state.driverDetails ? this.state.driverDetails.name : 'Driver', snapshot.val().m) //ENABLE DEEP LINKING
-
-                    };
-                });
-                this.keys2 = [];
-                this.firstMessagesGotten2 = false;
-                database().ref(`chats/${this.props.userID}-${data.end}/`).once('value', snap => {
-                    this.keys2 = Object.keys(snap.val() || {});
-                    if (snap.val()) {
-                        let arrayToAppend = [], i = 0;
-                        snap.forEach(val => {
-                            arrayToAppend[i] = val.val();
-                            i++;
-                        });
-
-                        this.firstMessagesGotten2 = true;
-                    }
-                    else {
-                        this.firstMessagesGotten2 = true;
-
-                    }
-                });
-                database().ref(`chats/${this.state.userID}-${this.state.driverID}/`).on('child_added', snapshot => {
-
-                    if (this.firstMessagesGotten2 && this.keys2.includes(snapshot.key) == false) {
-
-                        if (snapshot.val().sender == 'O')
-                            this.sendNotification(this.state.driverDetails ? this.state.driverDetails.name : 'Driver', snapshot.val().m) //ENABLE DEEP LINKING
-
-                    };
-                });
-                this.keys3 = [];
-                this.firstMessagesGotten3 = false;
-                database().ref(`chats/${this.props.userID}-${data.start}/`).once('value', snap => {
-                    this.keys3 = Object.keys(snap.val() || {});
-                    if (snap.val()) {
-                        let arrayToAppend = [], i = 0;
-                        snap.forEach(val => {
-                            arrayToAppend[i] = val.val();
-                            i++;
-                        });
-
-                        this.firstMessagesGotten3 = true;
-                    }
-                    else {
-                        this.firstMessagesGotten3 = true;
-
-                    }
-                });
-                database().ref(`chats/${this.state.userID}-${this.state.driverID}/`).on('child_added', snapshot => {
-
-                    if (this.firstMessagesGotten3 && this.keys3.includes(snapshot.key) == false) {
-
-                        if (snapshot.val().sender == 'O')
-                            this.sendNotification(this.state.driverDetails ? this.state.driverDetails.name : 'Driver', snapshot.val().m) //ENABLE DEEP LINKING
-
-                    };
-                });
-
-            } break;
-        }
-    };
-    zoomOut() {
-
-        const data = this.data;
-        switch (data.steps) {
-            case 1: {
-                let r = [...data.firstLeg, [this.props.location.latitude, this.props.location.longitude], [this.props.destination.latitude, this.props.destination.longitude]];
-                const line = turf.lineString(r);
-                let bboxPolygon = turf.bboxPolygon(turf.bbox(line)).geometry.coordinates[0].map((v => { return { latitude: v[0], longitude: v[1] } }));
-                if (this.props.driverL1) {
-                    bboxPolygon.push(this.props.driverL1);
-                    if (this.mapIsReady && this.map)
-                        this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
-                        })
-                }
-
-            } break;
-            case 2: {
-                let r = [...data.firstLeg];
-                r.push(...data.secondLeg);
-                r.push([this.props.location.latitude, this.props.location.longitude], [this.props.destination.latitude, this.props.destination.longitude])
-                const line = turf.lineString(r);
-                let bboxPolygon = turf.bboxPolygon(turf.bbox(line)).geometry.coordinates[0].map((v => { return { latitude: v[0], longitude: v[1] } }));
-                if (this.props.driverL1 && this.props.driverL2) {
-                    bboxPolygon.push(this.props.driverL1, this.props.driverL2);
-                    if (this.mapIsReady && this.map)
-                        this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
-                        })
-                }
-
-
-            } break;
-            case 3: {
-                let r = [...data.firstLeg];
-                r.push(...data.secondLeg);
-                r.push(...data.thirdLeg);
-                r.push([this.props.location.latitude, this.props.location.longitude], [this.props.destination.latitude, this.props.destination.longitude])
-                const line = turf.lineString(r);
-                let bboxPolygon = turf.bboxPolygon(turf.bbox(line)).geometry.coordinates[0].map((v => { return { latitude: v[0], longitude: v[1] } }));
-                if (this.props.driverL1 && this.props.driverL2 && this.props.driverL3) {
-                    bboxPolygon.push(this.props.driverL1, this.props.driverL2, this.props.driverL3);
-                    if (this.mapIsReady && this.map)
-                        this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
-                        })
-                }
-            } break;
-        };
-    };
-    zoomIn() {
-        const data = this.data;
-        switch (data.steps) {
-            case 1: {
-                let r = [...data.firstLeg, [this.props.location.latitude, this.props.location.longitude], [this.props.destination.latitude, this.props.destination.longitude]];
-                const line = turf.lineString(r);
-                const bboxPolygon = turf.bboxPolygon(turf.bbox(line)).geometry.coordinates[0].map((v => { return { latitude: v[0], longitude: v[1] } }));
-                if (this.props.driverL1) {
-                    if (this.mapIsReady && this.map)
-                        this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
-                        })
-                }
-            } break;
-            case 2: {
-                let r = [...data.firstLeg];
-                r.push(...data.secondLeg);
-                r.push([this.props.location.latitude, this.props.location.longitude], [this.props.destination.latitude, this.props.destination.longitude])
-                const line = turf.lineString(r);
-                const bboxPolygon = turf.bboxPolygon(turf.bbox(line)).geometry.coordinates[0].map((v => { return { latitude: v[0], longitude: v[1] } }));
-                if (this.props.driverL1 && this.props.driverL2) {
-                    if (this.mapIsReady && this.map)
-                        this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
-                        })
-                }
-
-            } break;
-            case 3: {
-                let r = [...data.firstLeg];
-                r.push(...data.secondLeg);
-                r.push(...data.thirdLeg);
-                r.push([this.props.location.latitude, this.props.location.longitude], [this.props.destination.latitude, this.props.destination.longitude])
-                const line = turf.lineString(r);
-                const bboxPolygon = turf.bboxPolygon(turf.bbox(line)).geometry.coordinates[0].map((v => { return { latitude: v[0], longitude: v[1] } }));
-                if (this.props.driverL1 && this.props.driverL2 && this.props.driverL3) {
-                    if (this.mapIsReady && this.map)
-                        this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
-                        })
-                }
-            } break;
-        };
-    };
-    showRating() {
-        if (this.ratingShown)
-            Animated.spring(this.ratingTop, {
-                toValue: 0,
-                bounciness: 0,
-            }).start();
-    }
-    nextDriverDistancesSetter(value, value2) {
-        this.setState({ nextDriverDistances: value, originalTotalDistance: value2 });
-    };
-    animate = () => {
-        if (this.state.animate)
-            this.setState({ animate: false }, () => {
-                Animated.spring(this.position_, {
-                    toValue: { x: 0, y: this._Y_START },
-                    bounciness: 0,
-                }).start(() => {
-                    setTimeout(() => {
-                        Animated.spring(this.position_, {
-                            toValue: { x: 0, y: this._Y_END },
-                            bounciness: 0,
-                        }).start(() => {
-                            this.setState({ animate: true })
-                        });
-                    }, 2000);//HIDE BACK AFTER 2 SECONDS
-                });
-            });
-    };
-    componentWillUnmount() {
-        Geolocation.clearWatch(this.watchID);
-        clearInterval(this.timeout);
-    };
-    render() {
-        if (this.props.tripEnded && this.ratingShown == false) {
-            this.ratingShown = true;
-            this.showRating.call(this);
-        }
-        const scale_ = this.position.y.interpolate({
-            inputRange: [Y_START_, y(691)],
-            outputRange: [1, 2.7],
-            extrapolate: 'clamp',
-        });
-        const data = this.props.data;
-        let totalDistance = this.props.totalDistance;
-        let remainingDistance = this.state.remainingDistance != null ? this.state.remainingDistance : totalDistance;
-
-        remainingDistance > 100 ?
-            remainingDistance = `${(remainingDistance / 1000).toFixed(1)} KM` :
-            remainingDistance = `${(remainingDistance).toFixed(remainingDistance != 0 ? 1 : 0)} M`;
-
-        let fullTripPoly, marginTopNextDriver = y(14), nextDriver = <></>;
-        let loadingComplete = false;
-        let ratingStack = <></>;
-        let phones = <></>;
-        let messages = <></>;
-        let justifyContent_ = 'space-between';
-        let driverID1, driverID2, driverID3;
-        let driverIDArray = [];
-        switch (data.steps) {
-            case 1: {
-                driverID1 = data.key;
-                driverIDArray = [driverID1];
-                if (this.props.driver1) {
-                    loadingComplete = true;
-                    ratingStack = (
-                        <DriverRating
-                            rating={this.state.driver1Rating}
-                            starColor={GREEN}
-                            ratingAdjust={(rating) => {
-                                this.setState({ driver1Rating: rating })
-                            }}
-                            driverName={`${this.props.driver1.name}`}
-                            driver={this.props.driver1}
-                        />
-                    );
-
-                    phones = (
-                        <>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: GREEN }]} onPress={() => { callNumber(this.props.driver1.phoneNumber); }}>
-                                    <Icon name={'phone-call'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text numberOfLines={1} style={styles.phoneText}>{this.props.driver1.firstName}</Text>
-                            </View>
-                        </>
-                    );
-                    messages = (
-                        <>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: GREEN }]}
-                                    onPress={() => {
-                                        if (this.props.getFirstEta)
-                                            this.props.navigation.navigate('Chat', {
-                                                riderID: this.props.userID,
-                                                driverID: driverID1,
-                                            })
-                                        else
-                                            alert('Cannot message after trip has started. Feel free to talk to each other')
-                                    }}>
-                                    <Icon name={'mail'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text numberOfLines={1} style={styles.phoneText}>{this.props.driver1.firstName}</Text>
-                            </View>
-                        </>
-                    )
-                    justifyContent_ = 'center';
-                }
-
-
-                fullTripPoly = [...data.walk1, ...data.firstLeg, ...data.walk2];
-                totalDistance = polylineLenght(fullTripPoly);
-
-
-                if (this.props.getFirstEta)
-                    nextDriver = (
-                        <>
-                            <View style={[{ marginTop: y(30) }]}>
-                                <DriverProfile
-                                    now={this.props.now}
-                                    color={GREEN}
-                                    driver={this.props.driver1 ? this.props.driver1 : null}
-                                    eta={this.props.etaD1}
-                                    style={'carpool'}
-                                />
-                            </View>
-                            <View style={[styles.divider, { marginTop: y(14) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-                        </>
-                    );
-                else
-                    marginTopNextDriver = y(25);
-
-            } break;
-            case 2: {
-                driverID1 = data.start;
-                driverID2 = data.end;
-                driverIDArray = [driverID1, driverID2];
-                if (this.props.driver1 && this.props.driver2) {
-                    loadingComplete = true;
-                    ratingStack = (
-                        <>
-                            <DriverRating
-                                rating={this.state.driver1Rating}
-                                starColor={GREEN}
-                                ratingAdjust={(rating) => {
-                                    this.setState({ driver1Rating: rating })
-                                }}
-                                driverName={`${this.props.driver1.name}`}
-                                driver={this.props.driver1}
-                            />
-                            <DriverRating
-                                rating={this.state.driver2Rating}
-                                starColor={BLUE}
-                                ratingAdjust={(rating) => {
-                                    this.setState({ driver2Rating: rating })
-                                }}
-                                driverName={`${this.props.driver2.name}`}
-                                driver={this.props.driver2}
-                            />
-                        </>
-                    );
-
-                    phones = (
-                        <>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: GREEN }]} onPress={() => { callNumber(this.props.driver1.phoneNumber); }}>
-                                    <Icon name={'phone-call'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text style={[styles.phoneText_, { color: GREEN }]}>{`1st driver`}</Text>
-                                <Text style={styles.phoneText}>{this.props.driver1.firstName}</Text>
-                            </View>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: BLUE }]} onPress={() => { callNumber(this.props.driver2.phoneNumber); }}>
-                                    <Icon name={'phone-call'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text style={[styles.phoneText_, { color: BLUE }]}>{`2nd driver`}</Text>
-                                <Text style={styles.phoneText}>{this.props.driver2.firstName}</Text>
-                            </View>
-                        </>
-                    );
-                    messages = (
-                        <>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: GREEN }]}
-                                    onPress={() => {
-                                        if (this.props.getFirstEta)
-                                            this.props.navigation.navigate('Chat', {
-                                                riderID: this.props.userID,
-                                                driverID: driverID1,
-                                            })
-                                        else
-                                            alert('Cannot message after trip has started. Feel free to talk to each other')
-                                    }}>
-                                    <Icon name={'mail'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text style={[styles.phoneText_, { color: GREEN }]}>{`1st driver`}</Text>
-                                <Text numberOfLines={1} style={styles.phoneText}>{this.props.driver1.firstName}</Text>
-                            </View>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: BLUE }]}
-                                    onPress={() => {
-                                        if (this.props.getSecondEta)
-                                            this.props.navigation.navigate('Chat', {
-                                                riderID: this.props.userID,
-                                                driverID: driverID2,
-                                            })
-                                        else
-                                            alert('Cannot message after trip has started. Feel free to talk to each other')
-                                    }}>
-                                    <Icon name={'mail'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text style={[styles.phoneText_, { color: BLUE }]}>{`2nd driver`}</Text>
-                                <Text numberOfLines={1} style={styles.phoneText}>{this.props.driver2.firstName}</Text>
-                            </View>
-                        </>
-                    )
-                }
-
-
-                fullTripPoly = [...data.walk1, ...data.firstLeg, ...data.walk2, ...data.secondLeg, ...data.walk3];
-                totalDistance = polylineLenght(fullTripPoly);
-
-
-
-                if (this.props.getFirstEta)
-                    nextDriver = (
-                        <>
-                            <View style={[{ marginTop: y(30) }]}>
-                                <DriverProfile
-                                    color={GREEN}
-                                    driver={this.props.driver1 ? this.props.driver1 : null}
-                                    eta={this.props.etaD1}
-                                    style={'carpool'}
-                                />
-                            </View>
-                            <View style={[styles.divider, { marginTop: y(14) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-                        </>
-                    );
-                else if (this.props.getSecondEta)
-                    nextDriver = (
-                        <>
-                            <View style={[{ marginTop: y(30) }]}>
-                                <DriverProfile
-                                    color={BLUE}
-                                    driver={this.props.driver2 ? this.props.driver2 : null}
-                                    eta={this.props.etaD2}
-                                    style={'carpool'}
-                                />
-                            </View>
-                            <View style={[styles.divider, { marginTop: y(14) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-                        </>
-                    );
-                else
-                    marginTopNextDriver = y(25);
-
-
-            } break;
-            case 3: {
-                driverID1 = data.start;
-                driverID2 = data.middle;
-                driverID3 = data.end;
-                driverIDArray = [driverID1, driverID2, driverID3];
-                if (this.props.driver1 && this.props.driver2 && this.props.driver3) {
-                    loadingComplete = true;
-                    ratingStack = (
-                        <>
-                            <DriverRating
-                                rating={this.state.driver1Rating}
-                                starColor={GREEN}
-                                ratingAdjust={(rating) => {
-                                    this.setState({ driver1Rating: rating })
-                                }}
-                                driverName={`${this.props.driver1.name}`}
-                                driver={this.props.driver1}
-                            />
-                            <DriverRating
-                                rating={this.state.driver2Rating}
-                                starColor={BLUE}
-                                ratingAdjust={(rating) => {
-                                    this.setState({ driver2Rating: rating })
-                                }}
-                                driverName={`${this.props.driver2.name}`}
-                                driver={this.props.driver2}
-                            />
-                            <DriverRating
-                                rating={this.state.driver3Rating}
-                                starColor={PURPLE}
-                                ratingAdjust={(rating) => {
-                                    this.setState({ driver3Rating: rating })
-                                }}
-                                driverName={`${this.props.driver3.name}`}
-                                driver={this.props.driver3}
-                            />
-                        </>
-                    );
-
-                    phones = (
-                        <>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: GREEN }]} onPress={() => { callNumber(this.props.driver1.phoneNumber); }}>
-                                    <Icon name={'phone-call'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text style={[styles.phoneText_, { color: GREEN }]}>{`1st driver`}</Text>
-                                <Text style={styles.phoneText}>{this.props.driver1.firstName}</Text>
-                            </View>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: BLUE }]} onPress={() => { callNumber(this.props.driver2.phoneNumber); }}>
-                                    <Icon name={'phone-call'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text style={[styles.phoneText_, { color: BLUE }]}>{`2nd driver`}</Text>
-                                <Text style={styles.phoneText}>{this.props.driver2.firstName}</Text>
-                            </View>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: PURPLE }]} onPress={() => { callNumber(this.props.driver3.phoneNumber); }}>
-                                    <Icon name={'phone-call'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text style={[styles.phoneText_, { color: PURPLE }]}>{`3rd driver`}</Text>
-                                <Text style={styles.phoneText}>{this.props.driver3.firstName}</Text>
-                            </View>
-                        </>
-                    );
-                    messages = (
-                        <>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: GREEN }]}
-                                    onPress={() => {
-                                        if (this.props.getFirstEta)
-                                            this.props.navigation.navigate('Chat', {
-                                                riderID: this.props.userID,
-                                                driverID: driverID1,
-                                            })
-                                        else
-                                            alert('Cannot message after trip has started. Feel free to talk to each other')
-                                    }}>
-                                    <Icon name={'mail'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text style={[styles.phoneText_, { color: GREEN }]}>{`1st driver`}</Text>
-                                <Text numberOfLines={1} style={styles.phoneText}>{this.props.driver1.firstName}</Text>
-                            </View>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: BLUE }]}
-                                    onPress={() => {
-                                        if (this.props.getSecondEta)
-                                            this.props.navigation.navigate('Chat', {
-                                                riderID: this.props.userID,
-                                                driverID: driverID2,
-                                            })
-                                        else
-                                            alert('Cannot message after trip has started. Feel free to talk to each other')
-                                    }}>
-                                    <Icon name={'mail'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text style={[styles.phoneText_, { color: BLUE }]}>{`2nd driver`}</Text>
-                                <Text numberOfLines={1} style={styles.phoneText}>{this.props.driver2.firstName}</Text>
-                            </View>
-                            <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={[styles.phoneIcon, { backgroundColor: PURPLE }]}
-                                    onPress={() => {
-                                        if (this.props.getThirdEta)
-                                            this.props.navigation.navigate('Chat', {
-                                                riderID: this.props.userID,
-                                                driverID: driverID3,
-                                            })
-                                        else
-                                            alert('Cannot message after trip has started. Feel free to talk to each other')
-                                    }}>
-                                    <Icon name={'mail'} color={WHITE} size={y(20)} />
-                                </TouchableOpacity>
-                                <Text style={[styles.phoneText_, { color: PURPLE }]}>{`3rd driver`}</Text>
-                                <Text numberOfLines={1} style={styles.phoneText}>{this.props.driver3.firstName}</Text>
-                            </View>
-                        </>
-                    );
-                }
-
-                fullTripPoly = [...data.walk1, ...data.firstLeg, ...data.walk2, ...data.secondLeg, ...data.walk3, ...data.thirdLeg, ...data.walk4];
-                totalDistance = polylineLenght(fullTripPoly);
-
-
-
-                if (this.props.getFirstEta)
-                    nextDriver = (
-                        <>
-                            <View style={[{ marginTop: y(30) }]}>
-                                <DriverProfile
-                                    color={GREEN}
-                                    driver={this.props.driver1 ? this.props.driver1 : null}
-                                    eta={this.props.etaD1}
-                                    style={'carpool'}
-                                />
-                            </View>
-                            <View style={[styles.divider, { marginTop: y(14) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-                        </>
-                    );
-                else if (this.props.getSecondEta)
-                    nextDriver = (
-                        <>
-                            <View style={[{ marginTop: y(30) }]}>
-                                <DriverProfile
-                                    color={BLUE}
-                                    driver={this.props.driver2 ? this.props.driver2 : null}
-                                    eta={this.props.etaD2}
-                                    style={'carpool'}
-                                />
-                            </View>
-                            <View style={[styles.divider, { marginTop: y(14) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-                        </>
-                    );
-                else if (this.props.getThirdEta)
-                    nextDriver = (
-                        <>
-                            <View style={[{ marginTop: y(30) }]}>
-                                <DriverProfile
-                                    color={PURPLE}
-                                    driver={this.props.driver3 ? this.props.driver3 : null}
-                                    eta={this.props.etaD3}
-                                    style={'carpool'}
-                                />
-                            </View>
-                            <View style={[styles.divider, { marginTop: y(14) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-                        </>
-                    );
-                else
-                    marginTopNextDriver = y(25);
-            } break;
-        };
-        if (loadingComplete && this.state.navigationLoading == false)
-            return (
-                <View style={styles.container}>
-                    <Animated.View style={[{ width: width, alignItems: 'center', position: 'absolute', zIndex: 10, elevation: 10 }, this.position_.getLayout()]}>
-                        <View style={{ height: y(70), borderRadius: 10, width: x(313), backgroundColor: GREEN, justifyContent: 'space-around', alignItems: 'center', paddingVertical: y(20) }}>
-                            <Text style={{ fontFamily: 'Gilroy-SemiBold', fontSize: y(14, true), color: WHITE }}>Copied to clipboard</Text>
-                        </View>
-                    </Animated.View>
-                    <StatusBar backgroundColor={'#000000'} barStyle={Platform.OS == 'android' ? 'light-content' : 'dark-content'} />
-                    <OfflineNotice navigation={this.props.navigation} screenName={this.props.screenName} />
-                    {
-                        this.state.cancelLoading ?
-                            <View style={[styles.cancelContainer, {}]}>
-                                <View style={styles.cancelLoadingContainer}>
-                                    <MaterialIndicator color={GREEN} size={x(35)} style={{}} />
-                                    <Text style={styles.cancelLoadingText}>We are cancelling your trip. Please do not go back or close this screen.</Text>
-                                </View>
-                            </View> : <></>
-                    }
-                    {
-                        this.state.cancelAlert == true ?
-                            <View style={styles.cancelAlertContainer}>
-                                <View style={styles.cancelAlert}>
-                                    <View style={styles.cancelAlertUpper}>
-                                        <Text style={[styles.cancelText, { fontSize: y(17, true), marginBottom: y(6) }]}>Leave this screen?</Text>
-                                        <Text style={[styles.cancelText, { fontSize: y(13, true), marginBottom: y(10), fontFamily: 'Gilroy-Regular' }]}>Leave this screen?</Text>
-                                    </View>
-                                    <View style={[{ flexDirection: 'row' }]}>
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                // this.tripIsOver.call(this);
-                                                this.props.endTrip();
-                                            }}
-                                            style={[styles.cancelAlertLower, { borderRightWidth: 0.5, borderColor: 'rgba(64, 61, 61, 0.3)', }]}>
-                                            <Text style={[styles.cancelText, { fontSize: y(15, true), color: RED, marginVertical: y(15) }]}>Exit</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => { this.setState({ cancelAlert: false }) }} style={[styles.cancelAlertLower, { borderLeftWidth: 0.5, borderColor: 'rgba(64, 61, 61, 0.3)', }]}>
-                                            <Text style={[styles.cancelText, { fontSize: y(15, true), color: GREEN, marginVertical: y(15) }]}>Stay</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View> :
-                            <></>
-                    }
-                    {
-                        this.state.callScreen ?
-                            <View style={styles.cancelAlertContainer}>
-                                <View style={[styles.cancelAlert, { padding: x(10), width: x(270) }]}>
-                                    <View style={[styles.cancelIcon, {}]}>
-                                        <TouchableOpacity onPress={() => { this.setState({ callScreen: false, }) }} style={{ width: y(40), height: y(40) }}>
-                                            <Icon name={'x'} size={y(26)} />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <Text style={[styles.cancelText, { fontSize: y(17, true), marginBottom: y(6) }]}>Pick the driver you want to call</Text>
-                                    <View style={[styles.phoneContainer, { justifyContent: justifyContent_ }]}>
-                                        {phones}
-                                    </View>
-                                </View>
-                            </View> :
-                            <></>
-                    }
-                    {
-                        this.state.messageScreen ?
-                            <View style={styles.cancelAlertContainer}>
-                                <View style={[styles.cancelAlert, { padding: x(10), width: x(270) }]}>
-                                    <View style={[styles.cancelIcon, {}]}>
-                                        <TouchableOpacity onPress={() => { this.setState({ messageScreen: false, }) }} style={{ width: y(40), height: y(40) }}>
-                                            <Icon name={'x'} size={y(26)} />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <Text style={[styles.cancelText, { fontSize: y(17, true), marginBottom: y(6) }]}>Pick the driver you want to text</Text>
-                                    <View style={[styles.phoneContainer, { justifyContent: justifyContent_ }]}>
-                                        {messages}
-                                    </View>
-                                </View>
-                            </View> :
-                            <></>
-                    }
-                    <TouchableOpacity style={[styles.zoomIcon, { backgroundColor: RED, top: y(70), right: x(10) }]} onPress={() => { this.setState({ cancelAlert: true }) }}>
-                        <Icon name={'x'} size={y(21)} color={'#FFFFFF'} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={[styles.zoomIcon, { top: y(dimensionAssert() ? 135 : 120), right: x(10) }]} onPress={this.zoomIn.bind(this)}>
-                        <Icon name={'zoom-in'} size={y(21)} color={GREEN} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={[styles.zoomIcon, { top: y(dimensionAssert() ? 200 : 170), right: x(10) }]} onPress={this.zoomOut.bind(this)}>
-                        <Icon name={'zoom-out'} size={y(21)} color={GREEN} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={[styles.zoomIcon, { top: y(dimensionAssert() ? 265 : 220), right: x(10) }]}
-                        onPress={() => {
-                            Geolocation.getCurrentPosition(
-                                (position) => {
-                                    this.map.animateToRegion({
-                                        latitude: position.coords.latitude,
-                                        longitude: position.coords.longitude,
-                                        latitudeDelta: LATITUDE_DELTA,
-                                        longitudeDelta: LONGITUDE_DELTA,
-                                    });
-                                },
-                                (error) => {
-                                    console.log(error.code, error.message);
-                                    Geolocation.requestAuthorization();
-                                }, {
-                                distanceFilter: 10,
-                                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
-                            }).catch((error) => {
-                                console.log(error.code, error.message);
-                                Geolocation.requestAuthorization();
-                            });
-                        }}
-                    >
-                        <Icon_ name={'location-arrow'} size={y(21)} color={GREEN} />
-                    </TouchableOpacity>
-
-                    <Animated.View style={{ transform: [{ scale: scale_ }], position: 'absolute', }}>
-                        <MapView
-                            initialRegion={{
-                                latitude: this.props.location.latitude,
-                                longitude: this.props.location.longitude,
-                                longitudeDelta: LONGITUDE_DELTA,
-                                latitudeDelta: LATITUDE_DELTA,
-                            }}
-                            onMapReady={() => {
-                                this.mapIsReady = true;
-                                this.zoomOut.call(this);
-                            }}
-                            ref={map => { this.map = map }}
-                            provider={PROVIDER_GOOGLE}
-                            style={[styles.maps_]}
-                            customMapStyle={MapStyle}
-                            //region={this.getMapRegion()}
-                            showsUserLocation={true}
-                            showsCompass={false}
-                            showsMyLocationButton={false}
-                        >
-                            <Marker //LOCATION
-                                coordinate={{ latitude: this.props.location.latitude, longitude: this.props.location.longitude }}
-                                identifier={'mkL'}
-                                style={{ zIndex: 1, elevation: 1 }}>
-                                <Icon_ name={'circle'} color={GREY} size={20} />
-                            </Marker>
-
-                            <Marker //DESTINATION
-                                coordinate={{ latitude: this.props.destination.latitude, longitude: this.props.destination.longitude }}
-                                identifier={'mkD'}
-                                style={{ zIndex: 1, elevation: 1 }}
-                            >
-                                <SvgComponent />
-                            </Marker>
-                            {this.props.driverL1 ?
-                                <Marker.Animated
-                                    coordinate={this.props.driverL1}
-                                    identifier={'mk1'}
-                                    style={{ zIndex: 2, elevation: 2 }}
-                                >
-                                    <View style={styles.icon}><GreenIcon /></View>
-                                </Marker.Animated>
-                                : <></>}
-                            {this.props.driverL2 ?
-                                <Marker.Animated
-                                    coordinate={this.props.driverL2}
-                                    identifier={'mk2'}
-                                    style={{ zIndex: 2, elevation: 2 }}
-                                >
-                                    <View style={styles.icon}><BlueIcon /></View>
-                                </Marker.Animated>
-                                : <></>}
-                            {this.props.driverL3 ?
-                                <Marker.Animated
-                                    coordinate={this.props.driverL3}
-                                    identifier={'mk3'}
-                                    style={{ zIndex: 2, elevation: 2 }}
-                                >
-                                    <View style={styles.icon}><PurpleIcon /></View>
-                                </Marker.Animated>
-                                : <></>}
-                            {this.props.polylines}
-                        </MapView>
-                    </Animated.View>
-
-                    <Animated.View style={[styles.lowerSection, this.position.getLayout(),]} {...this.panResponder.panHandlers}>
-
-                        <View style={styles.background}></View>
-                        <View style={styles.tripContainer}
-                            onLayout={(event) => {
-                                this.TOP_OF_TRIPS = -event.nativeEvent.layout.height + (height / 1.3);
-                            }}>
-                            <View style={styles.tripDetails}>
-
-                                <View style={styles.bubble}>
-                                    <Text style={styles.bubbleText}>{remainingDistance}</Text>
-                                </View>
-
-                                {nextDriver}
-
-                                <View style={[styles.carpoolSlider, { marginTop: marginTopNextDriver }]}>
-                                    {
-                                        this.props.scheduled ?
-                                            <View style={[styles.startTrip, { opacity: this.props.scheduledTripStarted ? 1 : 0.7 }]}>
-                                                <Button text={this.props.scheduledTripStarted ? 'Start trip now' : 'Driver has to start trip first'} width={x(313)} height={y(48)} top={0} left={0} zIndex={2}
-                                                    disabled={this.props.scheduledTripStarted ? false : true}
-                                                    onPress={() => {
-                                                        //compare the rawdate and current date to make sure 5 mins is already less then call the function
-                                                        this.setState({ navigationLoading: true }, () => {
-                                                            startScheduledRiderTrip.call(this, this.props.userID, data)
-                                                        });
-                                                    }} />
-                                            </View>
-                                            : <CarpoolSlider
-                                                data={this.props.data}
-                                                distanceSetter={(value) => {
-                                                    this.setState({ remainingDistance: value })
-                                                }}
-                                                nextDriverDistancesSetter={this.nextDriverDistancesSetter.bind(this)}
-                                                originalDistance={totalDistance}
-                                                etaD1={this.props.etaD1}
-                                                etaD2={this.props.etaD2}
-                                                etaD3={this.props.etaD3}
-                                                driverL1={this.props.driverL1}
-                                                driverL2={this.props.driverL2}
-                                                driverL3={this.props.driverL3}
-                                                location={this.props.location}
-                                                destination={this.props.destination}
-                                                driver1={this.props.driver1}
-                                                driver2={this.props.driver2}
-                                                driver3={this.props.driver3}
-                                                endTrip={this.props.endTrip}
-                                                dateText={this.state.dateText}
-                                                userID={this.props.userID}
-                                            />}
-                                </View>
-
-                                <View style={[styles.divider, { marginVertical: y(14) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-
-                                <View style={styles.contactContainer}>
-                                    <TouchableOpacity style={styles.contactButton} onPress={() => { this.setState({ callScreen: true }) }}>
-                                        <Icon name={'phone-call'} color={WHITE} size={y(20)} />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.contactButton} onPress={() => { this.setState({ messageScreen: true }) }}>
-                                        <Icon name={'mail'} color={WHITE} size={y(20)} />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={[styles.divider, { marginVertical: y(14) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-                                <View style={styles.switchContainer}>
-                                    <Text style={styles.switchText}>Share live location to drivers</Text>
-                                    <Switch
-                                        trackColor={{ false: "#767577", true: "rgba(77, 183, 72, 0.8)" }}
-                                        thumbColor={this.state.sendUserLocation ? "#FFFFFF" : "#f4f3f4"}
-                                        onValueChange={(value) => {
-                                            this.setState({ sendUserLocation: value })
-                                            if (value == false)
-                                                database().ref(`userLocation/${this.props.userID}`).set({
-                                                    shareLocation: false
-                                                }).catch(e => { console.log(e.message) })
-                                        }}
-                                        value={this.state.sendUserLocation}
-                                    />
-                                </View>
-                                <View style={[styles.divider, { marginVertical: y(14) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>
-                                <TouchableOpacity
-                                    style={[styles.textContainer, { marginTop: y(23), marginBottom: y(20) }]}
-                                    onPress={() => {
-                                        Alert.alert(
-                                            'Cancel this trip?',
-                                            'Are you sure you want to cancel this trip? You might get charged a fee depending on the conditions by which you cancel your trip, visit our website for more information.',
-                                            [{
-                                                text: 'Close',
-                                                style: 'cancel',
-                                            }, {
-                                                text: 'Cancel trip',
-                                                style: 'destructive',
-                                                onPress: () => {
-                                                    if (this.props.now) {//MAKE SURE TO SEND driverIDArray
-                                                        cancelTrip.call(this, {
-                                                            userID: this.props.userID,
-                                                            type: 'rider',
-                                                            driverIDArray: driverIDArray,
-                                                            time: new Date().getTime(),
-                                                        });
-                                                    } else {//deal with scheduled trip cancellations
-                                                        cancelScheduledTrip.call(this, {
-                                                            userID: this.props.userID,
-                                                            type: 'rider',
-                                                            driverIDArray: driverIDArray,
-                                                            time: new Date().getTime(),
-                                                        });
-                                                    }
-                                                },
-                                            }])
-                                    }}>
-                                    <Text style={[styles.firstLayer, { color: '#FF0000', }]}>{this.props.now ? 'Cancel trip' : 'Cancel scheduled request'}</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={[styles.tripBreakdown,]}>
-                                <Text style={[styles.tripTitle, { top: y(14), left: x(15), }]}>Trip Breakdown</Text>
-
-                                {this.props.tripBreakdown}
-
-                            </View>
-
-                            <Text style={[styles.adText, { marginTop: y(26) }]}>{'Get discounts towards your next trip by sharing your special code with your friends ! '}</Text>
-                            <View style={[styles.share, { marginTop: y(10), marginBottom: y(45) }]}>
-                                <View style={styles.shareCode}>
-                                    <Text style={styles.shareCodeText}>{this.state.shareCode}</Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.animate();
-                                        Clipboard.setString(`My Perch Share Code is ${this.state.shareCode}`);
-                                    }}>
-                                    <View style={styles.send}>
-                                        <Icon__ name={'paper-plane'} color={WHITE} size={y(30)} />
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </Animated.View>
-
-                    <Animated.View style={[styles.ratingContainer, { top: this.ratingTop }]} /*THIS IS THE RATINGS PANEL */>
-                        <View style={styles.ratingCancel}>
-                            <TouchableOpacity style={{ height: y(40), width: y(40) }} onPress={() => { this.props.endTrip() }}>
-                                <Icon name={'x'} size={y(30)} />
-                            </TouchableOpacity>
-                        </View>
-                        <Text style={styles.ratingTitle}>Thank you for riding with Perch! Please rate your experience with our Perch drivers today</Text>
-                        <View style={styles.ratingFlex}>
-                            {ratingStack}
-                        </View>
-                        <View style={[styles.button, { marginTop: y(25) }]}>
-                            <Button text={'Go Home'} width={x(313)} height={y(48)} top={0} left={0} zIndex={2}
-                                onPress={() => {
-                                    if (this.state.driver1Rating != 0)
-                                        carpoolRatingHandler(this.state.driver1Rating, this.props.userID, driverID1, this.state.dateText);
-                                    if (this.state.driver2Rating != 0)
-                                        carpoolRatingHandler(this.state.driver2Rating, this.props.userID, driverID2, this.state.dateText);
-                                    if (this.state.driver3Rating != 0)
-                                        carpoolRatingHandler(this.state.driver3Rating, this.props.userID, driverID3, this.state.dateText);
-
-                                    this.props.endTrip();
-                                }}
-                                loading={this.state.loading} />
-                        </View>
-                    </Animated.View>
-
-                </View >
-            )
-        else
-            return (
-                <LoadingScreen />
-            )
-    }
-};
-class DriverRating extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            driver: this.props.driver,
-            url: null
-        }
-    }
-    componentDidMount() {
-        this.setImage();
-    }
-    setImage = () => {
-        database().ref(`userImage/${this.state.driver.mainID}`).once('value', snap => {
-            storage().ref(`${snap.val()}`).getDownloadURL()
-                .then(result => {
-                    this.setState({ url: result })
-                }).catch(error => { console.log(error.message) });
-            this.setState({ joinedText: snap.val().driverJoinedText })
-        })
-    };
-    render() {
-        return (
-            <View style={styles.driverRatingContainer}>
-                <View style={[styles.driverRatingdp, this.state.url ? { borderWidth: 0 } : {}]}>
-                    {
-                        this.state.url ?
-                            <Image
-                                source={{ uri: this.state.url }}
-                                resizeMode={'contain'}
-                                style={{
-                                    flex: 1,
-                                    height: x(60),
-                                    width: x(60),
-                                }} />
-                            : <></>
-                    }
-                </View>
-                <Text style={[styles.ratingDriverName, { marginVertical: y(5) }]}>{this.props.driverName}</Text>
-                <View style={styles.star}>
-                    <StarRating
-                        disabled={false}
-                        maxStars={5}
-                        rating={Number(this.props.rating)}
-                        fullStarColor={this.props.starColor}
-                        emptyStarColor={this.props.starColor}
-                        starSize={x(40)}
-                        selectedStar={(rating) => { this.props.ratingAdjust(rating) }}
-                    />
-                </View>
-
-            </View>
-        )
-    }
-};
-function SvgComponent() {
-    return (
-        <Svg width={16} height={24} viewBox="0 0 14 20" fill={GREY}>
-            <G data-name="Group 3003">
-                <Path
-                    data-name="pin_sharp_circle-[#625]"
-                    d="M7 0a7 7 0 00-7 7c0 3.866 7 13 7 13s7-9.134 7-13a7 7 0 00-7-7"
-                    fillRule="evenodd"
-                />
-                <G data-name="Page-1">
-                    <G data-name="Dribbble-Light-Preview">
-                        <G data-name="icons">
-                            <Path
-                                data-name="pin_sharp_circle-[#625]"
-                                d="M7 7.635a1 1 0 111-1 1 1 0 01-1 1m0-4a3 3 0 103 3 3 3 0 00-3-3"
-                                fill="#fff"
-                                fillRule="evenodd"
-                            />
-                        </G>
-                    </G>
-                </G>
-            </G>
-        </Svg>
-    );
-};
-function secondsToHms(d) {
-    d = Number(d);
-    var h = Math.floor(d / 3600);
-    var m = Math.floor(d % 3600 / 60);
-    var s = Math.floor(d % 3600 % 60);
-
-
-    return { hours: h, minutes: m };
-};
-function nN(d) {
-    return Number(d);
-};
-function calculateTime(aH, bH, aM, bM) {
-    const re = ((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60)) > 12 ?
-        ((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60)) - 12 :
-        ((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60));
-
-    return re;
-};
-function calculateZone(aH, bH, aM, bM, oldzone) {
-    let newzone;
-
-    switch (oldzone) {
-        case 'AM': { newzone = 'PM' } break;
-        case 'PM': { newzone = 'AM' } break;
-    };
-
-    if (((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60)) > 12)
-        return newzone;
-    else
-        return oldzone
-};
-function distanceCalculator(lat1, lon1, lat2, lon2) {
-    let R = 6371 * 1000; // Radius of the earth in m
-    let dLat = deg2rad(lat2 - lat1);  // deg2rad below
-    let dLon = deg2rad(lon2 - lon1);
-    let a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        ;
-    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    let d = R * c; // Distance in m
-    return d;
-};
-function deg2rad(deg) {
-    return deg * (Math.PI / 180)
-};
-function polylineLenght(data) {
-    let distance = 0;
-    for (let k = 0; k < data.length - 1; k++)
-        distance += distanceCalculator(data[k][0], data[k][1], data[k + 1][0], data[k + 1][1])
-
-    return (distance)
 };

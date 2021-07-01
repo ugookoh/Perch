@@ -1,18 +1,14 @@
 import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, ScrollView, Button, Platform, StatusBar } from 'react-native';
-import { OfflineNotice, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
-import Header from '../../Components/Header/Header';
+import { Animated, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import LoadingScreen from '../../Components/LoadingScreen/LoadingScreen';
-import PaymentMethod from '../../Images/svgImages/paymentMethod';
+import Header from '../../Components/Header/Header';
+import { colors, OfflineNotice, y } from '../../Functions/Functions';
 import CreditCard from '../../Images/svgImages/creditCard';
-import Bank from '../../Images/svgImages/bank';
 import Interac from '../../Images/svgImages/interac';
-import PerchCredit from '../../Images/svgImages/perchCredit';
 import Money from '../../Images/svgImages/moneyChoice';
-
-const [GREEN, WHITE, GREY] = ['#4DB748', '#FFFFFF', '#918686'];
+import PaymentMethod from '../../Images/svgImages/paymentMethod';
+import PerchCredit from '../../Images/svgImages/perchCredit';
+import styles from './styles';
 
 export default class Paymentmethod extends React.Component {
     constructor(props) {
@@ -26,7 +22,7 @@ export default class Paymentmethod extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                 <Header name={'Payment Method'} scrollY={this.state.scrollY} onPress={() => {
                     this.props.route.params.changePayment(this.state.choice);
                     this.props.navigation.goBack()
@@ -46,11 +42,11 @@ export default class Paymentmethod extends React.Component {
                                 <CreditCard height={'100%'} width={'100%'} />
                             </View>
                             <Text style={styles.boxType}>Credit Card/Debit Card</Text>
-                            {this.state.choice === 'creditCard' ? <View style={styles.icon}><Icon name={'md-checkmark'} color={WHITE} size={y(18)} /></View> : <></>}
+                            {this.state.choice === 'creditCard' ? <View style={styles.icon}><Icon name={'md-checkmark'} color={colors.WHITE} size={y(18)} /></View> : <></>}
                         </View>
                     </TouchableOpacity>
 
-                    
+
 
                     <TouchableOpacity
                         onPress={() => {
@@ -62,7 +58,7 @@ export default class Paymentmethod extends React.Component {
                                 <Interac height={'100%'} width={'100%'} />
                             </View>
                             <Text style={styles.boxType}>Interac e-transfer</Text>
-                            {this.state.choice === 'interac' ? <View style={styles.icon}><Icon name={'md-checkmark'} color={WHITE} size={y(18)} /></View> : <></>}
+                            {this.state.choice === 'interac' ? <View style={styles.icon}><Icon name={'md-checkmark'} color={colors.WHITE} size={y(18)} /></View> : <></>}
                         </View>
                     </TouchableOpacity>
 
@@ -76,7 +72,7 @@ export default class Paymentmethod extends React.Component {
                                 <Money height={'100%'} width={'100%'} />
                             </View>
                             <Text style={styles.boxType}>Cash</Text>
-                            {this.state.choice === 'cash' ? <View style={styles.icon}><Icon name={'md-checkmark'} color={WHITE} size={y(18)} /></View> : <></>}
+                            {this.state.choice === 'cash' ? <View style={styles.icon}><Icon name={'md-checkmark'} color={colors.WHITE} size={y(18)} /></View> : <></>}
                         </View>
                     </TouchableOpacity>
 
@@ -92,7 +88,7 @@ export default class Paymentmethod extends React.Component {
                                 <PerchCredit height={'100%'} width={'100%'} />
                             </View>
                             <Text style={styles.boxType}>Perch Credit</Text>
-                            {this.state.choice === 'perchCredit' ? <View style={styles.icon}><Icon name={'md-checkmark'} color={WHITE} size={y(18)} /></View> : <></>}
+                            {this.state.choice === 'perchCredit' ? <View style={styles.icon}><Icon name={'md-checkmark'} color={colors.WHITE} size={y(18)} /></View> : <></>}
                         </View>
                     </TouchableOpacity>
                 </View>

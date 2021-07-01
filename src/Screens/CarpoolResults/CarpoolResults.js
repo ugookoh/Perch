@@ -1,24 +1,26 @@
-import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, ScrollView, StatusBar, Platform, Button, FlatList } from 'react-native';
-import { MaterialIndicator, BarIndicator } from 'react-native-indicators';
+import AsyncStorage from '@react-native-community/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-community/picker';
-import Header from '../../Components/Header/Header';
-import Icon from 'react-native-vector-icons/Feather';
-import Down from 'react-native-vector-icons/Ionicons';
-import Dash from 'react-native-dash';
 import axios from 'axios';
 import moment from 'moment';
-import { OfflineNotice, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
-import AsyncStorage from '@react-native-community/async-storage';
+import React from 'react';
+import { Animated, Button, FlatList, Platform, Text, TouchableOpacity, View } from 'react-native';
+import Dash from 'react-native-dash';
+import { BarIndicator } from 'react-native-indicators';
+import Icon from 'react-native-vector-icons/Feather';
+import Down from 'react-native-vector-icons/Ionicons';
+import { OneStepTrip, ThreeStepTrip, TwoStepTrip } from '../../Components/CarpoolDisplayCard/CarpoolDisplayCard';
 import Divider from '../../Components/Divider/Divider';
-import { OneStepTrip, TwoStepTrip, ThreeStepTrip } from '../../Components/CarpoolDisplayCard/CarpoolDisplayCard';
+import Header from '../../Components/Header/Header';
+import {
+    calculateTime, calculateZone, colors,
+    dimensionAssert, nN, OfflineNotice,
+    secondsToHms, x, y
+} from '../../Functions/Functions';
 import CatcusNoResults from '../../Images/svgImages/cactusNoResults';
-import DateTimePicker from '@react-native-community/datetimepicker';
-const [GREEN, WHITE, GREY,] = ['#4DB748', '#FFFFFF', '#403D3D'];
+import styles from './styles';
 const _1DAY_MILLI_SECS = 86400000;//ms
 const _1HOUR_MILLI_SECS = 3600000;//ms 
-
 
 export default class CarpoolResults extends React.Component {
     constructor(props) {
@@ -160,8 +162,8 @@ export default class CarpoolResults extends React.Component {
                 function compare(a_, b_) {
 
                     let a, b;
-                    a = getTime(a_, false);
-                    b = getTime(b_, false);
+                    a = getTime_(a_, false);
+                    b = getTime_(b_, false);
 
 
 
@@ -263,13 +265,13 @@ export default class CarpoolResults extends React.Component {
                             <Text style={styles.counterText}>Number of passengers</Text>
                             <View style={styles.counterContainer}>
                                 <TouchableOpacity onPress={() => { this.passengers('minus') }}>
-                                    <Icon name={'minus-circle'} size={y(30)} color={GREEN} />
+                                    <Icon name={'minus-circle'} size={y(30)} color={colors.GREEN} />
                                 </TouchableOpacity>
                                 <View style={styles.seatNumberView}>
                                     <Text style={styles.seatNumberText}>{this.state.seatNumber}</Text>
                                 </View>
                                 <TouchableOpacity onPress={() => { this.passengers('plus') }}>
-                                    <Icon name={'plus-circle'} size={y(30)} color={GREEN} />
+                                    <Icon name={'plus-circle'} size={y(30)} color={colors.GREEN} />
                                 </TouchableOpacity>
                             </View>
                             <TouchableOpacity style={styles.doneButton} onPress={() => { this.setState({ seatNumberFocused: false, refreshing: true, }, () => { this.onRefresh() }) }}>
@@ -281,7 +283,7 @@ export default class CarpoolResults extends React.Component {
                     <></>}
 
                 <View style={styles.location}>
-                    <Icon name={'map-pin'} size={y(14)} color={GREEN} />
+                    <Icon name={'map-pin'} size={y(14)} color={colors.GREEN} />
                     <TouchableOpacity
                         onPress={() => {
                             this.props.route.params.onReturn('L');
@@ -293,10 +295,10 @@ export default class CarpoolResults extends React.Component {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.L_to_D}>
-                    <Dash style={{ width: 0.5, height: y(dimensionAssert() ? 10 : 14), flexDirection: 'column' }} dashColor={GREEN} dashLength={2} />
+                    <Dash style={{ width: 0.5, height: y(dimensionAssert() ? 10 : 14), flexDirection: 'column' }} dashColor={colors.GREEN} dashLength={2} />
                 </View>
                 <View style={styles.destination}>
-                    <Icon name={'map-pin'} size={y(14)} color={GREEN} />
+                    <Icon name={'map-pin'} size={y(14)} color={colors.GREEN} />
                     <TouchableOpacity
                         onPress={() => {
                             this.props.route.params.onReturn('D');
@@ -324,7 +326,7 @@ export default class CarpoolResults extends React.Component {
                 >
                     <Text style={styles.sortResultText}>{this.state.sort}</Text>
                     <Animated.View style={[styles.dropDownIcon, { transform: [{ rotate: iconRotation }] }]}>
-                        <Down name={'ios-arrow-down'} color={GREEN} size={y(25, true)} />
+                        <Down name={'ios-arrow-down'} color={colors.GREEN} size={y(25, true)} />
                     </Animated.View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -334,7 +336,7 @@ export default class CarpoolResults extends React.Component {
                 >
                     <Text style={styles.sortResultText}>{`${this.state.seatNumber} passenger${this.state.seatNumber == 1 ? `` : `s`}`}</Text>
                     <View style={[styles.dropDownIcon,]}>
-                        <Down name={'ios-arrow-down'} color={GREEN} size={y(25, true)} />
+                        <Down name={'ios-arrow-down'} color={colors.GREEN} size={y(25, true)} />
                     </View>
                 </TouchableOpacity>
                 {this.state.now ?
@@ -449,7 +451,7 @@ export default class CarpoolResults extends React.Component {
                         )
                         :
                         <View style={styles.box}>
-                            <BarIndicator color={GREEN} size={x(40)} count={8} />
+                            <BarIndicator color={colors.GREEN} size={x(40)} count={8} />
                         </View>
 
                     }
@@ -490,7 +492,7 @@ export default class CarpoolResults extends React.Component {
                                 mode={'time'}
                                 is24Hour={false}
                                 display={'spinner'}
-                                style={{ width: x(320), backgroundColor: GREY, top: y(40) }}
+                                style={{ width: x(320), backgroundColor: colors.GREY, top: y(40) }}
                                 onChange={(event, date) => {
                                     const d = event.nativeEvent.timestamp;
                                     if (date) {
@@ -532,41 +534,7 @@ export default class CarpoolResults extends React.Component {
     }
 };
 
-function nN(d) {
-    return Number(d);
-};
-function secondsToHms(d) {
-    d = Number(d);
-    var h = Math.floor(d / 3600);
-    var m = Math.floor(d % 3600 / 60);
-    var s = Math.floor(d % 3600 % 60);
-
-
-    return { hours: h, minutes: m };
-};
-function calculateTime(aH, bH, aM, bM) {
-    const re = ((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60)) > 12 ?
-        ((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60)) - 12 :
-        ((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60));
-
-    return re;
-};
-function calculateZone(aH, bH, aM, bM, oldzone) {
-    let newzone;
-
-    switch (oldzone) {
-        case 'AM': { newzone = 'PM' } break;
-        case 'PM': { newzone = 'AM' } break;
-    };
-
-    if (((nN(aH) + nN(bH)) % 24) + Math.floor(((nN(aM) + nN(bM)) / 60)) > 12)
-        return newzone;
-    else
-        return oldzone
-
-
-};
-function getTime(data_, del) {
+function getTime_(data_, del) {
     const data = data_;
     const minutes = new Date().getMinutes();
     const hours = new Date().getHours();
@@ -719,6 +687,3 @@ function getTime(data_, del) {
 
     return value;
 };
-
-
-

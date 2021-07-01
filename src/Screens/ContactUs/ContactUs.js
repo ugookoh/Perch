@@ -1,15 +1,11 @@
-import React from 'react';
-import styles from './styles';
-import { TouchableWithoutFeedback, Animated, Text, View, TextInput, Dimensions, TouchableOpacity, ScrollView, Keyboard, KeyboardAvoidingView, Button, StatusBar, Platform, Alert } from 'react-native';
-import { OfflineNotice, sendFeedback, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
-
 import { Picker } from '@react-native-community/picker';
+import React from 'react';
+import { Alert, Animated, Button, Keyboard, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Header from '../../Components/Header/Header';
 import Button_ from '../../Components/Button/Button';
-import CustomerCare from '../../Images/svgImages/customercare';
-
-const [GREEN, WHITE, GREY] = ['#4DB748', '#FFFFFF', '#918686'];
+import Header from '../../Components/Header/Header';
+import { dimensionAssert, OfflineNotice, sendFeedback, x, y, colors } from '../../Functions/Functions';
+import styles from './styles';
 
 export default class ContactUs extends React.Component {
     constructor() {
@@ -87,7 +83,7 @@ export default class ContactUs extends React.Component {
                                         else if (this.state.choice === 'shown')
                                             this.hidePicker();
                                     }}>
-                                        {this.state.issue === 'choice' ? <Text style={[styles.issueChoice, { color: GREY }]}>Select a topic</Text> : <Text style={styles.issueChoice}>{this.state.issue}</Text>}
+                                        {this.state.issue === 'choice' ? <Text style={[styles.issueChoice, { color: colors.GREY }]}>Select a topic</Text> : <Text style={styles.issueChoice}>{this.state.issue}</Text>}
                                     </TouchableOpacity>
                                     <Animated.View style={[styles.dropDown, { transform: [{ rotate: iconRotation }] }]}>
                                         <TouchableOpacity
@@ -151,7 +147,7 @@ export default class ContactUs extends React.Component {
                                     if (Platform.OS === 'android')
                                         this.hidePicker();
                                 }}>
-                                <Picker.Item label="---Select a topic---" value="choice" color={GREY} />
+                                <Picker.Item label="---Select a topic---" value="choice" color={colors.GREY} />
                                 <Picker.Item label="Give feedback about our services" value="Give feedback about our services" />
                                 <Picker.Item label="Missing Item" value="Missing Item" />
                                 <Picker.Item label="Change your name" value="Change your name" />

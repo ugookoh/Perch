@@ -16,6 +16,7 @@
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* PerchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* PerchTests.m */; };
+		301AFD0A268A531F0060A6ED /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 008F07F21AC5B25A0029DE68 /* main.jsbundle */; };
 		3033EA0F24E5AD9C0023455F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3033EA0E24E5AD9C0023455F /* GoogleService-Info.plist */; };
 		304CD4E724915ECC00AD6E36 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304CD4E624915ECC00AD6E36 /* File.swift */; };
 		309A9F0A2640D81500731FE5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 309A9F092640D81400731FE5 /* StoreKit.framework */; };
@@ -436,6 +437,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				301AFD0A268A531F0060A6ED /* main.jsbundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				30DC218E26439F5C001E3DD2 /* TPSStripe in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
@@ -895,6 +897,7 @@
 				INFOPLIST_FILE = Perch/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -999,6 +1002,7 @@
 				INFOPLIST_FILE = Perch/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

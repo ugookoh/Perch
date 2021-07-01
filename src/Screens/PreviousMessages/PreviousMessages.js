@@ -1,16 +1,15 @@
-import React from 'react';
-import styles from './styles';
-import { TouchableWithoutFeedback, Animated, Text, View, FlatList, Dimensions, TouchableOpacity, ScrollView, Keyboard, KeyboardAvoidingView, Button, StatusBar, Platform, Alert } from 'react-native';
-import { OfflineNotice, dateformat, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
-import Header from '../../Components/Header/Header';
 import AsyncStorage from '@react-native-community/async-storage';
 import database from '@react-native-firebase/database';
+import React from 'react';
+import { Animated, FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { MaterialIndicator } from 'react-native-indicators';
-import CatcusNoResults from '../../Images/svgImages/cactusNoResults';
-import Divider from '../../Components/Divider/Divider';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Divider from '../../Components/Divider/Divider';
+import Header from '../../Components/Header/Header';
+import { dateformat, OfflineNotice, x, y, colors } from '../../Functions/Functions';
+import CatcusNoResults from '../../Images/svgImages/cactusNoResults';
+import styles from './styles';
 
-const [GREEN, RED] = [`#4DB748`, `#FF0000`];
 export default class PreviousMessages extends React.Component {
     constructor() {
         super();
@@ -52,7 +51,7 @@ export default class PreviousMessages extends React.Component {
                                                 <Text numberOfLines={1} style={[styles.text, { maxWidth: x(220) }]}>{data.subject}</Text>
                                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                                     <Text style={styles.date}>{date}</Text>
-                                                    <Entypo name={'dot-single'} size={y(34)} color={data.status == 'UNPROCESSED' ? RED : GREEN} style={{}} />
+                                                    <Entypo name={'dot-single'} size={y(34)} color={data.status == 'UNPROCESSED' ? colors.RED : colors.GREEN} style={{}} />
                                                 </View>
                                             </View>
                                         </TouchableOpacity>
@@ -74,7 +73,7 @@ export default class PreviousMessages extends React.Component {
                             </View>
                             <Text style={styles.noResultsText}>You haven't sent us any messages yet</Text>
                         </>
-                    : <MaterialIndicator color={GREEN} size={y(80)} />}
+                    : <MaterialIndicator color={colors.GREEN} size={y(80)} />}
             </View>
         )
     };

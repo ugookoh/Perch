@@ -1,25 +1,27 @@
-import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Dimensions, TouchableOpacity, Keyboard, Platform, StatusBar, Alert, PanResponder, LayoutAnimation, UIManager, TouchableWithoutFeedback } from 'react-native';
-import { OfflineNotice, x, y, height, width, dimensionAssert, buyKilometers } from '../../Functions/Functions';
-import Header from '../../Components/Header/Header';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import Visa from '../../Images/svgImages/visa';
-import MasterCard from '../../Images/svgImages/mastercard';
-import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
-import ApplePayLogo from '../../Images/svgImages/applePayLogo';
-import GooglePaylogo from '../../Images/svgImages/googlePayLogo';
-import Button from '../../Components/Button/Button';
-import Divider from '../../Components/Divider/Divider';
-import { MaterialIndicator } from 'react-native-indicators';
 import database from '@react-native-firebase/database';
 import axios from 'axios';
+import React from 'react';
+import { Alert, Animated, Keyboard, Platform, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { MaterialIndicator } from 'react-native-indicators';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import stripe from 'tipsi-stripe';
+import Button from '../../Components/Button/Button';
+import Header from '../../Components/Header/Header';
+import {
+    buyKilometers,
+    OfflineNotice,
+    x, y, colors
+} from '../../Functions/Functions';
+import ApplePayLogo from '../../Images/svgImages/applePayLogo';
+import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
+import GooglePaylogo from '../../Images/svgImages/googlePayLogo';
+import MasterCard from '../../Images/svgImages/mastercard';
+import Visa from '../../Images/svgImages/visa';
+import styles from './styles';
 stripe.setOptions({
-  publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
-  merchantId: 'merchant.com.perch',
-})
-const [GREEN, WHITE, GREY, RED] = ['#4DB748', '#FFFFFF', '#918686', '#FF0000'];
+    publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
+    merchantId: 'merchant.com.perch',
+});
 
 export default class AddFunds extends React.Component { //////////////***ADD A BREAKDOWN OF THE FUNDS LIKE TAX AND ALL THAT, NOT JUST A TOTAL. MAKE IT LIKE A LITTLE DYNAMIC LIST... WE MUST ALSO ADD THE PLANS */
     constructor(props) {
@@ -328,7 +330,7 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                                         </View>
                                     </> :
 
-                                    <MaterialIndicator size={y(90)} color={GREEN} />
+                                    <MaterialIndicator size={y(90)} color={colors.GREEN} />
 
                                 }
                             </View>

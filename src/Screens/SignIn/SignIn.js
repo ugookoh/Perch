@@ -1,14 +1,22 @@
-import React from 'react';
-import styles from './styles';
-import { Text, View, KeyboardAvoidingView, StatusBar, TextInput, Dimensions, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Platform, LayoutAnimation, UIManager, AppState, BackHandler } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
+import React from 'react';
+import {
+    BackHandler, Keyboard,
+    LayoutAnimation, Platform, StatusBar,
+    Text, TextInput, TouchableOpacity,
+    TouchableWithoutFeedback, UIManager, View
+} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
-import PushNotification from 'react-native-push-notification';
-import { permissionLocation, Notifications, handleConnectivityChange, handleLogin, OfflineNotice, x, y, height, width, dimensionAssert, CustomLayoutLinear } from '../../Functions/Functions'
+import Button from '../../Components/Button/Button';
+import {
+    CustomLayoutLinear, handleConnectivityChange,
+    handleLogin, Notifications, OfflineNotice,
+    permissionLocation, x, y
+} from '../../Functions/Functions';
 import Logo from '../../Images/svgImages/logo';
 import Icon from '../../Images/svgImages/signInIcons';
-import Button from '../../Components/Button/Button';
+import styles from './styles';
 
 export default class SignIn extends React.Component {
     constructor() {
@@ -63,7 +71,7 @@ export default class SignIn extends React.Component {
         return (
             <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
                 <View style={styles.container} >
-                     <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
+                    <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                     <Notifications />
                     <StatusBar backgroundColor="#ffffff" barStyle="dark-content" />
                     <View style={styles.logo}>

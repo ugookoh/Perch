@@ -1,15 +1,21 @@
-import React from 'react';
-import styles from './styles';
-import { Animated, Text, View, TextInput, Image, TouchableOpacity, Keyboard, TouchableWithoutFeedback, KeyboardAvoidingView, Platform, StatusBar, Alert } from 'react-native';
-import { OfflineNotice, x, y, height, width, dimensionAssert } from '../../Functions/Functions';
-import Button from '../../Components/Button/Button';
+import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
 import axios from 'axios';
-import Header from '../../Components/Header/Header';
-import Avatar from '../../Images/svgImages/avatar';
-import database from '@react-native-firebase/database';
+import React from 'react';
+import {
+    Alert, Animated, Image,
+    Keyboard, KeyboardAvoidingView,
+    StatusBar, Text, TextInput,
+    TouchableOpacity, TouchableWithoutFeedback, View
+} from 'react-native';
 import Divider from '../../Components/Divider/Divider';
-const [GREEN, WHITE, RED] = ['#4DB748', '#FFFFFF', '#FF0000'];
+import Header from '../../Components/Header/Header';
+import {
+    dimensionAssert, OfflineNotice,
+    width, x, y, colors
+} from '../../Functions/Functions';
+import Avatar from '../../Images/svgImages/avatar';
+import styles from './styles';
 
 
 export default class Profile extends React.Component {
@@ -117,7 +123,7 @@ export default class Profile extends React.Component {
                                         </TouchableOpacity>
 
                                         <TouchableOpacity style={{ bottom: (StatusBar.currentHeight ? x(12) : 0) }} onPress={() => { this.updateName.call(this) }}>
-                                            <Text style={[styles.tag, { color: GREEN, }]}>EDIT</Text>
+                                            <Text style={[styles.tag, { color: colors.GREEN, }]}>EDIT</Text>
                                         </TouchableOpacity>
 
                                     </View>
@@ -132,7 +138,7 @@ export default class Profile extends React.Component {
                                         </TouchableOpacity>
 
                                         <TouchableOpacity style={{ bottom: (StatusBar.currentHeight ? x(12) : 0) }} onPress={() => { this.updateName.call(this) }}>
-                                            <Text style={[styles.tag, { color: GREEN }]}>EDIT</Text>
+                                            <Text style={[styles.tag, { color: colors.GREEN }]}>EDIT</Text>
                                         </TouchableOpacity>
 
                                     </View>
@@ -161,7 +167,7 @@ export default class Profile extends React.Component {
                                                     display: this.state.email
                                                 });
                                             }}>
-                                            <Text style={[styles.tag, { top: y(dimensionAssert() ? -16 : 0), color: emailVerified ? GREEN : RED }]}>{emailVerified ? `VERIFIED` : `VERIFY`}</Text>
+                                            <Text style={[styles.tag, { top: y(dimensionAssert() ? -16 : 0), color: emailVerified ? colors.GREEN : colors.RED }]}>{emailVerified ? `VERIFIED` : `VERIFY`}</Text>
                                         </TouchableOpacity>
 
                                     </View>
@@ -203,7 +209,7 @@ export default class Profile extends React.Component {
 
 
                                             }}>
-                                            <Text style={[styles.tag, { top: y(dimensionAssert() ? -16 : 0), color: phoneVerified ? GREEN : RED }]}>{phoneVerified ? `VERIFIED` : `VERIFY`}</Text>
+                                            <Text style={[styles.tag, { top: y(dimensionAssert() ? -16 : 0), color: phoneVerified ? colors.GREEN : colors.RED }]}>{phoneVerified ? `VERIFIED` : `VERIFY`}</Text>
                                         </TouchableOpacity>
 
                                     </View>

@@ -1,34 +1,24 @@
 import React from 'react';
-import styles from './styles';
-import { TouchableWithoutFeedback, View, Text, TouchableOpacity, Animated, Dimensions, PanResponder, Platform, StatusBar } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker, AnimatedRegion, Polyline } from 'react-native-maps';
-import Svg, { Path, G } from "react-native-svg";
-import MapStyle from '../../Components/MapStyle/MapStyle.json';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Header from '../../Components/Header/Header';
-import Icon_ from 'react-native-vector-icons/Feather';
-import Divider from '../../Components/Divider/Divider';
-import Visa from '../../Images/svgImages/visa';
-import GooglePayLogo from '../../Images/svgImages/googlePayLogo';
-import ApplePayLogo from '../../Images/svgImages/applePayLogo';
-import MasterCard from '../../Images/svgImages/mastercard';
-import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
-import Money from '../../Images/svgImages/moneyChoice';
-import PerchWallet from '../../Images/svgImages/perchWallet';
+import { Animated, PanResponder, Text, TouchableOpacity, View } from 'react-native';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import StarRating from 'react-native-star-rating';
-import DashedDivider from '../../Components/DashedDivider/DashedDivider';
-import { OfflineNotice, makeid, carpoolRatingHandler, x, y, width, height, dimensionAssert } from '../../Functions/Functions';
-import Interac from '../../Images/svgImages/interac';
+import Svg, { G, Path } from "react-native-svg";
+import Icon_ from 'react-native-vector-icons/Feather';
 import Icon__ from 'react-native-vector-icons/FontAwesome';
-import { CarpoolHistoryCard, TopCombiner, MiddleCombiner, BottomCombiner } from '../../Components/BreakdownCardsWithCombiners/BreakdownCardsWithCombiners';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { BottomCombiner, CarpoolHistoryCard, MiddleCombiner, TopCombiner } from '../../Components/BreakdownCardsWithCombiners/BreakdownCardsWithCombiners';
+import DashedDivider from '../../Components/DashedDivider/DashedDivider';
+import Divider from '../../Components/Divider/Divider';
+import Header from '../../Components/Header/Header';
+import MapStyle from '../../Components/MapStyle/MapStyle.json';
+import { carpoolRatingHandler, dimensionAssert, height, OfflineNotice, x, y, colors } from '../../Functions/Functions';
+import ApplePayLogo from '../../Images/svgImages/applePayLogo';
+import GenericPaymentCard from '../../Images/svgImages/genericPaymentCard';
+import GooglePayLogo from '../../Images/svgImages/googlePayLogo';
+import MasterCard from '../../Images/svgImages/mastercard';
+import Visa from '../../Images/svgImages/visa';
+import styles from './styles';
 
-const [GOLD, BLACK] = ['#FFC107', '#000000'];
-const [GREEN, BLUE, PURPLE, GREEN_, BLUE_, PURPLE_, GREY, WHITE, RED, GREENMAKER, YELLOW] = ['#4DB748', '#1970A7', '#A031AF', 'rgba(77, 183, 72, 0.3)', 'rgba(25, 112, 167, 0.3)', 'rgba(160, 49, 175, 0.3)', '#403D3D', '#FFFFFF', '#FF0000', '#136009', '#F7F70B'];
-
-
-//////////////////////////////////FOR THE RATING, WE WOULD HAVE ALL THE 3/2 RATINGS PRE SET, SO WE PASS IT TO THE COMPONENTS AND WHENEVER THE USER CHANGES IT, WE SIMPLY CHANGE THE STATE, WE PASS THE STATE HERE
-const MAX_HEADER_HEIGHT = y(156);
-const MIN_HEADER_HEIGHT = y(96.5);
 const X_CONSTANT = 0;
 const Y_START = y(20);
 export default class CarpoolHistory extends React.Component {
@@ -169,7 +159,7 @@ export default class CarpoolHistory extends React.Component {
     showRating(position) {
         switch (position) {
             case 1: {
-                this.setState({ currenStarDisplay: this.state.starCount1, currentStarColor: GREEN },
+                this.setState({ currenStarDisplay: this.state.starCount1, currentStarColor: colors.GREEN },
                     () => {
                         Animated.spring(this.ratingzIndex, {
                             toValue: 2,
@@ -178,7 +168,7 @@ export default class CarpoolHistory extends React.Component {
                     });
             } break;
             case 2: {
-                this.setState({ currenStarDisplay: this.state.starCount2, currentStarColor: BLUE },
+                this.setState({ currenStarDisplay: this.state.starCount2, currentStarColor: colors.BLUE },
                     () => {
                         Animated.spring(this.ratingzIndex, {
                             toValue: 2,
@@ -187,7 +177,7 @@ export default class CarpoolHistory extends React.Component {
                     });
             } break;
             case 3: {
-                this.setState({ currenStarDisplay: this.state.starCount3, currentStarColor: PURPLE },
+                this.setState({ currenStarDisplay: this.state.starCount3, currentStarColor: colors.PURPLE },
                     () => {
                         Animated.spring(this.ratingzIndex, {
                             toValue: 2,
@@ -215,7 +205,7 @@ export default class CarpoolHistory extends React.Component {
             } break;
         }
         switch (this.state.currentStarColor) {
-            case GREEN: {
+            case colors.GREEN: {
                 carpoolRatingHandler(rating, this.state.userID, driver1ID, this.state.historyRef);
                 let newData = this.state.data;
                 newData.userRating ?
@@ -228,7 +218,7 @@ export default class CarpoolHistory extends React.Component {
                 });
                 setTimeout(() => { this.hideRating() }, 500)
             } break;
-            case BLUE: {
+            case colors.BLUE: {
                 carpoolRatingHandler(rating, this.state.userID, driver2ID, this.state.historyRef);
                 let newData = this.state.data;
                 newData.userRating ?
@@ -241,7 +231,7 @@ export default class CarpoolHistory extends React.Component {
                 });
                 setTimeout(() => { this.hideRating() }, 500)
             } break;
-            case PURPLE: {
+            case colors.PURPLE: {
                 carpoolRatingHandler(rating, this.state.userID, driver3ID, this.state.historyRef);
                 let newData = this.state.data;
                 newData.userRating ?
@@ -284,25 +274,25 @@ export default class CarpoolHistory extends React.Component {
                     <>
                         <Marker coordinate={{ latitude: data.firstLeg[0][0], longitude: data.firstLeg[0][1] }}//TRIP WE ARE JOINING
                         >
-                            <Icon__ name={'circle'} color={GREEN} size={12} />
+                            <Icon__ name={'circle'} color={colors.GREEN} size={12} />
                         </Marker>
                         <Polyline
                             coordinates={data.firstLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREEN}
+                            strokeColor={colors.GREEN}
                             strokeWidth={2}
                         //interval={10}
                         />
                         <Marker coordinate={{ latitude: data.firstLeg[data.firstLeg.length - 1][0], longitude: data.firstLeg[data.firstLeg.length - 1][1] }}>
-                            <Icon__ name={'circle'} color={GREEN} size={12} />
+                            <Icon__ name={'circle'} color={colors.GREEN} size={12} />
                         </Marker>
 
                         <Polyline //WALK POLYLINES
                             coordinates={data.walk1.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={2}
                             lineDashPattern={[20, 10]}
                         />
@@ -310,7 +300,7 @@ export default class CarpoolHistory extends React.Component {
                             coordinates={data.walk2.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={2}
                             lineDashPattern={[20, 10]}
                         />
@@ -327,7 +317,7 @@ export default class CarpoolHistory extends React.Component {
                             data={this.state.data}
                         />
                         <View style={{ zIndex: 2 }}>
-                            <CarpoolHistoryCard color={GREEN} onPress={() => { }}
+                            <CarpoolHistoryCard color={colors.GREEN} onPress={() => { }}
                                 type={'history'}
                                 disabled={true}
                                 filler_time={`10:10 AM`}
@@ -355,44 +345,44 @@ export default class CarpoolHistory extends React.Component {
                         }
                             style={{ zIndex: 0, elevation: 0 }}
                         >
-                            <Icon__ name={'circle'} color={GREEN} size={12} />
+                            <Icon__ name={'circle'} color={colors.GREEN} size={12} />
                         </Marker>
                         <Polyline
                             coordinates={data.firstLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREEN}
+                            strokeColor={colors.GREEN}
                             strokeWidth={2}
                         />
                         {(data.firstLeg[data.firstLeg.length - 1][0] != data.secondLeg[0][0] && data.firstLeg[data.firstLeg.length - 1][1] != data.secondLeg[0][1]) ?
                             <Marker coordinate={{ latitude: data.firstLeg[data.firstLeg.length - 1][0], longitude: data.firstLeg[data.firstLeg.length - 1][1] }}
                                 style={{ zIndex: 0, elevation: 0 }}
                             >
-                                <Icon__ name={'circle'} color={GREEN} size={12} />
+                                <Icon__ name={'circle'} color={colors.GREEN} size={12} />
                             </Marker> : <></>}
                         <Marker coordinate={{ latitude: data.secondLeg[0][0], longitude: data.secondLeg[0][1] }}
                             style={{ zIndex: 0, elevation: 0 }}
                         >
-                            <Icon__ name={'circle'} color={BLUE} size={12} />
+                            <Icon__ name={'circle'} color={colors.BLUE} size={12} />
                         </Marker>
                         <Polyline
                             coordinates={data.secondLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={BLUE}
+                            strokeColor={colors.BLUE}
                             strokeWidth={2}
                         />
                         <Marker coordinate={{ latitude: data.secondLeg[data.secondLeg.length - 1][0], longitude: data.secondLeg[data.secondLeg.length - 1][1] }}
                             style={{ zIndex: 0, elevation: 0 }}
                         >
-                            <Icon__ name={'circle'} color={BLUE} size={12} />
+                            <Icon__ name={'circle'} color={colors.BLUE} size={12} />
                         </Marker>
 
                         <Polyline //WALK POLYLINES
                             coordinates={data.walk1.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={2}
                             lineDashPattern={[20, 10]}
                         />
@@ -400,7 +390,7 @@ export default class CarpoolHistory extends React.Component {
                             coordinates={data.walk2.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={2}
                             lineDashPattern={[20, 10]}
                         />
@@ -408,7 +398,7 @@ export default class CarpoolHistory extends React.Component {
                             coordinates={data.walk3.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={2}
                             lineDashPattern={[20, 10]}
                         />
@@ -427,7 +417,7 @@ export default class CarpoolHistory extends React.Component {
                         <View style={{ zIndex: 2 }}>
                             <CarpoolHistoryCard
                                 type={'history'}
-                                color={GREEN}
+                                color={colors.GREEN}
                                 onPress={() => { }}
                                 filler_time={`10:10 AM`}
                                 stopA={data.travelDetails.stop1A}
@@ -452,7 +442,7 @@ export default class CarpoolHistory extends React.Component {
                         <View style={{ zIndex: 2 }}>
                             <CarpoolHistoryCard
                                 type={'history'}
-                                color={BLUE}
+                                color={colors.BLUE}
                                 onPress={() => { }}
                                 filler_time={`10:10 AM`}
                                 stopA={data.travelDetails.stop2A}
@@ -477,45 +467,45 @@ export default class CarpoolHistory extends React.Component {
                     <>
                         <Marker coordinate={{ latitude: data.firstLeg[0][0], longitude: data.firstLeg[0][1] }}//TRIP WE ARE JOINING
                         >
-                            <Icon__ name={'circle'} color={GREEN} size={12} />
+                            <Icon__ name={'circle'} color={colors.GREEN} size={12} />
                         </Marker>
                         <Polyline
                             coordinates={data.firstLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREEN}
+                            strokeColor={colors.GREEN}
                             strokeWidth={2}
                         />
                         {(data.firstLeg[data.firstLeg.length - 1][0] != data.secondLeg[0][0] && data.firstLeg[data.firstLeg.length - 1][1] != data.secondLeg[0][1]) ?
                             <Marker coordinate={{ latitude: data.firstLeg[data.firstLeg.length - 1][0], longitude: data.firstLeg[data.firstLeg.length - 1][1] }}>
-                                <Icon__ name={'circle'} color={GREEN} size={12} />
+                                <Icon__ name={'circle'} color={colors.GREEN} size={12} />
                             </Marker> : <></>}
                         <Marker coordinate={{ latitude: data.secondLeg[0][0], longitude: data.secondLeg[0][1] }}>
-                            <Icon__ name={'circle'} color={BLUE} size={12} />
+                            <Icon__ name={'circle'} color={colors.BLUE} size={12} />
                         </Marker>
                         <Polyline
                             coordinates={data.secondLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={BLUE}
+                            strokeColor={colors.BLUE}
                             strokeWidth={2}
                         />
                         {(data.secondLeg[data.secondLeg.length - 1][0] != data.thirdLeg[0][0] && data.secondLeg[data.secondLeg.length - 1][1] != data.thirdLeg[0][1]) ?
                             <Marker coordinate={{ latitude: data.secondLeg[data.secondLeg.length - 1][0], longitude: data.secondLeg[data.secondLeg.length - 1][1] }}>
-                                <Icon__ name={'circle'} color={BLUE} size={12} />
+                                <Icon__ name={'circle'} color={colors.BLUE} size={12} />
                             </Marker> : <></>}
                         <Marker coordinate={{ latitude: data.thirdLeg[0][0], longitude: data.thirdLeg[0][1] }}>
-                            <Icon__ name={'circle'} color={PURPLE} size={12} />
+                            <Icon__ name={'circle'} color={colors.PURPLE} size={12} />
                         </Marker>
                         <Polyline
                             coordinates={data.thirdLeg.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={PURPLE}
+                            strokeColor={colors.PURPLE}
                             strokeWidth={2}
                         />
                         <Marker coordinate={{ latitude: data.thirdLeg[data.thirdLeg.length - 1][0], longitude: data.thirdLeg[data.thirdLeg.length - 1][1] }}>
-                            <Icon__ name={'circle'} color={PURPLE} size={12} />
+                            <Icon__ name={'circle'} color={colors.PURPLE} size={12} />
                         </Marker>
 
 
@@ -523,7 +513,7 @@ export default class CarpoolHistory extends React.Component {
                             coordinates={data.walk1.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={2}
                             lineDashPattern={[20, 10]}
                         />
@@ -531,7 +521,7 @@ export default class CarpoolHistory extends React.Component {
                             coordinates={data.walk2.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={2}
                             lineDashPattern={[20, 10]}
                         />
@@ -539,7 +529,7 @@ export default class CarpoolHistory extends React.Component {
                             coordinates={data.walk3.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={2}
                             lineDashPattern={[20, 10]}
                         />
@@ -547,7 +537,7 @@ export default class CarpoolHistory extends React.Component {
                             coordinates={data.walk4.map(value => {
                                 return { latitude: value[0], longitude: value[1] }
                             })}
-                            strokeColor={GREY}
+                            strokeColor={colors.GREY}
                             strokeWidth={2}
                             lineDashPattern={[20, 10]}
                         />
@@ -566,7 +556,7 @@ export default class CarpoolHistory extends React.Component {
                         <View style={{ zIndex: 2 }}>
                             <CarpoolHistoryCard
                                 type={'history'}
-                                color={GREEN}
+                                color={colors.GREEN}
                                 onPress={() => { }}
                                 filler_time={`10:10 AM`}
                                 stopA={data.travelDetails.stop1A}
@@ -591,7 +581,7 @@ export default class CarpoolHistory extends React.Component {
                         <View style={{ zIndex: 2 }}>
                             <CarpoolHistoryCard
                                 type={'history'}
-                                color={BLUE}
+                                color={colors.BLUE}
                                 onPress={() => { }}
                                 filler_time={`10:10 AM`}
                                 stopA={data.travelDetails.stop2A}
@@ -615,7 +605,7 @@ export default class CarpoolHistory extends React.Component {
                             data={this.state.data} />
                         <View style={{ zIndex: 2 }}>
                             <CarpoolHistoryCard
-                                color={PURPLE}
+                                color={colors.PURPLE}
                                 type={'history'}
                                 onPress={() => { }}
                                 filler_time={`10:10 AM`}
@@ -706,19 +696,19 @@ export default class CarpoolHistory extends React.Component {
                         <View style={styles.mapGroup}>
                             <Text style={[styles.tripTitle, { marginTop: y(14), width: x(313), alignSelf: 'center' }]}>Trip Details</Text>
                             <View style={[styles.travel, { top: y(58) }]}>
-                                <Icon_ name={'map-pin'} size={y(10)} color={GREEN} />
+                                <Icon_ name={'map-pin'} size={y(10)} color={colors.GREEN} />
                                 <Text numberOfLines={3} style={[styles.firstLayer, { color: '#000000', fontSize: y(12, true), marginLeft: x(5), width: x(300), }]}>{this.state.data.location.description}</Text>
                             </View>
-                            <View style={styles.LtoD_Divider}><DashedDivider borderColor={GREEN} height={y(dimensionAssert() ? 43 : 30)} width={0} borderWidth={0.5} borderRadius={0} /></View>
+                            <View style={styles.LtoD_Divider}><DashedDivider borderColor={colors.GREEN} height={y(dimensionAssert() ? 43 : 30)} width={0} borderWidth={0.5} borderRadius={0} /></View>
                             <View style={[styles.travel, { top: y(dimensionAssert() ? 120 : 105) }]}>
-                                <Icon_ name={'map-pin'} size={y(10)} color={GREEN} />
+                                <Icon_ name={'map-pin'} size={y(10)} color={colors.GREEN} />
                                 <Text numberOfLines={3} style={[styles.firstLayer, { color: '#000000', fontSize: y(12, true), marginLeft: x(5), width: x(300), }]}>{this.state.data.destination.description}</Text>
                             </View>
 
 
                             <View style={[styles.calendar]}>
-                                <Text style={[styles.firstLayer, { color: GREEN, fontSize: y(14, true), marginRight: x(5), }]}>{this.state.date}</Text>
-                                <Icon_ name={'calendar'} size={y(13)} color={GREEN} />
+                                <Text style={[styles.firstLayer, { color: colors.GREEN, fontSize: y(14, true), marginRight: x(5), }]}>{this.state.date}</Text>
+                                <Icon_ name={'calendar'} size={y(13)} color={colors.GREEN} />
                             </View>
 
                             <MapView
@@ -741,7 +731,7 @@ export default class CarpoolHistory extends React.Component {
 
 
                                 <Marker coordinate={{ latitude: this.state.data.location.latitude, longitude: this.state.data.location.longitude }} style={{ zIndex: 1 }}>
-                                    <Icon__ name={'circle'} color={GREY} size={y(15)} />
+                                    <Icon__ name={'circle'} color={colors.GREY} size={y(15)} />
                                 </Marker>
                                 {polylines}
                                 <Marker coordinate={{ latitude: this.state.data.destination.latitude, longitude: this.state.data.destination.longitude }} style={{ zIndex: 1 }}>
@@ -823,7 +813,7 @@ export default class CarpoolHistory extends React.Component {
 
 function SvgComponent() {
     return (
-        <Svg width={16} height={24} viewBox="0 0 14 20" fill={GREY}>
+        <Svg width={16} height={24} viewBox="0 0 14 20" fill={colors.GREY}>
             <G data-name="Group 3003">
                 <Path
                     data-name="pin_sharp_circle-[#625]"
