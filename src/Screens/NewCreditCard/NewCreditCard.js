@@ -6,10 +6,6 @@ import Button from '../../Components/Button/Button';
 import Header from '../../Components/Header/Header';
 import { OfflineNotice, storeCard, x, y } from '../../Functions/Functions';
 import styles from './styles';
-stripe.setOptions({
-    publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
-    merchantId: 'merchant.com.perch',
-})
 
 export default class NewCreditCard extends React.Component {
     constructor(props) {

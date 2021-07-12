@@ -41,11 +41,6 @@ import styles from './styles';
 import CarpoolRideConfirmed from './CarpoolRideConfirmed';
 import Drivers from './Drivers';
 
-stripe.setOptions({
-    publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
-    merchantId: 'merchant.com.perch',
-})
-
 const MAX_HEADER_HEIGHT = y(156);
 const MIN_HEADER_HEIGHT = y(96.5);
 const X_CONSTANT = 0;

@@ -14,10 +14,6 @@ import database from '@react-native-firebase/database';
 import NetInfo from "@react-native-community/netinfo";
 import _ from 'lodash';
 import stripe from 'tipsi-stripe';
-stripe.setOptions({
-  publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
-  merchantId: 'merchant.com.perch',
-})
 
 const GOOGLE_KEY = 'AIzaSyCBmmCb6Lkhbj6LR5eCi2Lz2ocbpyW6kb4';
 const polyline = require('@mapbox/polyline');// for decoding polylines

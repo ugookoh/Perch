@@ -18,10 +18,6 @@ import GooglePaylogo from '../../Images/svgImages/googlePayLogo';
 import MasterCard from '../../Images/svgImages/mastercard';
 import Visa from '../../Images/svgImages/visa';
 import styles from './styles';
-stripe.setOptions({
-    publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
-    merchantId: 'merchant.com.perch',
-});
 
 export default class AddFunds extends React.Component { //////////////***ADD A BREAKDOWN OF THE FUNDS LIKE TAX AND ALL THAT, NOT JUST A TOTAL. MAKE IT LIKE A LITTLE DYNAMIC LIST... WE MUST ALSO ADD THE PLANS */
     constructor(props) {
