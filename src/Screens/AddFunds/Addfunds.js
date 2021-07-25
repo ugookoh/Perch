@@ -1,7 +1,12 @@
 import database from '@react-native-firebase/database';
 import axios from 'axios';
 import React from 'react';
-import { Alert, Animated, Keyboard, Platform, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import {
+    Alert, Animated,
+    Keyboard, Platform, Text, TextInput,
+    TouchableOpacity, TouchableWithoutFeedback,
+    View
+} from 'react-native';
 import { MaterialIndicator } from 'react-native-indicators';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import stripe from 'tipsi-stripe';
@@ -212,7 +217,7 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                                                 { label: 'Perch', amount: this.state.cost.toFixed(2) },
                                             ], {
                                                 currencyCode: 'CAD',
-                                                countryCode: 'CA'
+                                                countryCode: 'CA',
                                             })
                                                 .then((result) => {
                                                     stripe.completeApplePayRequest()

@@ -264,13 +264,9 @@ export default class Main extends React.Component {
                 Geolocation.requestAuthorization();
             },
             {
-                distanceFilter: 10,
                 enableHighAccuracy: Platform.OS == 'ios' ? false : true,
             }
-        ).catch((error) => {
-            console.log(error.code, error.message);
-            Geolocation.requestAuthorization();
-        });
+        )
 
         this.watchID = Geolocation.watchPosition(position => {//THIS HAPPENS AS THE USER MOVES OR CHANGES LOCATION
             this.setState({
@@ -575,7 +571,6 @@ export default class Main extends React.Component {
                                     console.log(error.code, error.message);
                                     Geolocation.requestAuthorization();
                                 }, {
-                                distanceFilter: 10,
                                 enableHighAccuracy: Platform.OS == 'ios' ? false : true,
                             }).catch((error) => {
                                 console.log(error.code, error.message);
