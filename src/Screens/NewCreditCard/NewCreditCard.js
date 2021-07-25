@@ -185,6 +185,10 @@ export default class NewCreditCard extends React.Component {
                         <Button text={'Add Card'} width={x(343)} height={y(50)} top={0} left={0} zIndex={2} loading={this.state.loading} onPress={() => {
                             if (this.state.name.length <= 3)
                                 Alert.alert('Error', 'Please enter the name on the card')
+                            else if (this.state.cardNumber.length < 19)
+                                Alert.alert('Error', 'Please enter full card number')
+                            else if (this.state.expiryDate.length < 7)
+                                Alert.alert('Error', 'Please enter full expiry date')
                             else
                                 this.createTokenWithCard();
                         }}
