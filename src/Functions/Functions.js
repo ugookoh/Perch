@@ -471,14 +471,22 @@ export function handleLogin() {
     .catch(error => this.setState({ errorMessage: error.message, loading: false }));
 };
 //HANDLE SIGN-UPS
-export function createUserDetails(firstName, lastName, email, phoneNumber, password, isDriver) {
+export function createUserDetails(firstName, lastName, email, phoneNumber, password, isDriver, referralCode) {
   axios.post(`https://us-central1-perch-01.cloudfunctions.net/checkIfPhoneNumberIsFree`, { phoneNumber: phoneNumber })
     .then(r => {
       if (r.data) {
         auth().createUserWithEmailAndPassword(email, password)
           .then(() => {
             const userID = auth().currentUser.uid;
-            axios.post('https://us-central1-perch-01.cloudfunctions.net/createUserDetails', { firstName: firstName, lastName: lastName, email: email, phoneNumber: phoneNumber, userID: userID, isDriver: isDriver })
+            axios.post('https://us-central1-perch-01.cloudfunctions.net/createUserDetails', {
+              firstName: firstName,
+              lastName: lastName,
+              email: email,
+              phoneNumber: phoneNumber,
+              userID: userID,
+              isDriver: isDriver,
+              referralCode: referralCode,
+            })
               .then(() => {
                 database().ref(`users/${userID}`).once('value', data => {
                   AsyncStorage.setItem('USER_DETAILS', JSON.stringify(data.val()))
@@ -550,7 +558,7 @@ export function signOut(forceUpdate) {
     .catch(error => { console.log(error.message) })
 };
 //GET LOCATION COORDINATES
-export function getLocation(mainText, description, id, fieldID, screen) {
+export function getLocation(mainText, description, id, fieldID, screen, animateMapToCurrentRegion) {
   switch (screen) {
     case 'Main': {
       Keyboard.dismiss();
@@ -603,6 +611,7 @@ export function getLocation(mainText, description, id, fieldID, screen) {
 
                 if (this.state.carpool) {
                   this.props.navigation.navigate('CarpoolResults', {
+                    animateMapToCurrentRegion: animateMapToCurrentRegion,
                     location: {
                       description: location_.description,
                       latitude: location_.latitude,
@@ -922,7 +931,7 @@ export function carpoolRequestHandler(data_, historyData) {
         firstName: userDetails.firstName,
         lastName: userDetails.lastName,
         rating: userDetails.summarizedHistory.carpool.rating,
-        tripNumber: userDetails.summarizedHistory.carpool.tripNumber,
+        tripNumber: userDetails.summarizedHistory.carpool.displayTripNumber,
         phoneNumber: userDetails.phoneNumber,
         data: data_,
       };
@@ -964,7 +973,7 @@ export function scheduledCarpoolRequestHandler(data_, historyData) {
         firstName: userDetails.firstName,
         lastName: userDetails.lastName,
         rating: userDetails.summarizedHistory.carpool.rating,
-        tripNumber: userDetails.summarizedHistory.carpool.tripNumber,
+        tripNumber: userDetails.summarizedHistory.carpool.displayTripNumber,
         phoneNumber: userDetails.phoneNumber,
         data: data_,
       };
@@ -1114,7 +1123,7 @@ export function rideshareRequestSender() {
           firstName: userDetails.firstName,
           lastName: userDetails.lastName,
           rating: userDetails.summarizedHistory.rideshare.rating,
-          tripNumber: userDetails.summarizedHistory.rideshare.tripNumber,
+          tripNumber: userDetails.summarizedHistory.rideshare.displayTripNumber,
           latitude: this.state.location.latitude,
           longitude: this.state.location.longitude,
           latitude1: this.state.destination.latitude,
@@ -1263,6 +1272,7 @@ export function chargeCustomer(toSend, dataToSend, historyData, usedPerchKms) {
       .then(result => {
         const { status, client_secret, id } = result.data;
         historyData.paymentIntentId = id;
+        historyData.cost = { ...historyData.cost, paymentIntentId: id };
         if (status == 'succeeded') {
           if (usedPerchKms) {
             perchKilometerPayment.call(this, {

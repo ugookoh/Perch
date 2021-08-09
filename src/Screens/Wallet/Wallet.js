@@ -34,9 +34,9 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
             selected: null,
             perchKms: 0,
             goToAddFunds: false,
+            TOP_OF_TRIPS: this.props.route.params.TOP_OF_TRIPS ? this.props.route.params.TOP_OF_TRIPS : 0,
         };
 
-        this.TOP_OF_TRIPS = 0;
         this.headerInverse = new Animated.Value(-Y_START);
         this.position = new Animated.ValueXY({ x: X_CONSTANT, y: Y_START });//This is the value we are animating to.
         this.position.y.addListener(({ value }) => {
@@ -49,18 +49,18 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
 
 
                     const Y_POSITION = Number(JSON.stringify(this.position.y));
-                    if (Y_POSITION > Y_START && this.direction === 'upwards')
+                    if ((Y_POSITION > Y_START && this.direction === 'upwards') && (!!!this.state.choice))
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: Y_START },
                         }).start();
                 });
             }
-            else if ((value <= this.TOP_OF_TRIPS) && this.direction === 'upwards') {
+            else if ((value <= this.state.TOP_OF_TRIPS) && this.direction === 'upwards') {
                 this.direction = 'downwards';
                 this.position.stopAnimation(() => {
-                    if (value < this.TOP_OF_TRIPS)
+                    if (value < this.state.TOP_OF_TRIPS)
                         Animated.spring(this.position, {
-                            toValue: { x: X_CONSTANT, y: (this.TOP_OF_TRIPS + 1) },
+                            toValue: { x: X_CONSTANT, y: (this.state.TOP_OF_TRIPS + 1) },
                         }).start();
                 })
             }
@@ -80,7 +80,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
             onPanResponderMove: (evt, gestureState) => {
                 this.position.stopAnimation();
                 const Y_POSITION = (this.value + gestureState.dy);
-                if (Y_POSITION <= Y_START && Y_POSITION >= this.TOP_OF_TRIPS)
+                if (Y_POSITION <= Y_START && Y_POSITION >= this.state.TOP_OF_TRIPS)
                     this.position.setValue({ x: X_CONSTANT, y: (gestureState.dy) });
 
 
@@ -186,7 +186,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                                                 <MasterCard /> :
                                                 <GenericPaymentCard />
                                     }</View>
-                                    <Text style={[styles.text, { marginLeft: x(40) }]}>•••• •••• •••• {key} - {('0' + this.state.cards[key].card.expMonth).slice(-2)}/{this.state.cards[key].card.expYear}</Text>
+                                    <Text style={[styles.text, { marginLeft: x(40) }]}>•••• •••• •••• {key} - {('0' + (this.state.cards[key].card.expMonth || this.state.cards[key].card.exp_month)).slice(-2)}/{this.state.cards[key].card.expYear || this.state.cards[key].card.exp_year}</Text>
                                 </View>
                                 {this.state.toShow != key && !this.state.choice ? <Icon name={'arrow-right'} size={y(12)} /> : <></>}
                                 {this.state.toShow == key && this.state.choice ? <Icon name={'check'} size={y(15)} color={colors.GREEN} /> : <></>}
@@ -240,7 +240,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                 <OfflineNotice navigation={this.props.navigation} screenName={this.props.route.name} />
                 <Animated.View style={[this.position.getLayout(), { positon: 'relative' }]} {...this.panResponder.panHandlers}>
                     <View onLayout={(event) => {
-                        this.TOP_OF_TRIPS = -event.nativeEvent.layout.height + (height / (1.5));
+                        this.setState({ TOP_OF_TRIPS: (-event.nativeEvent.layout.height + (height / (1.5))) });
                     }}>
                         {
                             this.state.choice ?
@@ -315,9 +315,6 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                                         {this.state.toShow == 'applePay' || this.state.toShow == 'googlePay' ? <Icon name={'check'} size={y(15)} color={colors.GREEN} /> : <></>}
                                     </TouchableOpacity>
                                 </View>
-
-
-
                             </> : <></>}
                         {cards}
 

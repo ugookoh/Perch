@@ -77,10 +77,11 @@ export default class DrawerComponent extends React.Component {
     //         }).catch(error => { console.log(error.message) })
     // };
     setImage = () => {
-        storage().ref(`${this.props.userDetails ? this.props.userDetails.photoRef : this.state.userDetails.photoRef}`).getDownloadURL()
-            .then(result => {
-                this.setState({ url: result })
-            }).catch(error => { console.log(error.message) })
+        if (this.props?.userDetails?.photoRef || this.state?.userDetails?.photoRef)
+            storage().ref(`${this.props.userDetails ? this.props.userDetails.photoRef : this.state.userDetails.photoRef}`).getDownloadURL()
+                .then(result => {
+                    this.setState({ url: result })
+                }).catch(error => { console.log(error.message) })
     };
     render() {
         return (
@@ -99,7 +100,7 @@ export default class DrawerComponent extends React.Component {
                             : <></>}
                     </View>
                     <Text style={styles.name}>{this.props.userDetails ? this.props.userDetails.firstName + ' ' + this.props.userDetails.lastName : ''}</Text>
-                    <Text style={styles.tripNo}>{`${this.props.userDetails ? this.props.choice == 'rideshare' ? this.props.userDetails.summarizedHistory.rideshare.tripNumber : this.props.userDetails.summarizedHistory.carpool.tripNumber : ''} ${this.props.userDetails ? (this.props.userDetails.summarizedHistory.carpool.tripNumber === 1 ? 'trip' : 'trips') : 'trips'}`}</Text>
+                    <Text style={styles.tripNo}>{`${this.props.userDetails ? this.props.choice == 'rideshare' ? this.props.userDetails.summarizedHistory.rideshare.displayTripNumber : this.props.userDetails.summarizedHistory.carpool.displayTripNumber : ''} ${this.props.userDetails ? (this.props.userDetails.summarizedHistory.carpool.displayTripNumber === 1 ? 'trip' : 'trips') : 'trips'}`}</Text>
                     <View style={[styles.rating, { alignItems: 'center' }]}>
                         <Text style={styles.ratingText}>{`${this.props.userDetails ? this.props.choice == 'rideshare' ? Number(this.props.userDetails.summarizedHistory.rideshare.rating).toFixed(1) : Number(this.props.userDetails.summarizedHistory.carpool.rating).toFixed(1) : ''} `}</Text>
                         <FontAwesome name={'star'} size={y(15)} color={'#FFC107'} />

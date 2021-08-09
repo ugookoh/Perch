@@ -74,6 +74,7 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                             this.props.navigation.navigate('Wallet', {
                                 userDetails: this.state.userDetails,
                                 choice: this.state.selected,
+                                TOP_OF_TRIPS: 0,
                             });
                         }}>
                         <Text style={styles.text}>Pick payment method</Text>
@@ -90,6 +91,7 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                             this.props.navigation.navigate('Wallet', {
                                 userDetails: this.state.userDetails,
                                 choice: this.state.selected,
+                                TOP_OF_TRIPS: 0,
                             });
                         }}>
                         <View style={{ flexDirection: 'row' }}>
@@ -109,6 +111,7 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                             this.props.navigation.navigate('Wallet', {
                                 userDetails: this.state.userDetails,
                                 choice: this.state.selected,
+                                TOP_OF_TRIPS: 0,
                             });
                         }}>
                         <View style={{ flexDirection: 'row' }}>
@@ -128,6 +131,7 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                             this.props.navigation.navigate('Wallet', {
                                 userDetails: this.state.userDetails,
                                 choice: this.state.selected,
+                                TOP_OF_TRIPS: 0,
                             });
                         }}>
                         <View style={{ flexDirection: 'row' }}>
@@ -138,13 +142,13 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                                         <MasterCard /> :
                                         <GenericPaymentCard />}
                             </View>
-                            <Text style={[styles.text, { marginLeft: x(50) }]}>{`•••• •••• •••• ${this.state.cardDetails.card.last4}  -  ${this.state.cardDetails.card.expMonth}/${this.state.cardDetails.card.expYear}`}</Text>
+                            <Text style={[styles.text, { marginLeft: x(50) }]}>{`•••• •••• •••• ${this.state.cardDetails.card.last4}  -  ${(this.state.cardDetails.card.expMonth || this.state.cardDetails.card.exp_month)}/${(this.state.cardDetails.card.expYear || this.state.cardDetails.card.exp_year)}`}</Text>
                         </View>
                         <Icon name={'arrow-right'} size={y(12)} />
                     </TouchableOpacity>
                 </View>
             };
-        }
+        };
 
         return (
             <TouchableWithoutFeedback onPress={() => {
@@ -205,6 +209,7 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                                         this.props.navigation.navigate('Wallet', {
                                             userDetails: this.state.userDetails,
                                             choice: this.state.selected,
+                                            TOP_OF_TRIPS: 0,
                                         });
                                     },
                                 }])

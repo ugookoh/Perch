@@ -61,7 +61,7 @@ export class DriverProfile extends React.Component {
                                 <Text style={styles.driverName}>{this.props.driver ? this.props.driver.name : ''}</Text>
                             </View>
 
-                            <Text style={styles.driverTripNumber}>{`${this.props.driver ? this.props.driver.history.tripNumber : '0'} trips`}</Text>
+                            <Text style={styles.driverTripNumber}>{`${this.props.driver ? this.props.driver.history.displayTripNumber : '0'} trips`}</Text>
                             <View style={styles.star}>
                                 <StarRating
                                     disabled={true}

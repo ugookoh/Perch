@@ -3,7 +3,7 @@ import React from 'react';
 import { Animated, Text, TouchableOpacity, View } from 'react-native';
 import Icon__ from 'react-native-vector-icons/Entypo';
 import Header from '../../Components/Header/Header';
-import { OfflineNotice, width, x, y,colors } from '../../Functions/Functions';
+import { OfflineNotice, width, x, y, colors } from '../../Functions/Functions';
 import GetFreeRidesImage from '../../Images/svgImages/getFreeRides';
 import styles from './styles';
 
@@ -72,7 +72,7 @@ export default class GetFreeRides extends React.Component {
                         </View>
                         <TouchableOpacity onPress={() => {
                             this.animate();
-                            Clipboard.setString(`My Perch Share Code is ${this.state.userDetails.shareCode}`);
+                            Clipboard.setString(`Sign up with my Perch referral code "${this.state.userDetails.shareCode}" at https://perchrides.com/s/auth/u_si_su?mode=signUp&referralCode=${this.state.userDetails.shareCode}`);
                         }}>
                             <View style={styles.send}>
                                 <Icon__ name={'paper-plane'} color={colors.WHITE} size={y(30)} />

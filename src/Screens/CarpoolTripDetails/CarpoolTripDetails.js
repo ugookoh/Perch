@@ -1729,6 +1729,7 @@ export default class CarpoolTripDetails extends React.Component {
                                                 this.props.navigation.navigate('Wallet', {
                                                     userDetails: userDetails,
                                                     choice: this.state.selected,
+                                                    TOP_OF_TRIPS: 0,
                                                 })
                                             })
                                         }}>
@@ -1754,9 +1755,16 @@ export default class CarpoolTripDetails extends React.Component {
                                                     steps: data.steps,
                                                     drivers: drivers,
                                                 },
-                                                cost: cost_,
+                                                cost: {
+                                                    ...cost_,
+                                                    paymentMethod: this.state.selected,//applePay, googlePay or a card type
+                                                    card: this.state.card,
+                                                    usedPerchKms: this.state.usePerchKms ? usedPerchKms : 0,
+                                                    seatNumber: this.state.seatNumber,
+                                                },
                                                 card: this.state.card,
                                                 paymentMethod: this.state.selected,//applePay, googlePay or a card type
+                                                usedPerchKms: this.state.usePerchKms ? usedPerchKms : 0
                                             };
                                             if (this.state.selected == 'NONE') {
                                                 Alert.alert(
@@ -1774,6 +1782,7 @@ export default class CarpoolTripDetails extends React.Component {
                                                                 this.props.navigation.navigate('Wallet', {
                                                                     userDetails: userDetails,
                                                                     choice: this.state.selected,
+                                                                    TOP_OF_TRIPS: 0,
                                                                 })
                                                             })
                                                         }
@@ -1784,10 +1793,11 @@ export default class CarpoolTripDetails extends React.Component {
 
                                                 if (remainingCost == 0) {
                                                     historyData.paymentIntentId = 'fullyPerchKms';
+                                                    historyData.cost = { ...historyData.cost, paymentIntentId: 'fullyPerchKms' };
                                                     //Process a perch km payment and move on to payments
                                                     perchKilometerPayment.call(this, {
                                                         userID: this.state.userID,
-                                                        usedPerchKms: usedPerchKms,
+                                                        usedPerchKms: this.state.usePerchKms ? usedPerchKms : 0
                                                     }, this.dataToSend, historyData)
                                                 }
                                                 else {
@@ -1805,9 +1815,10 @@ export default class CarpoolTripDetails extends React.Component {
                                                                             stripe.completeApplePayRequest()
                                                                                 .then(() => {
                                                                                     historyData.paymentIntentId = result.tokenId;
+                                                                                    historyData.cost = { ...historyData.cost, paymentIntentId: result.tokenId };
                                                                                     perchKilometerPayment.call(this, {
                                                                                         userID: this.state.userID,
-                                                                                        usedPerchKms: usedPerchKms,
+                                                                                        usedPerchKms: this.state.usePerchKms ? usedPerchKms : 0
                                                                                     }, this.dataToSend, historyData)
                                                                                 })
                                                                                 .catch(error => {
@@ -1844,9 +1855,10 @@ export default class CarpoolTripDetails extends React.Component {
                                                                     })
                                                                         .then((result) => {
                                                                             historyData.paymentIntentId = result.tokenId;
+                                                                            historyData.cost = { ...historyData.cost, paymentIntentId: result.tokenId };
                                                                             perchKilometerPayment.call(this, {
                                                                                 userID: this.state.userID,
-                                                                                usedPerchKms: usedPerchKms,
+                                                                                usedPerchKms: this.state.usePerchKms ? usedPerchKms : 0
                                                                             }, this.dataToSend, historyData)
                                                                         })
                                                                         .catch(error => {
@@ -1890,6 +1902,7 @@ export default class CarpoolTripDetails extends React.Component {
                                                                         stripe.completeApplePayRequest()
                                                                             .then(() => {
                                                                                 historyData.paymentIntentId = result.tokenId;
+                                                                                historyData.cost = { ...historyData.cost, paymentIntentId: result.tokenId };
                                                                                 if (this.state.now)
                                                                                     carpoolRequestHandler.call(this, this.dataToSend, historyData);
                                                                                 else
@@ -1929,6 +1942,7 @@ export default class CarpoolTripDetails extends React.Component {
                                                                 })
                                                                     .then((result) => {
                                                                         historyData.paymentIntentId = result.tokenId;
+                                                                        historyData.cost = { ...historyData.cost, paymentIntentId: result.tokenId };
                                                                         if (this.state.now)
                                                                             carpoolRequestHandler.call(this, this.dataToSend, historyData);
                                                                         else
@@ -2000,6 +2014,7 @@ export default class CarpoolTripDetails extends React.Component {
         else
             return (
                 <CarpoolRideConfirmed
+                    animateMapToCurrentRegion={this.props.route.params.animateMapToCurrentRegion}
                     tripBreakdown={tripBreakdown}
                     driverL1={this.state.driverL1}
                     driverL2={this.state.driverL2}

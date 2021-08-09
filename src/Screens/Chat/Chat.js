@@ -398,7 +398,7 @@ export default class Chat extends React.Component {
                                     : <></>}
                             </Animated.View>
                             <Animated.Text numberOfLines={1} style={[styles.driverName, { top: name_Top, left: name_Left }]}>{this.state.recieverDetails ? this.state.recieverDetails.name : ''}</Animated.Text>
-                            <Animated.Text style={[styles.driverTripNumber, { opacity: profileOpacity }]}>{`${this.state.recieverDetails ? this.state.recieverDetails.history.tripNumber : '0'} trips`}</Animated.Text>
+                            <Animated.Text style={[styles.driverTripNumber, { opacity: profileOpacity }]}>{`${this.state.recieverDetails ? this.state.recieverDetails.history.displayTripNumber : '0'} trips`}</Animated.Text>
                             <Animated.View style={[styles.star, { opacity: profileOpacity }]}>
                                 <StarRating
                                     disabled={true}
