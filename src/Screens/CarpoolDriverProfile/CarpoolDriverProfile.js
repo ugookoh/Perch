@@ -52,7 +52,7 @@ export default class CarpoolDriverProfile extends React.Component {
                     </View>
                     <View style={styles.profileDetails}>
                         <Text style={[styles.mainText, { fontSize: y(25, true) }]}>{this.state.driver.name}</Text>
-                        <Text style={[styles.mainText, { fontSize: y(15, true), }]}>{`${Number(this.state.driver.history.rating).toFixed(1)} • ${this.state.driver.history.tripNumber} trips`}</Text>
+                        <Text style={[styles.mainText, { fontSize: y(15, true), }]}>{`${Number(this.state.driver.history.rating).toFixed(1)} • ${this.state.driver.history.displayTripNumber} trips`}</Text>
                         <View style={styles.star_joined}>
                             <View style={styles.starContainer}>
                                 <StarRating

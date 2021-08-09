@@ -295,9 +295,33 @@ export default class Main extends React.Component {
         }).start();
 
     };
+    animateMapToCurrentRegion = () => {
+        Geolocation.getCurrentPosition(
+            (position) => {
+                this.map.animateToRegion({
+                    latitude: position.coords.latitude - 0.001,
+                    longitude: position.coords.longitude,
+                    latitudeDelta: LATITUDE_DELTA,
+                    longitudeDelta: LONGITUDE_DELTA,
+                });
+            },
+            (error) => {
+                console.log(error.code, error.message);
+                Geolocation.requestAuthorization();
+            },
+            {
+                distanceFilter: 10,
+                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+            }
+        ).catch((error) => {
+            console.log(error.code, error.message);
+            Geolocation.requestAuthorization();
+        });
+    };
     forceUpdate(value) {
         const userDetails = value;
         this.setState({
+            userDetails: userDetails,
             workAddress: userDetails.workAddress ? userDetails.workAddress : 'NORESULTS',
             homeAddress: userDetails.homeAddress ? userDetails.homeAddress : 'NORESULTS',
         });
@@ -503,7 +527,7 @@ export default class Main extends React.Component {
                     key={data.place_id}
                     Press={() => {
                         getLocation.call(this,
-                            data.mainText, data.description, data.place_id, input, 'Main');
+                            data.mainText, data.description, data.place_id, input, 'Main', this.animateMapToCurrentRegion);
                     }} />)
         });
         const zoomTop = this.state.searchPosition === 'shown' ?
@@ -521,7 +545,7 @@ export default class Main extends React.Component {
                     key={data.place_id}
                     Press={() => {
                         getLocation.call(this,
-                            data.mainText, data.description, data.place_id, input, 'Main');
+                            data.mainText, data.description, data.place_id, input, 'Main', this.animateMapToCurrentRegion);
                     }} />)
         })
             : <></>;

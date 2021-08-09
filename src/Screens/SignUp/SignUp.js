@@ -36,6 +36,7 @@ export default class SignUp extends React.Component {
             loading: false,
             choice: 'hidden',
             countryCode: 'Canada (+1)',
+            referralCode: '',
         }
         this._keyboardDidShow = this._keyboardDidShow.bind(this);
         this.pickerPosition = new Animated.Value(-y(310))
@@ -108,8 +109,8 @@ export default class SignUp extends React.Component {
 
                             <View style={styles.inputContainer}>
                                 <View style={styles.topInput}>
-                                    <Form height={y(48)} width={x(154)} placeholder={'First Name'} onChangeText={(value) => { this.setState({ firstName: value }) }} value={this.state.firstName} form={'default'} onEndEditing={() => { }} />
-                                    <Form height={y(48)} width={x(154)} placeholder={'Last Name'} onChangeText={(value) => { this.setState({ lastName: value }) }} value={this.state.lastName} form={'default'} onEndEditing={() => { }} />
+                                    <Form height={y(48)} width={x(158)} placeholder={'First Name'} onChangeText={(value) => { this.setState({ firstName: value }) }} value={this.state.firstName} form={'default'} onEndEditing={() => { }} />
+                                    <Form height={y(48)} width={x(158)} placeholder={'Last Name'} onChangeText={(value) => { this.setState({ lastName: value }) }} value={this.state.lastName} form={'default'} onEndEditing={() => { }} />
                                 </View>
                                 <Form height={y(48)} width={x(322)} placeholder={'Email'} onChangeText={(value) => { this.setState({ email: value }) }} value={this.state.email} form={'email'} marginTop={marginTop} onEndEditing={() => { }} />
                                 <View style={[styles.view, { height: y(48), width: x(322), marginTop: marginTop }]}>
@@ -128,8 +129,11 @@ export default class SignUp extends React.Component {
                                         autoCapitalize={'none'}
                                     />
                                 </View>
-                                <Form height={y(48)} width={x(322)} placeholder={'Password'} onChangeText={(value) => { this.setState({ password: value }) }} value={this.state.password} form={'password'} marginTop={marginTop} onEndEditing={() => { }} />
-                                <Form height={y(48)} width={x(322)} placeholder={'Confirm Password'} onChangeText={(value) => { this.setState({ confirmPassword: value }) }} value={this.state.confirmPassword} form={'password'} marginTop={marginTop} onEndEditing={() => { Keyboard.dismiss() }} />
+                                <View style={[styles.topInput, { marginTop: marginTop }]}>
+                                    <Form height={y(48)} width={x(158)} placeholder={'Password'} onChangeText={(value) => { this.setState({ password: value }) }} value={this.state.password} form={'password'} onEndEditing={() => { }} />
+                                    <Form height={y(48)} width={x(158)} placeholder={'Confirm Password'} onChangeText={(value) => { this.setState({ confirmPassword: value }) }} value={this.state.confirmPassword} form={'password'} onEndEditing={() => { }} />
+                                </View>
+                                <Form height={y(48)} width={x(322)} placeholder={'Referral Code'} onChangeText={(value) => { this.setState({ referralCode: value }) }} value={this.state.referralCode} form={'default'} marginTop={marginTop} onEndEditing={() => { Keyboard.dismiss() }} />
                             </View>
                         </View>
 
@@ -159,7 +163,8 @@ export default class SignUp extends React.Component {
                                     this.state.email,
                                     `+${this.countryCode()}${this.state.phoneNumber}`,
                                     this.state.password,
-                                    false
+                                    false,
+                                    this.state.referralCode
                                 )
                             }
                         }}

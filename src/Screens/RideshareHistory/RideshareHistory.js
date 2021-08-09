@@ -254,7 +254,7 @@ export default class RideshareHistory extends React.Component {
                                 </View>
                                 <View style={{ marginLeft: x(20) }}>
                                     <Text style={[styles.driverName, {}]}>{`${this.state.data.lastName} ${this.state.data.firstName}`}</Text>
-                                    <Text style={[styles.driverTripNumber, { marginVertical: x(3) }]}>{`${this.state.data.history.tripNumber} trips`}</Text>
+                                    <Text style={[styles.driverTripNumber, { marginVertical: x(3) }]}>{`${this.state.data.history.displayTripNumber} trips`}</Text>
                                     <View style={[styles.star, {}]}>
                                         <StarRating
                                             disabled={true}

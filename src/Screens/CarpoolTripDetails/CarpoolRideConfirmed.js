@@ -65,6 +65,8 @@ export default class CarpoolRideConfirmed extends React.Component {
             shareCode: '------',
             animate: true,
 
+            currentLocation: null,
+
         };
         this.data = this.props.data;
         this.ratingTop = new Animated.Value(height);
@@ -153,6 +155,8 @@ export default class CarpoolRideConfirmed extends React.Component {
     componentDidMount() {
         const data = this.data;
         database().ref(`carpoolTripReserve/carpool/user/${this.props.userID}`).on('child_removed', snapshot => {
+            if (this?.props?.animateMapToCurrentRegion)
+                this.props.animateMapToCurrentRegion();
             this.props.navigation.navigate("Main");
         })
         AsyncStorage.getItem('USER_DETAILS').then(result => {
@@ -161,6 +165,12 @@ export default class CarpoolRideConfirmed extends React.Component {
         })
         Geolocation.getCurrentPosition(
             (position) => {
+                this.setState({
+                    currentLocation: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                    }
+                });
                 database().ref(`userLocation/${this.props.userID}`).set({
                     location: { latitude: position.coords.latitude, longitude: position.coords.longitude },
                     shareLocation: true,
@@ -171,7 +181,6 @@ export default class CarpoolRideConfirmed extends React.Component {
                 Geolocation.requestAuthorization();
             },
             {
-                distanceFilter: 10,
                 enableHighAccuracy: Platform.OS == 'ios' ? false : true,
             }
         ).catch((error) => {
@@ -180,6 +189,12 @@ export default class CarpoolRideConfirmed extends React.Component {
         });
 
         this.watchID = Geolocation.watchPosition(position => {//THIS HAPPENS AS THE USER MOVES OR CHANGES LOCATION
+            this.setState({
+                currentLocation: {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                }
+            })
             if (this.timeoutFunction && this.state.sendUserLocation) {
                 database().ref(`userLocation/${this.props.userID}`).set({
                     location: { latitude: position.coords.latitude, longitude: position.coords.longitude },
@@ -1206,6 +1221,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                                                             type: 'rider',
                                                             driverIDArray: driverIDArray,
                                                             time: new Date().getTime(),
+                                                            userLocation: this.state.currentLocation,
                                                         });
                                                     } else {//deal with scheduled trip cancellations
                                                         cancelScheduledTrip.call(this, {
@@ -1213,6 +1229,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                                                             type: 'rider',
                                                             driverIDArray: driverIDArray,
                                                             time: new Date().getTime(),
+                                                            userLocation: this.state.currentLocation,
                                                         });
                                                     }
                                                 },
@@ -1236,7 +1253,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                                 <TouchableOpacity
                                     onPress={() => {
                                         this.animate();
-                                        Clipboard.setString(`My Perch Share Code is ${this.state.shareCode}`);
+                                        Clipboard.setString(`Sign up with my Perch referral code "${this.state.shareCode}" at https://perchrides.com/s/auth/u_si_su?mode=signUp&referralCode=${this.state.shareCode}`);
                                     }}>
                                     <View style={styles.send}>
                                         <Icon__ name={'paper-plane'} color={colors.WHITE} size={y(30)} />

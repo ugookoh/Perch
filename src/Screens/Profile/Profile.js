@@ -53,10 +53,11 @@ export default class Profile extends React.Component {
         })
     }
     setImage = () => {
-        storage().ref(`${this.state.userDetails.photoRef}`).getDownloadURL()
-            .then(result => {
-                this.setState({ url: result })
-            }).catch(error => { console.log(error.message) })
+        if (this.state?.userDetails?.photoRef)
+            storage().ref(`${this.state.userDetails.photoRef}`).getDownloadURL()
+                .then(result => {
+                    this.setState({ url: result })
+                }).catch(error => { console.log(error.message) })
     };
     updateName() {
         Alert.alert(

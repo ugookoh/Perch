@@ -385,6 +385,7 @@ export default class CarpoolResults extends React.Component {
                                                                     .then(result => {
                                                                         const userDetails = JSON.parse(result);
                                                                         this.props.navigation.navigate('CarpoolTripDetails', {
+                                                                            animateMapToCurrentRegion: this.props.route.params.animateMapToCurrentRegion,
                                                                             data: item,
                                                                             location: this.state.location,
                                                                             destination: this.state.destination,
@@ -414,7 +415,13 @@ export default class CarpoolResults extends React.Component {
                                                                 .then(result => {
                                                                     const userDetails = JSON.parse(result);
                                                                     this.props.navigation.navigate('CarpoolTripDetails', {
-                                                                        data: item, location: this.state.location, destination: this.state.destination, seatNumber: this.state.seatNumber, tripAccepted: false, userID: userDetails.userID, now: true,
+                                                                        animateMapToCurrentRegion: this.props.route.params.animateMapToCurrentRegion,
+                                                                        data: item,
+                                                                        location: this.state.location,
+                                                                        destination: this.state.destination,
+                                                                        seatNumber: this.state.seatNumber,
+                                                                        tripAccepted: false,
+                                                                        userID: userDetails.userID, now: true,
                                                                         onRefresh: () => {
                                                                             this.onRefresh.call(this)
                                                                         },
@@ -434,7 +441,14 @@ export default class CarpoolResults extends React.Component {
                                                                 .then(result => {
                                                                     const userDetails = JSON.parse(result);
                                                                     this.props.navigation.navigate('CarpoolTripDetails', {
-                                                                        data: item, location: this.state.location, destination: this.state.destination, seatNumber: this.state.seatNumber, tripAccepted: false, userID: userDetails.userID, now: true,
+                                                                        animateMapToCurrentRegion: this.props.route.params.animateMapToCurrentRegion,
+                                                                        data: item,
+                                                                        location: this.state.location,
+                                                                        destination: this.state.destination,
+                                                                        seatNumber: this.state.seatNumber,
+                                                                        tripAccepted: false,
+                                                                        userID: userDetails.userID,
+                                                                        now: true,
                                                                         onRefresh: () => {
                                                                             this.onRefresh.call(this)
                                                                         },
