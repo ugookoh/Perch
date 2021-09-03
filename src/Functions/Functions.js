@@ -1538,12 +1538,12 @@ export async function openBrowser(URL) {
     InAppBrowser.open(url, {
       // iOS Properties
       dismissButtonStyle: 'close',
-      preferredBarTintColor: 'rgb(64, 64, 64)',
+      preferredBarTintColor: Platform.OS == 'ios' ? 'rgb(64, 64, 64)' : '#404040',
       preferredControlTintColor: 'white',
       modalPresentationStyle: 'fullScreen',
       // Android Properties
       showTitle: true,
-      toolbarColor: 'rgb(64, 64, 64)',
+      toolbarColor: Platform.OS == 'ios' ? 'rgb(64, 64, 64)' : '#404040',
       secondaryToolbarColor: colors.WHITE,
       enableUrlBarHiding: true,
       enableDefaultShare: true,

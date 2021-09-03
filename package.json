@@ -8,8 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
-    "postinstall": "yarn run bundle:ios"
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
   },
   "dependencies": {
     "@mapbox/polyline": "^1.1.1",
@@ -51,7 +50,7 @@
     "react-native-linear-gradient": "^2.5.6",
     "react-native-maps": "0.27.1",
     "react-native-permissions": "^2.1.4",
-    "react-native-push-notification": "^3.4.0",
+    "react-native-push-notification": "7.3.0",
     "react-native-reanimated": "^1.7.1",
     "react-native-responsive-screen": "^1.4.1",
     "react-native-safe-area-context": "^0.7.3",

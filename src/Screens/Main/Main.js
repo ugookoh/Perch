@@ -265,6 +265,11 @@ export default class Main extends React.Component {
             },
             {
                 enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                //enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 10000,
+                distanceFilter: 0,
+                forceRequestLocation: true
             }
         )
 
@@ -310,8 +315,12 @@ export default class Main extends React.Component {
                 Geolocation.requestAuthorization();
             },
             {
-                distanceFilter: 10,
                 enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                //enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 10000,
+                distanceFilter: 0,
+                forceRequestLocation: true
             }
         ).catch((error) => {
             console.log(error.code, error.message);
@@ -596,6 +605,11 @@ export default class Main extends React.Component {
                                     Geolocation.requestAuthorization();
                                 }, {
                                 enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                                //enableHighAccuracy: true,
+                                timeout: 15000,
+                                maximumAge: 10000,
+                                distanceFilter: 0,
+                                forceRequestLocation: true
                             }).catch((error) => {
                                 console.log(error.code, error.message);
                                 Geolocation.requestAuthorization();
@@ -866,7 +880,7 @@ export default class Main extends React.Component {
                             </View>
                             :
                             <DateTimePicker
-                                value={this.state.date}
+                                value={new Date(this.state.date)}
                                 mode={'time'}
                                 is24Hour={false}
                                 //display={"spinner"}

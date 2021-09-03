@@ -57,6 +57,8 @@ target 'Perch' do
 
   pod 'tipsi-stripe', :path => '../node_modules/tipsi-stripe'
 
+  pod 'react-native-geolocation-service', :path => '../node_modules/react-native-geolocation-service'
+
   target 'PerchTests' do
     inherit! :search_paths
     # Pods for testing

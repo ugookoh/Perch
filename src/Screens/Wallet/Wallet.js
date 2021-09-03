@@ -161,9 +161,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
         );
     }
     render() {
-        LayoutAnimation.configureNext(CustomLayoutLinear);
-        const cards = [];
-
+        let cards = [];
         if (this.state.cards)
             for (let key in this.state.cards)
                 if (this.state.cards[key] && key != 'selected')

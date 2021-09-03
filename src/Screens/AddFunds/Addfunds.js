@@ -265,7 +265,7 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                                     .then(canUsePayment => {
                                         if (canUsePayment) {
                                             stripe.paymentRequestWithAndroidPay({
-                                                total_price: data.cost.total,
+                                                total_price: this.state.cost.toFixed(2),
                                                 currency_code: 'CAD',
                                                 shipping_address_required: false,
                                                 billing_address_required: false,
@@ -273,8 +273,8 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                                                 line_items: [{
                                                     currency_code: 'CAD',
                                                     description: 'Perch Kilometers',
-                                                    total_price: data.cost.total,
-                                                    unit_price: data.cost.total,
+                                                    total_price: this.state.cost.toFixed(2),
+                                                    unit_price: this.state.cost.toFixed(2),
                                                     quantity: '1',
                                                 }],
                                             })
@@ -326,7 +326,7 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                                 {this.state.paymentCompleted ?
                                     <>
                                         <Text style={styles.conclusion}>Payment has been successfully processed, thank you for using Perch!</Text>
-                                        <View style={[styles.button, { width: x(280), position: 'absolute', bottom: x(10), }]}>
+                                        <View style={[styles.button, { width: x(280), marginTop: y(10) }]}>
                                             <Button text={'Go back'} width={x(280)} height={y(54)} top={0} left={0} zIndex={2} onPress={() => {
                                                 this.props.route.params.refresh(null)
                                                 this.props.route.params.returnToAddfunds(false)
