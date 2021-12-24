@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.geolocation.GeolocationPackage;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.gettipsi.stripe.StripeReactPackage;
 import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;

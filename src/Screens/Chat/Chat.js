@@ -52,7 +52,7 @@ export default class Chat extends React.Component {
 
     componentDidMount() {
         this.setImage();
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardDidHide);
         if (Platform.OS === 'android')
             AsyncStorage.getItem('ANDROID_KEYBOARD_HEIGHT')
@@ -60,7 +60,7 @@ export default class Chat extends React.Component {
                     if (result)
                         this.setState({ keyboardHeight: JSON.parse(result) });
                     else
-                        keyboardEvent1 = 'keyboardDidShow';
+                        keyboardEvent1 = 'keyboardWillShow';
                 })
                 .catch(err => { console.log(err.message) });
         database().ref(`chats/${this.state.riderID}-${this.state.driverID}/`).once('value', snap => {
@@ -122,7 +122,7 @@ export default class Chat extends React.Component {
                 bounciness: 0,
             }).start();
 
-        if (Platform.OS === 'android' && keyboardEvent1 === 'keyboardDidShow') {
+        if (Platform.OS === 'android' && keyboardEvent1 === 'keyboardWillShow') {
             AsyncStorage.setItem('ANDROID_KEYBOARD_HEIGHT', JSON.stringify(e.endCoordinates.height))
                 .catch(error => { console.log(error.message) });
         };
@@ -497,7 +497,7 @@ export default class Chat extends React.Component {
                                 multiline={true}
                                 textAlignVertical={'top'}
                                 onFocus={() => {
-                                    if (Platform.OS === 'android' && keyboardEvent1 !== 'keyboardDidShow')
+                                    if (Platform.OS === 'android' && keyboardEvent1 !== 'keyboardWillShow')
                                         Keyboard.emit('keyboardWillShow')
                                 }}
                                 onEndEditing={() => {
