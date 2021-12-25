@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions, Platform, StatusBar } from 'react-native';
-import { x, y, height, width, dimensionAssert } from '../../Functions/Functions';
+import { x, y, height, width, dimensionAssert, colors } from '../../Functions/Functions';
 const [GREEN, WHITE, GREY] = ['#4DB748', '#FFFFFF', '#918686'];
 
 export default StyleSheet.create({
@@ -58,7 +58,7 @@ export default StyleSheet.create({
     balanceText: {
         fontFamily: 'Gilroy-SemiBold',
         fontSize: y(30, true),
-        color: '#4DB748',
+        color: colors.GREEN,
     },
     button: {
         marginTop: y(15),

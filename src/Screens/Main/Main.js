@@ -11,7 +11,7 @@ import {
     TextInput, TouchableOpacity,
     TouchableWithoutFeedback,
     UIManager, View,
-    YellowBox
+    LogBox
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
@@ -152,12 +152,14 @@ export default class Main extends React.Component {
                     Animated.spring(this.position, {
                         toValue: { x: X_OUT, y: Y_CONSTANT },
                         velocity: { x: gestureState.vx, y: gestureState.vy },
+                        useNativeDriver:false,
                     }).start();
                 }
                 else if (Math.sign(gestureState.dx) == -1) {//going in
                     Animated.spring(this.position, {
                         toValue: { x: X_IN, y: Y_CONSTANT },
                         velocity: { x: gestureState.vx, y: gestureState.vy },
+                        useNativeDriver:false,
                     }).start();
                 }
             },
@@ -265,6 +267,11 @@ export default class Main extends React.Component {
             },
             {
                 enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                //enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 10000,
+                distanceFilter: 0,
+                forceRequestLocation: true
             }
         )
 
@@ -287,11 +294,13 @@ export default class Main extends React.Component {
         Animated.spring(this.animatedValue, {
             //toValue: y(538),
             toValue: y(510),
-            easing: Easing.bounce
+            easing: Easing.bounce,
+            useNativeDriver:false,
         }).start();
         Animated.spring(this.animatedValueTop_, {
             toValue: y(510),
-            easing: Easing.bounce
+            easing: Easing.bounce,
+            useNativeDriver:false,
         }).start();
 
     };
@@ -310,8 +319,12 @@ export default class Main extends React.Component {
                 Geolocation.requestAuthorization();
             },
             {
-                distanceFilter: 10,
                 enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                //enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 10000,
+                distanceFilter: 0,
+                forceRequestLocation: true
             }
         ).catch((error) => {
             console.log(error.code, error.message);
@@ -439,7 +452,8 @@ export default class Main extends React.Component {
 
         Animated.spring(this.animatedValueTop_, {
             toValue: y(510),
-            easing: Easing.bounce
+            easing: Easing.bounce,
+            useNativeDriver:false,
         }).start();
     };
     animateFullScreen() {
@@ -451,7 +465,8 @@ export default class Main extends React.Component {
             toValue: -y(15),
             bounciness: 0,
             velocity: 30,
-            easing: Easing.ease
+            easing: Easing.ease,
+            useNativeDriver:false,
         }).start(() => {
             this.setState({ searchPosition: 'shown' });
         });
@@ -459,6 +474,7 @@ export default class Main extends React.Component {
         Animated.spring(this.down_zindex, {
             toValue: -1,
             bounciness: 0,
+            useNativeDriver:false,
         }).start();
     };
     animateMenu() {
@@ -466,12 +482,14 @@ export default class Main extends React.Component {
         Animated.spring(this.position, {
             toValue: { x: X_OUT, y: Y_CONSTANT },
             bounciness: 0,
+            useNativeDriver:false,
         }).start();
     };
     hideMenu() {
         LayoutAnimation.configureNext(CustomLayoutLinear)
         Animated.spring(this.position, {
             toValue: { x: X_IN, y: Y_CONSTANT },
+            useNativeDriver:false,
         }).start();
     };
     continueTrip = () => {
@@ -596,6 +614,11 @@ export default class Main extends React.Component {
                                     Geolocation.requestAuthorization();
                                 }, {
                                 enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                                //enableHighAccuracy: true,
+                                timeout: 15000,
+                                maximumAge: 10000,
+                                distanceFilter: 0,
+                                forceRequestLocation: true
                             }).catch((error) => {
                                 console.log(error.code, error.message);
                                 Geolocation.requestAuthorization();
@@ -866,7 +889,7 @@ export default class Main extends React.Component {
                             </View>
                             :
                             <DateTimePicker
-                                value={this.state.date}
+                                value={new Date(this.state.date)}
                                 mode={'time'}
                                 is24Hour={false}
                                 //display={"spinner"}
@@ -929,6 +952,7 @@ class LowerSection extends React.Component {
                         toValue: { x: X_CONSTANT, y: Y_BOTTOM },
                         velocity: { x: gestureState.vx, y: gestureState.vy },
                         easing: Easing.bounce,
+                        useNativeDriver:false,
                     }).start();
 
 
@@ -939,6 +963,7 @@ class LowerSection extends React.Component {
                         toValue: { x: X_CONSTANT, y: Y_TOP },
                         velocity: { x: gestureState.vx, y: gestureState.vy },
                         easing: Easing.bounce,
+                        useNativeDriver:false,
                     }).start();
 
                 }
@@ -954,6 +979,7 @@ class LowerSection extends React.Component {
         Animated.spring(this.position, {
             toValue: { x: X_CONSTANT, y: Y_TOP },
             easing: Easing.bounce,
+            useNativeDriver:false,
         }).start();
         this.props.suggestionSetter('springUp');
     }
@@ -963,6 +989,7 @@ class LowerSection extends React.Component {
         Animated.spring(this.position, {
             toValue: { x: X_CONSTANT, y: Y_BOTTOM },
             easing: Easing.bounce,
+            useNativeDriver:false,
         }).start();
         this.props.suggestionSetter('springDown');
     }
@@ -971,6 +998,7 @@ class LowerSection extends React.Component {
         Animated.spring(this.position, {
             toValue: { x: X_CONSTANT, y: Y_START },
             easing: Easing.bounce,
+            useNativeDriver:false,
         }).start();
         this.props.suggestionSetter('invinsible');
         this.props.mapmovedSetter();
@@ -1024,7 +1052,7 @@ class LocationItem extends React.Component {
         );
     }
 };
-YellowBox.ignoreWarnings([
+LogBox.ignoreLogs([
     'Non-serializable values were found in the navigation state',
     'Cannot update during an existing state transition'
 ]);

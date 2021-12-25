@@ -100,6 +100,7 @@ export default class RideshareChoice extends React.Component {
                     toValue: 0,
                     bounciness: 0,
                     easing: Easing.linear,
+                    useNativeDriver: false,
                 }).start();
             }; break;
             case 'DOWN': {
@@ -107,6 +108,7 @@ export default class RideshareChoice extends React.Component {
                     toValue: height,
                     bounciness: 0,
                     easing: Easing.linear,
+                    useNativeDriver: false,
                 }).start();
             } break;
         };
@@ -119,6 +121,7 @@ export default class RideshareChoice extends React.Component {
             toValue: height,
             bounciness: 0,
             easing: Easing.linear,
+            useNativeDriver: false,
         }).start(() => {
             if (this.map)
                 this.map.animateToRegion({
@@ -130,6 +133,7 @@ export default class RideshareChoice extends React.Component {
             this.setState({ confirmCurrentLocation: true })
             Animated.spring(this.height, {
                 toValue: LOWERSECTIONHEIGHT_ANIMATED,
+                useNativeDriver: false,
             }).start(() => {
                 this.animatedComplete = true;
             });
@@ -631,11 +635,13 @@ class SearchingForDriver extends React.Component {
                 Animated.timing(this.opacity, {
                     toValue: 0.3,
                     duration: 2000,
+                    useNativeDriver: false,
                     //delay: 1000
                 }),
                 Animated.timing(this.opacity, {
                     toValue: 1,
-                    duration: 2000
+                    duration: 2000,
+                    useNativeDriver: false,
                 })
             ])
         ).start();

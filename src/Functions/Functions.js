@@ -319,6 +319,7 @@ export class OfflineNotice extends React.Component {
       Animated.spring(this.position, {
         toValue: { x: 0, y: this.Y_END },
         bounciness: 0,
+        useNativeDriver: false,
       }).start(() => {
 
       });
@@ -328,11 +329,13 @@ export class OfflineNotice extends React.Component {
       Animated.spring(this.position, {
         toValue: { x: 0, y: this.Y_START },
         bounciness: 0,
+        useNativeDriver: false,
       }).start(() => {
         setTimeout(() => {
           Animated.spring(this.position, {
             toValue: { x: 0, y: this.Y_END },
             bounciness: 0,
+            useNativeDriver: false,
           }).start();
         }, 3000);//HIDE BACK AFTER 3 SECONDS
       });
@@ -1538,12 +1541,12 @@ export async function openBrowser(URL) {
     InAppBrowser.open(url, {
       // iOS Properties
       dismissButtonStyle: 'close',
-      preferredBarTintColor: 'rgb(64, 64, 64)',
+      preferredBarTintColor: Platform.OS == 'ios' ? 'rgb(64, 64, 64)' : '#404040',
       preferredControlTintColor: 'white',
       modalPresentationStyle: 'fullScreen',
       // Android Properties
       showTitle: true,
-      toolbarColor: 'rgb(64, 64, 64)',
+      toolbarColor: Platform.OS == 'ios' ? 'rgb(64, 64, 64)' : '#404040',
       secondaryToolbarColor: colors.WHITE,
       enableUrlBarHiding: true,
       enableDefaultShare: true,

@@ -7,7 +7,7 @@ import { MaterialIndicator } from 'react-native-indicators';
 import { x, y, height, width, dimensionAssert } from '../../Functions/Functions';
 const TRIP_WIDTH = x(333);
 const [GREEN, WHITE, GREY] = ['#4DB748', '#FFFFFF', '#918686'];
-
+import moment from 'moment';
 /*
 *REGARDING const tripStartIn;
 *
@@ -44,25 +44,13 @@ export class OneStepTrip extends React.Component {
         }
         const data = this.props.data;
         const distance = (data.firstDistance);
-        let totalTime, totalH, totalM, tripStartIn, tripStartH_, tripStartM_, startHour, startMin, endHour, endMin, startMeridiem, endMeridiem;
-
-        totalTime = data.travelDetails.walkFromL.duration.value
+        const totalTime = data.travelDetails.walkFromL.duration.value
             + data.travelDetails.etaTravel1.duration.value
             + data.travelDetails.walkToD.duration.value;
+        const tripStartIn = ((data.travelDetails.etaArrival1.duration.value) - data.travelDetails.walkFromL.duration.value);
+        const startTime = moment(new Date(new Date().getTime() + (tripStartIn * 1000))).format('hh:mm A');
+        const endTime = moment(new Date(new Date().getTime() + (tripStartIn * 1000) + (totalTime * 1000))).format('hh:mm A');
 
-        [totalH, totalM] = [secondsToHms(totalTime).hours, secondsToHms(totalTime).minutes];
-
-        tripStartIn = /*<<<<----- REMOVE THIS MINUS SIGNNNN*/ ((data.travelDetails.etaArrival1.duration.value) - data.travelDetails.walkFromL.duration.value);
-        [tripStartH_, tripStartM_] = [secondsToHms(tripStartIn).hours, secondsToHms(tripStartIn).minutes];
-        startHour = calculateTime(this.state.hours, tripStartH_, this.state.minutes, tripStartM_)
-        startMin = ((this.state.minutes + tripStartM_) % 60);
-        endHour = calculateTime(startHour, totalH, startMin, totalM);
-        endMin = ((startMin + totalM) % 60);
-        startMeridiem = ((nN(this.state.hours) + nN(tripStartH_)) % 24) < 12 ? 'AM' : 'PM';
-        endMeridiem = (((nN(this.state.hours) + nN(tripStartH_) + nN(totalH) + Math.floor(((nN(startMin) + nN(totalM)) / 60)))) % 24) < 12 ? 'AM' : 'PM';
-
-        startHour = startHour == 0 ? startHour = 12 : startHour;
-        endHour = endHour == 0 ? endHour = 12 : endHour;
 
         return (
             <View style={styles.container}>
@@ -87,7 +75,7 @@ export class OneStepTrip extends React.Component {
                         </View>
                         <Text style={styles.cost}>${Number(data.cost.total).toFixed(2)}</Text>
                         <Text style={styles.distance}>{`${(distance / 1000).toFixed(2)} km`}</Text>
-                        <Text style={styles.time}>{`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem} TO ${endHour}:${endMin < 10 ? '0' + endMin : endMin} ${endMeridiem}`}</Text>
+                        <Text style={styles.time}>{`${startTime} TO ${endTime}`}</Text>
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -120,57 +108,13 @@ export class TwoStepTrip extends React.Component {
         const distance = (data.firstDistance + data.secondDistance);
         const _1stFlex = (data.firstDistance / distance);
         const _2ndFlex = 1 - _1stFlex;
-        let totalH, totalM, tripStartIn, tripStartH_, tripStartM_, startHour, startMin, endHour, endMin, startMeridiem, endMeridiem;
 
-
-        tripStartIn =  /*<<<<----- REMOVE THIS MINUS SIGNNNN*/ ((data.travelDetails.etaArrival1.duration.value) - data.travelDetails.walkFromL.duration.value);
-        [tripStartH_, tripStartM_] = [secondsToHms(tripStartIn).hours, secondsToHms(tripStartIn).minutes];
-        startHour = calculateTime(this.state.hours, tripStartH_, this.state.minutes, tripStartM_)
-        startMin = ((this.state.minutes + tripStartM_) % 60);
-        startMeridiem = ((nN(this.state.hours) + nN(tripStartH_)) % 24) < 12 ? 'AM' : 'PM';
-
-
-        let stop1ATH, stop1ATM, stop1ATm, stop1ATh, stop1A_m,
-            stop1BTH, stop1BTM, stop1BTm, stop1BTh, stop1B_m,
-            stop2ATH, stop2ATM, stop2ATm, stop2ATh, stop2A_m,
-            stop2BTH, stop2BTM, stop2BTm, stop2BTh, stop2B_m;
-
-        [stop1ATh, stop1ATm] = [secondsToHms(data.travelDetails.walkFromL.duration.value).hours, secondsToHms(data.travelDetails.walkFromL.duration.value).minutes];
-        stop1ATH = calculateTime(startHour, stop1ATh, startMin, stop1ATm);
-        stop1ATM = ((startMin + stop1ATm) % 60);
-        stop1A_m = calculateZone(startHour, stop1ATh, startMin, stop1ATm, startMeridiem);
-
-        [stop1BTh, stop1BTm] = [secondsToHms(data.travelDetails.etaTravel1.duration.value).hours, secondsToHms(data.travelDetails.etaTravel1.duration.value).minutes];
-        stop1BTH = calculateTime(stop1ATH, stop1BTh, stop1ATM, stop1BTm);
-        stop1BTM = ((stop1ATM + stop1BTm) % 60);
-        stop1B_m = calculateZone(stop1ATH, stop1BTh, stop1ATM, stop1BTm, stop1A_m);
-
-        let timeForTrip1 =
-            (data.travelDetails.etaArrival1.duration.value)
-            // + data.travelDetails.walkFromL.duration.value
-            + data.travelDetails.etaTravel1.duration.value;
-
-
-        [stop2ATh, stop2ATm] = [
-            secondsToHms((data.travelDetails.etaArrival2.duration.value) - timeForTrip1).hours,
-            secondsToHms((data.travelDetails.etaArrival2.duration.value) - timeForTrip1).minutes
-        ];
-        stop2ATH = calculateTime(stop1BTH, stop2ATh, stop1BTM, stop2ATm);
-        stop2ATM = ((stop1BTM + stop2ATm) % 60);
-        stop2A_m = calculateZone(stop1BTH, stop2ATh, stop1BTM, stop2ATm, stop1B_m);
-
-        [stop2BTh, stop2BTm] = [secondsToHms(data.travelDetails.etaTravel2.duration.value).hours, secondsToHms(data.travelDetails.etaTravel2.duration.value).minutes];
-        stop2BTH = calculateTime(stop2ATH, stop2BTh, stop2ATM, stop2BTm);
-        stop2BTM = ((stop2ATM + stop2BTm) % 60);
-        stop2B_m = calculateZone(stop2ATH, stop2BTh, stop2ATM, stop2BTm, stop2A_m);
-
-        [totalH, totalM] = [secondsToHms(data.travelDetails.walkToD.duration.value).hours, secondsToHms(data.travelDetails.walkToD.duration.value).minutes]
-        endHour = calculateTime(stop2BTH, totalH, stop2BTM, totalM);
-        endMin = ((stop2BTM + totalM) % 60);
-        endMeridiem = calculateZone(stop2BTH, totalH, stop2BTM, totalM, stop2B_m);
-
-        startHour = startHour == 0 ? startHour = 12 : startHour;
-        endHour = endHour == 0 ? endHour = 12 : endHour;
+        const totalTime = data.travelDetails.etaArrival2.duration.value
+            + data.travelDetails.etaTravel2.duration.value
+            + data.travelDetails.walkToD.duration.value;
+        const tripStartIn = ((data.travelDetails.etaArrival1.duration.value) - data.travelDetails.walkFromL.duration.value);
+        const startTime = moment(new Date(new Date().getTime() + (tripStartIn * 1000))).format('hh:mm A');
+        const endTime = moment(new Date(new Date().getTime() + (totalTime * 1000))).format('hh:mm A');
 
         return (
             <View style={styles.container}>
@@ -202,7 +146,7 @@ export class TwoStepTrip extends React.Component {
                         </View>
                         <Text style={styles.cost}>${Number(data.cost.total).toFixed(2)}</Text>
                         <Text style={styles.distance}>{`${(distance / 1000).toFixed(2)} km`}</Text>
-                        <Text style={styles.time}>{`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem} TO ${endHour}:${endMin < 10 ? '0' + endMin : endMin} ${endMeridiem}`}</Text>
+                        <Text style={styles.time}>{`${startTime} TO ${endTime}`}</Text>
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -237,78 +181,13 @@ export class ThreeStepTrip extends React.Component {
         const _2ndFlex = (data.secondDistance / distance);
         const _3rdFlex = 1 - _1stFlex - _2ndFlex;
 
-        let totalH, totalM, tripStartIn, tripStartH_, tripStartM_, startHour, startMin, endHour, endMin, startMeridiem, endMeridiem;
+        const totalTime = data.travelDetails.etaArrival3.duration.value
+            + data.travelDetails.etaTravel3.duration.value
+            + data.travelDetails.walkToD.duration.value;
+        const tripStartIn = ((data.travelDetails.etaArrival1.duration.value) - data.travelDetails.walkFromL.duration.value);
+        const startTime = moment(new Date(new Date().getTime() + (tripStartIn * 1000))).format('hh:mm A');
+        const endTime = moment(new Date(new Date().getTime() + (totalTime * 1000))).format('hh:mm A');
 
-
-
-        tripStartIn =  /*<<<<----- REMOVE THIS MINUS SIGNNNN*/ ((data.travelDetails.etaArrival1.duration.value) - data.travelDetails.walkFromL.duration.value);
-        [tripStartH_, tripStartM_] = [secondsToHms(tripStartIn).hours, secondsToHms(tripStartIn).minutes];
-        startHour = calculateTime(this.state.hours, tripStartH_, this.state.minutes, tripStartM_);
-        startMin = ((this.state.minutes + tripStartM_) % 60);
-        startMeridiem = ((nN(this.state.hours) + nN(tripStartH_)) % 24) < 12 ? 'AM' : 'PM';
-
-        let stop1ATH, stop1ATM, stop1ATm, stop1ATh, stop1A_m,
-            stop1BTH, stop1BTM, stop1BTm, stop1BTh, stop1B_m,
-            stop2ATH, stop2ATM, stop2ATm, stop2ATh, stop2A_m,
-            stop2BTH, stop2BTM, stop2BTm, stop2BTh, stop2B_m,
-            stop3ATH, stop3ATM, stop3ATm, stop3ATh, stop3A_m,
-            stop3BTH, stop3BTM, stop3BTm, stop3BTh, stop3B_m;
-
-        [stop1ATh, stop1ATm] = [secondsToHms(data.travelDetails.walkFromL.duration.value).hours, secondsToHms(data.travelDetails.walkFromL.duration.value).minutes];
-        stop1ATH = calculateTime(startHour, stop1ATh, startMin, stop1ATm);
-        stop1ATM = ((startMin + stop1ATm) % 60);
-        stop1A_m = calculateZone(startHour, stop1ATh, startMin, stop1ATm, startMeridiem);
-
-        [stop1BTh, stop1BTm] = [secondsToHms(data.travelDetails.etaTravel1.duration.value).hours, secondsToHms(data.travelDetails.etaTravel1.duration.value).minutes];
-        stop1BTH = calculateTime(stop1ATH, stop1BTh, stop1ATM, stop1BTm);
-        stop1BTM = ((stop1ATM + stop1BTm) % 60);
-        stop1B_m = calculateZone(stop1ATH, stop1BTh, stop1ATM, stop1BTm, stop1A_m);
-
-
-        let timeForTrip1 =
-            (data.travelDetails.etaArrival1.duration.value)
-            //+ data.travelDetails.walkFromL.duration.value
-            + data.travelDetails.etaTravel1.duration.value;
-
-
-        [stop2ATh, stop2ATm] = [
-            secondsToHms((data.travelDetails.etaArrival2.duration.value) - timeForTrip1).hours,
-            secondsToHms((data.travelDetails.etaArrival2.duration.value) - timeForTrip1).minutes
-        ];
-        stop2ATH = calculateTime(stop1BTH, stop2ATh, stop1BTM, stop2ATm);
-        stop2ATM = ((stop1BTM + stop2ATm) % 60);
-        stop2A_m = calculateZone(stop1BTH, stop2ATh, stop1BTM, stop2ATm, stop1B_m);
-
-        [stop2BTh, stop2BTm] = [secondsToHms(data.travelDetails.etaTravel2.duration.value).hours, secondsToHms(data.travelDetails.etaTravel2.duration.value).minutes];
-        stop2BTH = calculateTime(stop2ATH, stop2BTh, stop2ATM, stop2BTm);
-        stop2BTM = ((stop2ATM + stop2BTm) % 60);
-        stop2B_m = calculateZone(stop2ATH, stop2BTh, stop2ATM, stop2BTm, stop2A_m);
-
-        let timeForTrip2 =
-            (data.travelDetails.etaArrival2.duration.value)
-            //+ data.travelDetails.walk1duration.value
-            + data.travelDetails.etaTravel2.duration.value;
-
-        [stop3ATh, stop3ATm] = [
-            secondsToHms((data.travelDetails.etaArrival3.duration.value) - timeForTrip2).hours,
-            secondsToHms((data.travelDetails.etaArrival3.duration.value) - timeForTrip2).minutes
-        ];
-        stop3ATH = calculateTime(stop2BTH, stop3ATh, stop2BTM, stop3ATm);
-        stop3ATM = ((stop2BTM + stop3ATm) % 60);
-        stop3A_m = calculateZone(stop2BTH, stop3ATh, stop2BTM, stop3ATm, stop2B_m);
-
-        [stop3BTh, stop3BTm] = [secondsToHms(data.travelDetails.etaTravel3.duration.value).hours, secondsToHms(data.travelDetails.etaTravel3.duration.value).minutes];
-        stop3BTH = calculateTime(stop3ATH, stop3BTh, stop3ATM, stop3BTm);
-        stop3BTM = ((stop3ATM + stop3BTm) % 60);
-        stop3B_m = calculateZone(stop3ATH, stop3BTh, stop3ATM, stop3BTm, stop3A_m);
-
-        [totalH, totalM] = [secondsToHms(data.travelDetails.walkToD.duration.value).hours, secondsToHms(data.travelDetails.walkToD.duration.value).minutes]
-        endHour = calculateTime(stop3BTH, totalH, stop3BTM, totalM);
-        endMin = ((stop3BTM + totalM) % 60);
-        endMeridiem = calculateZone(stop3BTH, totalH, stop3BTM, totalM, stop3B_m);
-
-        startHour = startHour == 0 ? startHour = 12 : startHour;
-        endHour = endHour == 0 ? endHour = 12 : endHour;
         return (
             <View style={styles.container}>
                 <TouchableWithoutFeedback
@@ -344,7 +223,7 @@ export class ThreeStepTrip extends React.Component {
                         </View>
                         <Text style={styles.cost}>${Number(data.cost.total).toFixed(2)}</Text>
                         <Text style={styles.distance}>{`${(distance / 1000).toFixed(2)} km`}</Text>
-                        <Text style={styles.time}>{`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem} TO ${endHour}:${endMin < 10 ? '0' + endMin : endMin} ${endMeridiem}`}</Text>
+                        <Text style={styles.time}>{`${startTime} TO ${endTime}`}</Text>
                     </View>
                 </TouchableWithoutFeedback>
             </View>

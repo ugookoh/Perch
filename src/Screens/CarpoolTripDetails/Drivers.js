@@ -84,7 +84,7 @@ export default class Drivers extends React.Component {
             toValue: 1,
             duration: 1000,
             easing: Easing.linear,
-            useNativeDriver: true,
+            useNativeDriver: false,
         }).start();
     };
     progress2_() {
@@ -93,7 +93,7 @@ export default class Drivers extends React.Component {
             toValue: 1,
             duration: 1000,
             easing: Easing.linear,
-            useNativeDriver: true,
+            useNativeDriver: false,
         }).start();
     };
     progress3_() {
@@ -102,7 +102,7 @@ export default class Drivers extends React.Component {
             toValue: 1,
             duration: 1000,
             easing: Easing.linear,
-            useNativeDriver: true,
+            useNativeDriver: false,
         }).start();
     };
 

@@ -33,11 +33,13 @@ export default class GetFreeRides extends React.Component {
                 Animated.spring(this.position, {
                     toValue: { x: 0, y: this.Y_START },
                     bounciness: 0,
+                    useNativeDriver:false,
                 }).start(() => {
                     setTimeout(() => {
                         Animated.spring(this.position, {
                             toValue: { x: 0, y: this.Y_END },
                             bounciness: 0,
+                            useNativeDriver:false,
                         }).start(() => {
                             this.setState({ animate: true })
                         });

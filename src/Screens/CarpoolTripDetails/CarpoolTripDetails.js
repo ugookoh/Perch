@@ -16,7 +16,7 @@ import Divider from '../../Components/Divider/Divider';
 import Header from '../../Components/Header/Header';
 import MapStyle from '../../Components/MapStyle/MapStyle.json';
 import SvgComponent from './SvgComponent';
-
+import moment from 'moment';
 import {
     calculateTime, calculateZone, carpoolRequestHandler,
     chargeCustomer, dimensionAssert, eTARefresh, height,
@@ -48,7 +48,12 @@ const Y_START = y(364);
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.008339428281933124;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
+const edgePadding = {
+    top: y(60),
+    right: x(80),
+    bottom: y(60),
+    left: x(25)
+};
 export default class CarpoolTripDetails extends React.Component {
     constructor(props) {
         super(props);
@@ -119,6 +124,7 @@ export default class CarpoolTripDetails extends React.Component {
                     if ((Y_POSITION > Y_START && this.direction === 'upwards'))
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: Y_START },
+                            useNativeDriver: false,
                         }).start();
                 });
             }
@@ -128,6 +134,7 @@ export default class CarpoolTripDetails extends React.Component {
                     if (value < this.TOP_OF_TRIPS)
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: (this.TOP_OF_TRIPS + 1) },
+                            useNativeDriver: false,
                         }).start();
                 })
             }
@@ -165,6 +172,7 @@ export default class CarpoolTripDetails extends React.Component {
                 if (Y_POSITION < Y_START) {
                     Animated.decay(this.position, {
                         velocity: { x: 0, y: gestureState.vy }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
 
                     if (Math.sign(gestureState.vy) == 1) //going down
@@ -176,6 +184,7 @@ export default class CarpoolTripDetails extends React.Component {
                     this.direction = 'upwards';
                     Animated.spring(this.position, {
                         toValue: { x: X_CONSTANT, y: Y_START }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
                 }
             },
@@ -208,13 +217,7 @@ export default class CarpoolTripDetails extends React.Component {
                                 //bboxPolygon.push(this.state.driverL1);
                                 if (this.mapIsReady && this.map)
                                     this.map.fitToCoordinates(bboxPolygon, {
-                                        edgePadding:
-                                        {
-                                            top: x(40),
-                                            right: x(80),
-                                            bottom: x(40),
-                                            left: x(25)
-                                        },
+                                        edgePadding: edgePadding,
                                     })
                             }
                         }, 1000);
@@ -318,13 +321,7 @@ export default class CarpoolTripDetails extends React.Component {
                                 //bboxPolygon.push(this.state.driverL1, this.state.driverL2);
                                 if (this.mapIsReady && this.map)
                                     this.map.fitToCoordinates(bboxPolygon, {
-                                        edgePadding:
-                                        {
-                                            top: x(40),
-                                            right: x(80),
-                                            bottom: x(40),
-                                            left: x(25)
-                                        },
+                                        edgePadding: edgePadding,
                                     })
                             }
                         }, 1000);
@@ -372,13 +369,7 @@ export default class CarpoolTripDetails extends React.Component {
                                 //bboxPolygon.push(this.state.driverL1, this.state.driverL2);
                                 if (this.mapIsReady && this.map)
                                     this.map.fitToCoordinates(bboxPolygon, {
-                                        edgePadding:
-                                        {
-                                            top: x(40),
-                                            right: x(80),
-                                            bottom: x(40),
-                                            left: x(25)
-                                        },
+                                        edgePadding: edgePadding,
                                     })
                             }
                         }, 1000);
@@ -446,13 +437,7 @@ export default class CarpoolTripDetails extends React.Component {
                                 //bboxPolygon.push(this.state.driverL1, this.state.driverL2, this.state.driverL3);
                                 if (this.mapIsReady && this.map)
                                     this.map.fitToCoordinates(bboxPolygon, {
-                                        edgePadding:
-                                        {
-                                            top: x(40),
-                                            right: x(80),
-                                            bottom: x(40),
-                                            left: x(25)
-                                        },
+                                        edgePadding: edgePadding,
                                     })
                             }
                         }, 1000);
@@ -499,13 +484,7 @@ export default class CarpoolTripDetails extends React.Component {
                                 //bboxPolygon.push(this.state.driverL1, this.state.driverL2, this.state.driverL3);
                                 if (this.mapIsReady && this.map)
                                     this.map.fitToCoordinates(bboxPolygon, {
-                                        edgePadding:
-                                        {
-                                            top: x(40),
-                                            right: x(80),
-                                            bottom: x(40),
-                                            left: x(25)
-                                        },
+                                        edgePadding: edgePadding,
                                     })
                             }
                         }, 1000);
@@ -552,13 +531,7 @@ export default class CarpoolTripDetails extends React.Component {
                                 //bboxPolygon.push(this.state.driverL1, this.state.driverL2, this.state.driverL3);
                                 if (this.mapIsReady && this.map)
                                     this.map.fitToCoordinates(bboxPolygon, {
-                                        edgePadding:
-                                        {
-                                            top: x(40),
-                                            right: x(80),
-                                            bottom: x(40),
-                                            left: x(25)
-                                        },
+                                        edgePadding: edgePadding
                                     })
                             }
                         }, 1000);
@@ -655,13 +628,7 @@ export default class CarpoolTripDetails extends React.Component {
                     bboxPolygon.push(this.state.driverL1);
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(40),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
 
@@ -676,13 +643,7 @@ export default class CarpoolTripDetails extends React.Component {
                     bboxPolygon.push(this.state.driverL1, this.state.driverL2);
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(40),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
 
@@ -699,13 +660,7 @@ export default class CarpoolTripDetails extends React.Component {
                     bboxPolygon.push(this.state.driverL1, this.state.driverL2, this.state.driverL3);
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(40),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
             } break;
@@ -721,13 +676,7 @@ export default class CarpoolTripDetails extends React.Component {
                 if (this.state.driverL1) {
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(40),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
             } break;
@@ -740,13 +689,7 @@ export default class CarpoolTripDetails extends React.Component {
                 if (this.state.driverL1 && this.state.driverL2) {
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(40),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
 
@@ -761,13 +704,7 @@ export default class CarpoolTripDetails extends React.Component {
                 if (this.state.driverL1 && this.state.driverL2 && this.state.driverL3) {
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(40),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
             } break;
@@ -865,47 +802,59 @@ export default class CarpoolTripDetails extends React.Component {
 
         const data = this.data;
         let tripBreakdown = <></>, drivers = {};
-        let totalDistance, totalTime, totalH, totalM, waitingTime, tripStartIn, tripStartH_, tripStartM_, startHour, startMin, endHour, endMin, startMeridiem, endMeridiem, polylines;
+        let totalDistance,
+            totalTime,
+            startTime, endTime,
+            tripStartIn, polylines;
         switch (data.steps) {
             case 1: {
                 totalDistance = data.firstDistance;
                 totalTime = data.travelDetails.walkFromL.duration.value
                     + data.travelDetails.etaTravel1.duration.value
                     + data.travelDetails.walkToD.duration.value;
+                tripStartIn = ((data.travelDetails.etaArrival1.duration.value) - data.travelDetails.walkFromL.duration.value);
 
-                [totalH, totalM] = [secondsToHms(totalTime).hours, secondsToHms(totalTime).minutes];
+                startTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival1.duration.value
+                            - data.travelDetails.walkFromL.duration.value
+                        ) * 1000
+                    )
+                )).format('hh:mm A');
+                const stop1ATime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival1.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                const stop1BTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival1.duration.value
+                            + data.travelDetails.etaTravel1.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                endTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival1.duration.value
+                            + data.travelDetails.etaTravel1.duration.value
+                            + data.travelDetails.walkToD.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
 
-                tripStartIn =  /*<<<<----- REMOVE THIS MINUS SIGNNNN*/ ((data.travelDetails.etaArrival1.duration.value) - data.travelDetails.walkFromL.duration.value);
-                [tripStartH_, tripStartM_] = [secondsToHms(tripStartIn).hours, secondsToHms(tripStartIn).minutes];
-                startHour = calculateTime(this.state.hours, tripStartH_, this.state.minutes, tripStartM_)
-                startMin = ((this.state.minutes + tripStartM_) % 60);
-                endHour = calculateTime(startHour, totalH, startMin, totalM);
-                endMin = ((startMin + totalM) % 60);
-                startMeridiem = ((nN(this.state.hours) + nN(tripStartH_)) % 24) < 12 ? 'AM' : 'PM';
-                endMeridiem = (((nN(this.state.hours) + nN(tripStartH_) + nN(totalH) + Math.floor(((nN(startMin) + nN(totalM)) / 60)))) % 24) < 12 ? 'AM' : 'PM';
 
-                let stop1ATH, stop1ATM, stop1ATm, stop1ATh, stop1A_m,
-                    stop1BTH, stop1BTM, stop1BTm, stop1BTh, stop1B_m;
-
-
-                [stop1ATh, stop1ATm] = [secondsToHms(data.travelDetails.walkFromL.duration.value).hours, secondsToHms(data.travelDetails.walkFromL.duration.value).minutes];
-                stop1ATH = calculateTime(startHour, stop1ATh, startMin, stop1ATm);
-                stop1ATM = ((startMin + stop1ATm) % 60);
-                stop1A_m = calculateZone(startHour, stop1ATh, startMin, stop1ATm, startMeridiem);
-
-                [stop1BTh, stop1BTm] = [secondsToHms(data.travelDetails.etaTravel1.duration.value).hours, secondsToHms(data.travelDetails.etaTravel1.duration.value).minutes];
-                stop1BTH = calculateTime(stop1ATH, stop1BTh, stop1ATM, stop1BTm);
-                stop1BTM = ((stop1ATM + stop1BTm) % 60);
-                stop1B_m = calculateZone(stop1ATH, stop1BTh, stop1ATM, stop1BTm, stop1A_m);
-
-                startHour = startHour == 0 ? startHour = 12 : startHour;
-                endHour = endHour == 0 ? endHour = 12 : endHour;
                 this.dataToSend = [
                     {
                         driverID: data.key,
                         leg: JSON.stringify(data.firstLeg),
-                        depatureTime: `${stop1ATH}:${stop1ATM < 10 ? '0' + stop1ATM : stop1ATM} ${stop1A_m}`,
-                        arrivalTime: `${stop1BTH}:${stop1BTM < 10 ? '0' + stop1BTM : stop1BTM} ${stop1B_m}`,
+                        depatureTime: `${stop1ATime}`,
+                        arrivalTime: `${stop1BTime}`,
                         seatNumber: this.state.seatNumber,
                         lastDriver: true,
                         stopA: data.travelDetails.stop1A,
@@ -919,21 +868,36 @@ export default class CarpoolTripDetails extends React.Component {
 
                 tripBreakdown =
                     (<View style={{ top: y(68), paddingBottom: y(82) }}>
-                        <TopCombiner start={this.state.location.description} time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`} distance={data.travelDetails.walkFromL.distance.value} />
+                        <TopCombiner
+                            start={this.state.location.description}
+                            time={`${startTime}`}
+                            distance={data.travelDetails.walkFromL.distance.value}
+                        />
                         <View style={{ zIndex: 2 }}>
-                            <Card color={colors.GREEN} onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver1 }) }}
-                                filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
+                            <Card
+                                color={colors.GREEN}
+                                onPress={() => {
+                                    this.props.navigation.navigate('CarpoolDriverProfile', {
+                                        driver: this.state.driver1,
+                                    })
+                                }}
+                                filler_time={`${startTime}`}
                                 stopA={data.travelDetails.stop1A}
                                 stopB={data.travelDetails.stop1B}
                                 start={this.state.location.description}
                                 distance={data.firstDistance}
-                                timeA={`${stop1ATH == 0 ? 12 : stop1ATH}:${stop1ATM < 10 ? '0' + stop1ATM : stop1ATM} ${stop1A_m}`}
-                                timeB={`${stop1BTH == 0 ? 12 : stop1BTH}:${stop1BTM < 10 ? '0' + stop1BTM : stop1BTM} ${stop1B_m}`}
-                                eta={this.state.etaD1} driver={this.state.driver1}
+                                timeA={`${stop1ATime}`}
+                                timeB={`${stop1BTime}`}
+                                eta={this.state.etaD1}
+                                driver={this.state.driver1}
                                 tripAccepted={this.state.tripAccepted}
                             />
                         </View>
-                        <BottomCombiner end={this.state.destination.description} time={`${endHour}:${endMin < 10 ? '0' + endMin : endMin} ${endMeridiem}`} distance={data.travelDetails.walkToD.distance.value} />
+                        <BottomCombiner
+                            end={this.state.destination.description}
+                            time={`${endTime}`}
+                            distance={data.travelDetails.walkToD.distance.value}
+                        />
                     </View>);
                 polylines = (
                     <>
@@ -986,61 +950,63 @@ export default class CarpoolTripDetails extends React.Component {
             case 2: {
                 totalDistance = data.firstDistance + data.secondDistance;
 
-                tripStartIn =  /*<<<<----- REMOVE THIS MINUS SIGNNNN*/ ((data.travelDetails.etaArrival1.duration.value) - data.travelDetails.walkFromL.duration.value);
-                [tripStartH_, tripStartM_] = [secondsToHms(tripStartIn).hours, secondsToHms(tripStartIn).minutes];
-                startHour = calculateTime(this.state.hours, tripStartH_, this.state.minutes, tripStartM_)
-                startMin = ((this.state.minutes + tripStartM_) % 60);
-                startMeridiem = ((nN(this.state.hours) + nN(tripStartH_)) % 24) < 12 ? 'AM' : 'PM';
+                startTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival1.duration.value
+                            - data.travelDetails.walkFromL.duration.value
+                        ) * 1000
+                    )
+                )).format('hh:mm A');
+                const stop1ATime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival1.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                const stop1BTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival1.duration.value
+                            + data.travelDetails.etaTravel1.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                const stop2ATime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival2.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                const stop2BTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival2.duration.value
+                            + data.travelDetails.etaTravel2.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                endTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaTravel2.duration.value
+                            + data.travelDetails.etaArrival2.duration.value
+                            + data.travelDetails.walkToD.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
 
-                let stop1ATH, stop1ATM, stop1ATm, stop1ATh, stop1A_m,
-                    stop1BTH, stop1BTM, stop1BTm, stop1BTh, stop1B_m,
-                    stop2ATH, stop2ATM, stop2ATm, stop2ATh, stop2A_m,
-                    stop2BTH, stop2BTM, stop2BTm, stop2BTh, stop2B_m;
 
-                [stop1ATh, stop1ATm] = [secondsToHms(data.travelDetails.walkFromL.duration.value).hours, secondsToHms(data.travelDetails.walkFromL.duration.value).minutes];
-                stop1ATH = calculateTime(startHour, stop1ATh, startMin, stop1ATm);
-                stop1ATM = ((startMin + stop1ATm) % 60);
-                stop1A_m = calculateZone(startHour, stop1ATh, startMin, stop1ATm, startMeridiem);
-
-                [stop1BTh, stop1BTm] = [secondsToHms(data.travelDetails.etaTravel1.duration.value).hours, secondsToHms(data.travelDetails.etaTravel1.duration.value).minutes];
-                stop1BTH = calculateTime(stop1ATH, stop1BTh, stop1ATM, stop1BTm);
-                stop1BTM = ((stop1ATM + stop1BTm) % 60);
-                stop1B_m = calculateZone(stop1ATH, stop1BTh, stop1ATM, stop1BTm, stop1A_m);
-
-                let timeForTrip1 =
-                    (data.travelDetails.etaArrival1.duration.value)
-                    // + data.travelDetails.walkFromL.duration.value
-                    + data.travelDetails.etaTravel1.duration.value;
-
-
-                [stop2ATh, stop2ATm] = [
-                    secondsToHms((data.travelDetails.etaArrival2.duration.value) - timeForTrip1).hours,
-                    secondsToHms((data.travelDetails.etaArrival2.duration.value) - timeForTrip1).minutes
-                ];
-                stop2ATH = calculateTime(stop1BTH, stop2ATh, stop1BTM, stop2ATm);
-                stop2ATM = ((stop1BTM + stop2ATm) % 60);
-                stop2A_m = calculateZone(stop1BTH, stop2ATh, stop1BTM, stop2ATm, stop1B_m);
-
-                [stop2BTh, stop2BTm] = [secondsToHms(data.travelDetails.etaTravel2.duration.value).hours, secondsToHms(data.travelDetails.etaTravel2.duration.value).minutes];
-                stop2BTH = calculateTime(stop2ATH, stop2BTh, stop2ATM, stop2BTm);
-                stop2BTM = ((stop2ATM + stop2BTm) % 60);
-                stop2B_m = calculateZone(stop2ATH, stop2BTh, stop2ATM, stop2BTm, stop2A_m);
-
-                [totalH, totalM] = [secondsToHms(data.travelDetails.walkToD.duration.value).hours, secondsToHms(data.travelDetails.walkToD.duration.value).minutes]
-                endHour = calculateTime(stop2BTH, totalH, stop2BTM, totalM);
-                endMin = ((stop2BTM + totalM) % 60);
-                endMeridiem = calculateZone(stop2BTH, totalH, stop2BTM, totalM, stop2B_m);
-
-
-                startHour = startHour == 0 ? startHour = 12 : startHour;
-                endHour = endHour == 0 ? endHour = 12 : endHour;
 
                 this.dataToSend = [
                     {
                         driverID: data.start,
                         leg: JSON.stringify(data.firstLeg),
-                        depatureTime: `${stop1ATH}:${stop1ATM < 10 ? '0' + stop1ATM : stop1ATM} ${stop1A_m}`,
-                        arrivalTime: `${stop1BTH}:${stop1BTM < 10 ? '0' + stop1BTM : stop1BTM} ${stop1B_m}`,
+                        depatureTime: `${stop1ATime}`,
+                        arrivalTime: `${stop1BTime}`,
                         seatNumber: this.state.seatNumber,
                         stopA: data.travelDetails.stop1A,
                         stopB: data.travelDetails.stop1B,
@@ -1052,8 +1018,8 @@ export default class CarpoolTripDetails extends React.Component {
                     {
                         driverID: data.end,
                         leg: JSON.stringify(data.secondLeg),
-                        depatureTime: `${stop2ATH}:${stop2ATM < 10 ? '0' + stop2ATM : stop2ATM} ${stop2A_m}`,
-                        arrivalTime: `${stop2BTH}:${stop2BTM < 10 ? '0' + stop2BTM : stop2BTM} ${stop2B_m}`,
+                        depatureTime: `${stop2ATime}`,
+                        arrivalTime: `${stop2BTime}`,
                         seatNumber: this.state.seatNumber,
                         lastDriver: true,
                         stopA: data.travelDetails.stop2A,
@@ -1067,41 +1033,51 @@ export default class CarpoolTripDetails extends React.Component {
 
                 tripBreakdown =
                     (<View style={{ top: y(68), paddingBottom: y(82) }}>
-                        <TopCombiner start={this.state.location.description} time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`} distance={data.travelDetails.walkFromL.distance.value} />
+                        <TopCombiner
+                            start={this.state.location.description}
+                            time={`${startTime}`}
+                            distance={data.travelDetails.walkFromL.distance.value}
+                        />
                         <View style={{ zIndex: 2 }}>
                             <Card
                                 color={colors.GREEN}
                                 onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver1 }) }}
-                                filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
+                                filler_time={`${startTime}`}
                                 stopA={data.travelDetails.stop1A}
                                 stopB={data.travelDetails.stop1B}
                                 start={this.state.location.description}
                                 distance={data.firstDistance}
-                                timeA={`${stop1ATH == 0 ? 12 : stop1ATH}:${stop1ATM < 10 ? '0' + stop1ATM : stop1ATM} ${stop1A_m}`}
-                                timeB={`${stop1BTH == 0 ? 12 : stop1BTH}:${stop1BTM < 10 ? '0' + stop1BTM : stop1BTM} ${stop1B_m}`}
+                                timeA={`${stop1ATime}`}
+                                timeB={`${stop1BTime}`}
                                 eta={this.state.etaD1}
                                 driver={this.state.driver1}
                                 tripAccepted={this.state.tripAccepted}
                             />
                         </View>
-                        <MiddleCombiner start={this.state.location.description} distance={data.travelDetails.walk.distance.value} />
+                        <MiddleCombiner
+                            start={this.state.location.description}
+                            distance={data.travelDetails.walk.distance.value} />
                         <View style={{ zIndex: 2 }}>
                             <Card
                                 color={colors.BLUE}
                                 onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver2 }) }}
-                                filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
+                                filler_time={`${startTime}`}
                                 stopA={data.travelDetails.stop2A}
                                 stopB={data.travelDetails.stop2B}
                                 start={this.state.location.description}
                                 distance={data.secondDistance}
-                                timeA={`${stop2ATH == 0 ? 12 : stop2ATH}:${stop2ATM < 10 ? '0' + stop2ATM : stop2ATM} ${stop2A_m}`}
-                                timeB={`${stop2BTH == 0 ? 12 : stop2BTH}:${stop2BTM < 10 ? '0' + stop2BTM : stop2BTM} ${stop2B_m}`}
+                                timeA={`${stop2ATime}`}
+                                timeB={`${stop2BTime}`}
                                 eta={this.state.etaD2}
                                 driver={this.state.driver2}
                                 tripAccepted={this.state.tripAccepted}
                             />
                         </View>
-                        <BottomCombiner end={this.state.destination.description} time={`${endHour}:${endMin < 10 ? '0' + endMin : endMin} ${endMeridiem}`} distance={data.travelDetails.walkToD.distance.value} />
+                        <BottomCombiner
+                            end={this.state.destination.description}
+                            time={`${endTime}`}
+                            distance={data.travelDetails.walkToD.distance.value}
+                        />
                     </View>);
 
                 polylines = (
@@ -1218,81 +1194,76 @@ export default class CarpoolTripDetails extends React.Component {
             case 3: {
 
                 totalDistance = data.firstDistance + data.secondDistance + data.thirdDistance;
+                startTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival1.duration.value
+                            - data.travelDetails.walkFromL.duration.value
+                        ) * 1000
+                    )
+                )).format('hh:mm A');
+                const stop1ATime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival1.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                const stop1BTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival1.duration.value
+                            + data.travelDetails.etaTravel1.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                const stop2ATime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival2.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                const stop2BTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival2.duration.value
+                            + data.travelDetails.etaTravel2.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                const stop3ATime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival3.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                const stop3BTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaArrival3.duration.value
+                            + data.travelDetails.etaTravel3.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
+                endTime = moment(new Date(
+                    new Date().getTime()
+                    + (
+                        (
+                            data.travelDetails.etaTravel3.duration.value
+                            + data.travelDetails.etaArrival3.duration.value
+                            + data.travelDetails.walkToD.duration.value
+                        ) * 1000)
+                )).format('hh:mm A');
 
-                tripStartIn =  /*<<<<----- REMOVE THIS MINUS SIGNNNN*/ ((data.travelDetails.etaArrival1.duration.value) - data.travelDetails.walkFromL.duration.value);
-                [tripStartH_, tripStartM_] = [secondsToHms(tripStartIn).hours, secondsToHms(tripStartIn).minutes];
-                startHour = calculateTime(this.state.hours, tripStartH_, this.state.minutes, tripStartM_);
-                startMin = ((this.state.minutes + tripStartM_) % 60);
-                startMeridiem = ((nN(this.state.hours) + nN(tripStartH_)) % 24) < 12 ? 'AM' : 'PM';
-
-                let stop1ATH, stop1ATM, stop1ATm, stop1ATh, stop1A_m,
-                    stop1BTH, stop1BTM, stop1BTm, stop1BTh, stop1B_m,
-                    stop2ATH, stop2ATM, stop2ATm, stop2ATh, stop2A_m,
-                    stop2BTH, stop2BTM, stop2BTm, stop2BTh, stop2B_m,
-                    stop3ATH, stop3ATM, stop3ATm, stop3ATh, stop3A_m,
-                    stop3BTH, stop3BTM, stop3BTm, stop3BTh, stop3B_m;
-
-                [stop1ATh, stop1ATm] = [secondsToHms(data.travelDetails.walkFromL.duration.value).hours, secondsToHms(data.travelDetails.walkFromL.duration.value).minutes];
-                stop1ATH = calculateTime(startHour, stop1ATh, startMin, stop1ATm);
-                stop1ATM = ((startMin + stop1ATm) % 60);
-                stop1A_m = calculateZone(startHour, stop1ATh, startMin, stop1ATm, startMeridiem);
-
-                [stop1BTh, stop1BTm] = [secondsToHms(data.travelDetails.etaTravel1.duration.value).hours, secondsToHms(data.travelDetails.etaTravel1.duration.value).minutes];
-                stop1BTH = calculateTime(stop1ATH, stop1BTh, stop1ATM, stop1BTm);
-                stop1BTM = ((stop1ATM + stop1BTm) % 60);
-                stop1B_m = calculateZone(stop1ATH, stop1BTh, stop1ATM, stop1BTm, stop1A_m);
-
-
-                let timeForTrip1 =
-                    (data.travelDetails.etaArrival1.duration.value)
-                    //+ data.travelDetails.walkFromL.duration.value
-                    + data.travelDetails.etaTravel1.duration.value;
-
-
-                [stop2ATh, stop2ATm] = [
-                    secondsToHms((data.travelDetails.etaArrival2.duration.value) - timeForTrip1).hours,
-                    secondsToHms((data.travelDetails.etaArrival2.duration.value) - timeForTrip1).minutes
-                ];
-                stop2ATH = calculateTime(stop1BTH, stop2ATh, stop1BTM, stop2ATm);
-                stop2ATM = ((stop1BTM + stop2ATm) % 60);
-                stop2A_m = calculateZone(stop1BTH, stop2ATh, stop1BTM, stop2ATm, stop1B_m);
-
-                [stop2BTh, stop2BTm] = [secondsToHms(data.travelDetails.etaTravel2.duration.value).hours, secondsToHms(data.travelDetails.etaTravel2.duration.value).minutes];
-                stop2BTH = calculateTime(stop2ATH, stop2BTh, stop2ATM, stop2BTm);
-                stop2BTM = ((stop2ATM + stop2BTm) % 60);
-                stop2B_m = calculateZone(stop2ATH, stop2BTh, stop2ATM, stop2BTm, stop2A_m);
-
-                let timeForTrip2 =
-                    (data.travelDetails.etaArrival2.duration.value)
-                    //+ data.travelDetails.walk1duration.value
-                    + data.travelDetails.etaTravel2.duration.value;
-
-                [stop3ATh, stop3ATm] = [
-                    secondsToHms((data.travelDetails.etaArrival3.duration.value) - timeForTrip2).hours,
-                    secondsToHms((data.travelDetails.etaArrival3.duration.value) - timeForTrip2).minutes
-                ];
-                stop3ATH = calculateTime(stop2BTH, stop3ATh, stop2BTM, stop3ATm);
-                stop3ATM = ((stop2BTM + stop3ATm) % 60);
-                stop3A_m = calculateZone(stop2BTH, stop3ATh, stop2BTM, stop3ATm, stop2B_m);
-
-                [stop3BTh, stop3BTm] = [secondsToHms(data.travelDetails.etaTravel3.duration.value).hours, secondsToHms(data.travelDetails.etaTravel3.duration.value).minutes];
-                stop3BTH = calculateTime(stop3ATH, stop3BTh, stop3ATM, stop3BTm);
-                stop3BTM = ((stop3ATM + stop3BTm) % 60);
-                stop3B_m = calculateZone(stop3ATH, stop3BTh, stop3ATM, stop3BTm, stop3A_m);
-
-                [totalH, totalM] = [secondsToHms(data.travelDetails.walkToD.duration.value).hours, secondsToHms(data.travelDetails.walkToD.duration.value).minutes]
-                endHour = calculateTime(stop3BTH, totalH, stop3BTM, totalM);
-                endMin = ((stop3BTM + totalM) % 60);
-                endMeridiem = calculateZone(stop3BTH, totalH, stop3BTM, totalM, stop3B_m);
-
-                startHour = startHour == 0 ? startHour = 12 : startHour;
-                endHour = endHour == 0 ? endHour = 12 : endHour;
                 this.dataToSend = [
                     {
                         driverID: data.start,
                         leg: JSON.stringify(data.firstLeg),
-                        depatureTime: `${stop1ATH}:${stop1ATM < 10 ? '0' + stop1ATM : stop1ATM} ${stop1A_m}`,
-                        arrivalTime: `${stop1BTH}:${stop1BTM < 10 ? '0' + stop1BTM : stop1BTM} ${stop1B_m}`,
+                        depatureTime: `${stop1ATime}`,
+                        arrivalTime: `${stop1BTime}`,
                         seatNumber: this.state.seatNumber,
                         stopA: data.travelDetails.stop1A,
                         stopB: data.travelDetails.stop1B,
@@ -1304,8 +1275,8 @@ export default class CarpoolTripDetails extends React.Component {
                     {
                         driverID: data.middle,
                         leg: JSON.stringify(data.secondLeg),
-                        depatureTime: `${stop2ATH}:${stop2ATM < 10 ? '0' + stop2ATM : stop2ATM} ${stop2A_m}`,
-                        arrivalTime: `${stop2BTH}:${stop2BTM < 10 ? '0' + stop2BTM : stop2BTM} ${stop2B_m}`,
+                        depatureTime: `${stop2ATime}`,
+                        arrivalTime: `${stop2BTime}`,
                         seatNumber: this.state.seatNumber,
                         stopA: data.travelDetails.stop2A,
                         stopB: data.travelDetails.stop2B,
@@ -1317,8 +1288,8 @@ export default class CarpoolTripDetails extends React.Component {
                     {
                         driverID: data.end,
                         leg: JSON.stringify(data.thirdLeg),
-                        depatureTime: `${stop3ATH}:${stop3ATM < 10 ? '0' + stop3ATM : stop3ATM} ${stop3A_m}`,
-                        arrivalTime: `${stop3BTH}:${stop3BTM < 10 ? '0' + stop3BTM : stop3BTM} ${stop3B_m}`,
+                        depatureTime: `${stop3ATime}`,
+                        arrivalTime: `${stop3BTime}`,
                         seatNumber: this.state.seatNumber,
                         lastDriver: true,
                         stopA: data.travelDetails.stop3A,
@@ -1334,57 +1305,83 @@ export default class CarpoolTripDetails extends React.Component {
 
                 tripBreakdown =
                     (<View style={{ top: y(68), paddingBottom: y(82) }}>
-                        <TopCombiner start={this.state.location.description} time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`} distance={data.travelDetails.walkFromL.distance.value} />
+                        <TopCombiner
+                            start={this.state.location.description}
+                            time={`${startTime}`}
+                            distance={data.travelDetails.walkFromL.distance.value}
+                        />
                         <View style={{ zIndex: 2 }}>
                             <Card
                                 color={colors.GREEN}
-                                onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver1 }) }}
-                                filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
+                                onPress={() => {
+                                    this.props.navigation.navigate('CarpoolDriverProfile', {
+                                        driver: this.state.driver1,
+                                    })
+                                }}
+                                filler_time={`${startTime}`}
                                 stopA={data.travelDetails.stop1A}
                                 stopB={data.travelDetails.stop1B}
                                 start={this.state.location.description}
                                 distance={data.firstDistance}
-                                timeA={`${stop1ATH == 0 ? 12 : stop1ATH}:${stop1ATM < 10 ? '0' + stop1ATM : stop1ATM} ${stop1A_m}`}
-                                timeB={`${stop1BTH == 0 ? 12 : stop1BTH}:${stop1BTM < 10 ? '0' + stop1BTM : stop1BTM} ${stop1B_m}`}
+                                timeA={`${stop1ATime}`}
+                                timeB={`${stop1BTime}`}
                                 eta={this.state.etaD1}
                                 driver={this.state.driver1}
                                 tripAccepted={this.state.tripAccepted}
                             />
                         </View>
-                        <MiddleCombiner start={this.state.location.description} distance={data.travelDetails.walk1.distance.value} />
+                        <MiddleCombiner
+                            start={this.state.location.description}
+                            distance={data.travelDetails.walk1.distance.value}
+                        />
                         <View style={{ zIndex: 2 }}>
                             <Card
                                 color={colors.BLUE}
-                                onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver2 }) }}
-                                filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
+                                onPress={() => {
+                                    this.props.navigation.navigate('CarpoolDriverProfile', {
+                                        driver: this.state.driver2,
+                                    })
+                                }}
+                                filler_time={`${startTime}`}
                                 stopA={data.travelDetails.stop2A}
                                 stopB={data.travelDetails.stop2B}
                                 start={this.state.location.description}
                                 distance={data.secondDistance}
-                                timeA={`${stop2ATH == 0 ? 12 : stop2ATH}:${stop2ATM < 10 ? '0' + stop2ATM : stop2ATM} ${stop2A_m}`}
-                                timeB={`${stop2BTH == 0 ? 12 : stop2BTH}:${stop2BTM < 10 ? '0' + stop2BTM : stop2BTM} ${stop2B_m}`}
+                                timeA={`${stop2ATime}`}
+                                timeB={`${stop2BTime}`}
                                 eta={this.state.etaD2}
                                 driver={this.state.driver2}
                                 tripAccepted={this.state.tripAccepted}
                             />
                         </View>
-                        <MiddleCombiner start={this.state.location.description} distance={data.travelDetails.walk2.distance.value} />
+                        <MiddleCombiner
+                            start={this.state.location.description}
+                            distance={data.travelDetails.walk2.distance.value}
+                        />
                         <View style={{ zIndex: 2 }}>
-                            <Card color={colors.PURPLE}
-                                onPress={() => { this.props.navigation.navigate('CarpoolDriverProfile', { driver: this.state.driver3 }) }}
-                                filler_time={`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}
+                            <Card
+                                color={colors.PURPLE}
+                                onPress={() => {
+                                    this.props.navigation.navigate('CarpoolDriverProfile', {
+                                        driver: this.state.driver3,
+                                    })
+                                }}
+                                filler_time={`${startTime}`}
                                 stopA={data.travelDetails.stop3A}
                                 stopB={data.travelDetails.stop3B}
                                 start={this.state.location.description}
                                 distance={data.thirdDistance}
-                                timeA={`${stop3ATH == 0 ? 12 : stop3ATH}:${stop3ATM < 10 ? '0' + stop3ATM : stop3ATM} ${stop3A_m}`}
-                                timeB={`${stop3BTH == 0 ? 12 : stop3BTH}:${stop3BTM < 10 ? '0' + stop3BTM : stop3BTM} ${stop3B_m}`}
+                                timeA={`${stop3ATime}`}
+                                timeB={`${stop3BTime}`}
                                 eta={this.state.etaD3}
                                 driver={this.state.driver3}
                                 tripAccepted={this.state.tripAccepted}
                             />
                         </View>
-                        <BottomCombiner end={this.state.destination.description} time={`${endHour}:${endMin < 10 ? '0' + endMin : endMin} ${endMeridiem}`} distance={data.travelDetails.walkToD.distance.value} />
+                        <BottomCombiner
+                            end={this.state.destination.description}
+                            time={`${endTime}`}
+                            distance={data.travelDetails.walkToD.distance.value} />
                     </View>);
 
                 polylines = (
@@ -1684,12 +1681,12 @@ export default class CarpoolTripDetails extends React.Component {
 
                                 <View style={[styles.textContainer, { marginTop: y(51) }]}>
                                     <Text style={[styles.firstLayer,]}>Leave at</Text>
-                                    <Text style={[styles.firstLayer,]}>{`${startHour}:${startMin < 10 ? '0' + startMin : startMin} ${startMeridiem}`}</Text>
+                                    <Text style={[styles.firstLayer,]}>{`${startTime}`}</Text>
                                 </View>
 
                                 <View style={[styles.textContainer, { marginTop: y(10) }]}>
                                     <Text style={[styles.firstLayer,]}>Arrive at</Text>
-                                    <Text style={[styles.firstLayer,]}>{`${endHour}:${endMin < 10 ? '0' + endMin : endMin} ${endMeridiem}`}</Text>
+                                    <Text style={[styles.firstLayer,]}>{`${endTime}`}</Text>
                                 </View>
 
                                 <View style={[styles.divider, { marginTop: y(9) }]}><Divider height={0.5} width={x(313)} borderRadius={3} borderColor={'#707070'} borderWidth={0.5} /></View>

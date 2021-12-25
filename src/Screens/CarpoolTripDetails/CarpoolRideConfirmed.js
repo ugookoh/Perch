@@ -34,7 +34,12 @@ const Y_START_ = y(dimensionAssert() ? 360 : 425);
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.008339428281933124;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
+const edgePadding = {
+    top: y(70),
+    right: x(80),
+    bottom: y(70),
+    left: x(25)
+};
 export default class CarpoolRideConfirmed extends React.Component {
     constructor(props) {
         super(props);
@@ -85,6 +90,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                     if ((Y_POSITION > Y_START_ && this.direction === 'upwards'))
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: Y_START_ },
+                            useNativeDriver: false,
                         }).start();
                 });
             }
@@ -94,6 +100,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                     if (value < this.TOP_OF_TRIPS)
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: (this.TOP_OF_TRIPS + 1) },
+                            useNativeDriver: false,
                         }).start();
                 })
             }
@@ -131,6 +138,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                 if (Y_POSITION < Y_START_) {
                     Animated.decay(this.position, {
                         velocity: { x: 0, y: gestureState.vy }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
 
                     if (Math.sign(gestureState.vy) == 1) //going down
@@ -143,6 +151,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                     this.direction = 'upwards';
                     Animated.spring(this.position, {
                         toValue: { x: X_CONSTANT, y: Y_START_ }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
                 }
             },
@@ -398,13 +407,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                     bboxPolygon.push(this.props.driverL1);
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
 
@@ -419,13 +422,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                     bboxPolygon.push(this.props.driverL1, this.props.driverL2);
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
 
@@ -442,13 +439,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                     bboxPolygon.push(this.props.driverL1, this.props.driverL2, this.props.driverL3);
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
             } break;
@@ -464,13 +455,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                 if (this.props.driverL1) {
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
             } break;
@@ -483,13 +468,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                 if (this.props.driverL1 && this.props.driverL2) {
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
 
@@ -504,13 +483,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                 if (this.props.driverL1 && this.props.driverL2 && this.props.driverL3) {
                     if (this.mapIsReady && this.map)
                         this.map.fitToCoordinates(bboxPolygon, {
-                            edgePadding:
-                            {
-                                top: x(20),
-                                right: x(80),
-                                bottom: x(40),
-                                left: x(25)
-                            },
+                            edgePadding: edgePadding,
                         })
                 }
             } break;
@@ -521,6 +494,7 @@ export default class CarpoolRideConfirmed extends React.Component {
             Animated.spring(this.ratingTop, {
                 toValue: 0,
                 bounciness: 0,
+                useNativeDriver: false,
             }).start();
     }
     nextDriverDistancesSetter(value, value2) {
@@ -532,11 +506,13 @@ export default class CarpoolRideConfirmed extends React.Component {
                 Animated.spring(this.position_, {
                     toValue: { x: 0, y: this._Y_START },
                     bounciness: 0,
+                    useNativeDriver: false,
                 }).start(() => {
                     setTimeout(() => {
                         Animated.spring(this.position_, {
                             toValue: { x: 0, y: this._Y_END },
                             bounciness: 0,
+                            useNativeDriver: false,
                         }).start(() => {
                             this.setState({ animate: true })
                         });

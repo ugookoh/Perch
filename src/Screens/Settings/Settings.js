@@ -23,12 +23,14 @@ export default class Settings extends React.Component {
     closeAd() {
         Animated.spring(this.animatedPosition, {
             toValue: -y(170),
-            bounciness: 0
+            bounciness: 0,
+            useNativeDriver: false,
         }).start();
 
         Animated.spring(this.lowerposition, {
             toValue: -y(160),
-            bounciness: 0
+            bounciness: 0,
+            useNativeDriver: false,
         }).start();
     }
     componentDidMount() {

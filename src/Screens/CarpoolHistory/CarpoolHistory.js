@@ -61,6 +61,7 @@ export default class CarpoolHistory extends React.Component {
                     if (Y_POSITION > Y_START && this.direction === 'upwards')
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: Y_START },
+                            useNativeDriver: false,
                         }).start();
                 });
             }
@@ -70,6 +71,7 @@ export default class CarpoolHistory extends React.Component {
                     if (value < this.TOP_OF_TRIPS)
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: (this.TOP_OF_TRIPS + 1) },
+                            useNativeDriver: false,
                         }).start();
                 })
             }
@@ -109,6 +111,7 @@ export default class CarpoolHistory extends React.Component {
                 if (Y_POSITION < Y_START) {
                     Animated.decay(this.position, {
                         velocity: { x: 0, y: gestureState.vy }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
 
                     if (Math.sign(gestureState.vy) == 1) //going down
@@ -121,6 +124,7 @@ export default class CarpoolHistory extends React.Component {
                     this.direction = 'upwards';
                     Animated.spring(this.position, {
                         toValue: { x: X_CONSTANT, y: Y_START }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
                 }
             },
@@ -154,6 +158,7 @@ export default class CarpoolHistory extends React.Component {
         Animated.spring(this.ratingzIndex, {
             toValue: -1,
             bounciness: 0,
+            useNativeDriver: false,
         }).start();
     }
     showRating(position) {
@@ -164,6 +169,7 @@ export default class CarpoolHistory extends React.Component {
                         Animated.spring(this.ratingzIndex, {
                             toValue: 2,
                             bounciness: 0,
+                            useNativeDriver: false,
                         }).start();
                     });
             } break;
@@ -173,6 +179,7 @@ export default class CarpoolHistory extends React.Component {
                         Animated.spring(this.ratingzIndex, {
                             toValue: 2,
                             bounciness: 0,
+                            useNativeDriver: false,
                         }).start();
                     });
             } break;
@@ -182,6 +189,7 @@ export default class CarpoolHistory extends React.Component {
                         Animated.spring(this.ratingzIndex, {
                             toValue: 2,
                             bounciness: 0,
+                            useNativeDriver: false,
                         }).start();
                     });
             } break;
@@ -308,7 +316,10 @@ export default class CarpoolHistory extends React.Component {
                 );
                 tripBreakdown =
                     (<View style={{}}>
-                        <TopCombiner start={this.state.data.location.description} time={`10:10 AM`} distance={data.travelDetails.walkFromL.distance.value}
+                        <TopCombiner
+                            start={this.state.data.location.description}
+                            time={`10:10 AM`}
+                            distance={data.travelDetails.walkFromL.distance.value}
                             type={'history'}
                             position={1}
                             penOnPress={this.showRating}

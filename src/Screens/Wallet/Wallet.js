@@ -52,6 +52,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                     if ((Y_POSITION > Y_START && this.direction === 'upwards') && (!!!this.state.choice))
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: Y_START },
+                            useNativeDriver: false,
                         }).start();
                 });
             }
@@ -61,6 +62,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                     if (value < this.state.TOP_OF_TRIPS)
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: (this.state.TOP_OF_TRIPS + 1) },
+                            useNativeDriver: false,
                         }).start();
                 })
             }
@@ -96,6 +98,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                 if (Y_POSITION < Y_START) {
                     Animated.decay(this.position, {
                         velocity: { x: 0, y: gestureState.vy }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
 
                     if (Math.sign(gestureState.vy) == 1) //going down
@@ -108,6 +111,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
                     this.direction = 'upwards';
                     Animated.spring(this.position, {
                         toValue: { x: X_CONSTANT, y: Y_START }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
                 }
             },
@@ -161,9 +165,7 @@ export default class Wallet extends React.Component {  /////   ADD SUPPORT FOR T
         );
     }
     render() {
-        LayoutAnimation.configureNext(CustomLayoutLinear);
-        const cards = [];
-
+        let cards = [];
         if (this.state.cards)
             for (let key in this.state.cards)
                 if (this.state.cards[key] && key != 'selected')
