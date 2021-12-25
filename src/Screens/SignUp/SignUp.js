@@ -47,6 +47,7 @@ export default class SignUp extends React.Component {
         Animated.spring(this.pickerPosition, {
             toValue: dimensionAssert() ? -y(310) : -y(290),
             bounciness: 0,
+            useNativeDriver: false,
         }).start();
     }
     showPicker = () => {
@@ -55,6 +56,7 @@ export default class SignUp extends React.Component {
         Animated.spring(this.pickerPosition, {
             toValue: 0,
             bounciness: 0,
+            useNativeDriver: false,
         }).start();
     }
     componentDidMount() {

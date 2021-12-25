@@ -56,6 +56,7 @@ export default class History extends React.Component {
                 Animated.spring(this.pickerHeight, {
                     toValue: 0,
                     bounciness: 0,
+                    useNativeDriver: false,
                 }).start(() => {
                     this.toHide = l;
                 });
@@ -65,6 +66,7 @@ export default class History extends React.Component {
                 Animated.spring(this.pickerHeight, {
                     toValue: 0,
                     bounciness: 0,
+                    useNativeDriver: false,
                 }).start();
             this.setState({ modePicker: false });
         }
@@ -72,6 +74,7 @@ export default class History extends React.Component {
             Animated.spring(this.pickerHeight, {
                 toValue: y(dimensionAssert() ? 35 : 30.5),
                 bounciness: 0,
+                useNativeDriver: false,
             }).start();
             this.setState({ modePicker: true });
         }
@@ -81,12 +84,14 @@ export default class History extends React.Component {
         Animated.spring(this.pickerPosition, {
             toValue: dimensionAssert() ? -y(310) : -y(290),
             bounciness: 0,
+            useNativeDriver: false,
         }).start();
     };
     showPicker() {
         Animated.spring(this.pickerPosition, {
             toValue: 0,
             bounciness: 0,
+            useNativeDriver: false,
         }).start();
     };
     timeAndDate(time, month, year) {

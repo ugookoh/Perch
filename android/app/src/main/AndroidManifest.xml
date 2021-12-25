@@ -20,13 +20,22 @@
     <meta-data android:name="com.google.android.gms.wallet.api.enabled" android:value="true" />
     <!-- For stripe END-->
 
-    <activity android:name=".MainActivity" android:label="@string/app_name" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:configChanges="keyboard|keyboardHidden|orientation|screenSize" android:launchMode="singleTop" android:windowSoftInputMode="adjustResize" android:exported="true">
+    <activity 
+      android:name=".MainActivity" 
+      android:label="@string/app_name" 
+      android:theme="@style/SplashTheme" 
+      android:screenOrientation="portrait" 
+      android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+      android:launchMode="singleTask"
+      android:launchMode="singleTop" 
+      android:windowSoftInputMode="adjustResize" 
+      android:exported="true"
+      >
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
-    <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
     <meta-data android:name="com.dieam.reactnativepushnotification.notification_channel_name" android:value="Main Notifications" />
     <meta-data android:name="com.dieam.reactnativepushnotification.notification_channel_description" android:value="Notifications relating to perch trip details" />

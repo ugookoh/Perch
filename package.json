@@ -1,5 +1,5 @@
 {
-  "name": "Perch",
+  "name": "perch",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -34,10 +34,10 @@
     "lodash": "^4.17.15",
     "lottie-ios": "3.1.8",
     "lottie-react-native": "3.5.0",
-    "moment": "^2.27.0",
+    "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
-    "react": "16.9.0",
-    "react-native": "0.61.5",
+    "react": "17.0.2",
+    "react-native": "0.66.4",
     "react-native-android-open-settings": "^1.3.0",
     "react-native-dash": "^0.0.11",
     "react-native-geolocation-service": "3.0.0",
@@ -56,7 +56,7 @@
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.4.0",
     "react-native-shimmer-placeholder": "^1.0.36",
-    "react-native-splash-screen": "3.0.6",
+    "react-native-splash-screen": "^3.3.0",
     "react-native-star-rating": "^1.1.0",
     "react-native-svg": "^12.0.3",
     "react-native-swiper": "^1.6.0",
@@ -64,14 +64,14 @@
     "tipsi-stripe": "^9.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.2",
-    "@babel/runtime": "^7.6.2",
-    "@react-native-community/eslint-config": "^0.0.5",
-    "babel-jest": "^24.9.0",
-    "eslint": "^6.5.1",
-    "jest": "^24.9.0",
-    "metro-react-native-babel-preset": "^0.56.0",
-    "react-test-renderer": "16.9.0"
+    "@babel/core": "^7.12.9",
+    "@babel/runtime": "^7.12.5",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "babel-jest": "^26.6.3",
+    "eslint": "7.14.0",
+    "jest": "^26.6.3",
+    "metro-react-native-babel-preset": "^0.66.2",
+    "react-test-renderer": "17.0.2"
   },
   "jest": {
     "preset": "react-native"

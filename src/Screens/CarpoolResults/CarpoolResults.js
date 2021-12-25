@@ -91,6 +91,7 @@ export default class CarpoolResults extends React.Component {
         Animated.spring(this.pickerPosition, {
             toValue: dimensionAssert() ? -y(310) : -y(290),
             bounciness: 0,
+            useNativeDriver: false,
         }).start();
     };
 
@@ -99,6 +100,7 @@ export default class CarpoolResults extends React.Component {
         Animated.spring(this.pickerPosition, {
             toValue: 0,
             bounciness: 0,
+            useNativeDriver: false,
         }).start();
     };
 

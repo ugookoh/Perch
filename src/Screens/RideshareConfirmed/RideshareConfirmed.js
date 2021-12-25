@@ -75,12 +75,14 @@ export default class RideshareConfirmed extends React.Component {
                         Animated.spring(this.position,
                             {
                                 toValue: { x: X_CONSTANT, y: Y_START },
+                                useNativeDriver: false,
                             }).start(() => { this.direction = 'MOVABLE' });
                     }
                     else if (value < this.TAB_HEIGHT) {
                         // Animated.spring(this.position,
                         //     {
-                        //         toValue: { x: X_CONSTANT, y: this.TAB_HEIGHT + 1 }
+                        //         toValue: { x: X_CONSTANT, y: this.TAB_HEIGHT + 1 },
+                        //         useNativeDriver:false,
                         //     }).start(() => { this.direction = 'MOVABLE' });
                         this.position.setValue({ x: X_CONSTANT, y: this.TAB_HEIGHT + 1 })
                         this.direction = 'MOVABLE';
@@ -118,6 +120,7 @@ export default class RideshareConfirmed extends React.Component {
                 if (Y_POSITION < Y_START && this.direction == 'MOVABLE') {
                     Animated.decay(this.position, {
                         velocity: { x: 0, y: gestureState.vy }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
                 }
             },
@@ -211,6 +214,7 @@ export default class RideshareConfirmed extends React.Component {
                 Animated.spring(this.ratingTop, {
                     toValue: 0,
                     bounciness: 0,
+                    useNativeDriver: false,
                 }).start();
 
                 database().ref(`userLocation/${this.state.userID}`).remove()

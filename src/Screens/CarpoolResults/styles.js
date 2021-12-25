@@ -144,7 +144,8 @@ export default StyleSheet.create({
     left: 0,
     width: width,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingBottom: 30,
   },
   pickerView: {
     position: 'absolute',

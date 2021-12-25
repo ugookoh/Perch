@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './styles';
-import { YellowBox, View, Text, Animated, TextInput, FlatList, Keyboard, StatusBar, Platform, LayoutAnimation, UIManager, Alert } from 'react-native';
+import { LogBox, View, Text, Animated, TextInput, FlatList, Keyboard, StatusBar, Platform, LayoutAnimation, UIManager, Alert } from 'react-native';
 import { OfflineNotice, makeid, Notifications, x, y, height, width, dimensionAssert, CustomLayoutLinear, colors } from '../../Functions/Functions';
 import database from '@react-native-firebase/database';
-import ImagePicker from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -120,6 +120,7 @@ export default class Chat extends React.Component {
             Animated.spring(this.keyboardPosition, {
                 toValue: animatevalue - BLOCKER_HEIGHT,
                 bounciness: 0,
+                useNativeDriver: false,
             }).start();
 
         if (Platform.OS === 'android' && keyboardEvent1 === 'keyboardWillShow') {
@@ -132,6 +133,7 @@ export default class Chat extends React.Component {
         Animated.spring(this.keyboardPosition, {
             toValue: animatevalue - BLOCKER_HEIGHT,
             bounciness: 0,
+            useNativeDriver: false,
         }).start();
     };
     _keyboardDidHide(e) {
@@ -139,6 +141,7 @@ export default class Chat extends React.Component {
         Animated.spring(this.keyboardPosition, {
             toValue: 0,
             bounciness: 0,
+            useNativeDriver: false,
         }).start();
     };
     permissionCamera() {
@@ -194,7 +197,7 @@ export default class Chat extends React.Component {
                         maxHeight: width,
                     };
 
-                    ImagePicker.showImagePicker(options, (response) => {
+                    launchImageLibrary(options, (response) => {
                         if (response.didCancel) {
                             //console.log('User cancelled image picker');
                         } else if (response.error) {
@@ -523,7 +526,7 @@ export default class Chat extends React.Component {
 };
 
 
-YellowBox.ignoreWarnings([
+LogBox.ignoreLogs([
     'Each child in a list should have a unique "key" prop.',
 ]);
 

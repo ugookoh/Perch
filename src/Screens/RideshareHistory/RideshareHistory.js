@@ -60,6 +60,7 @@ export default class RideshareHistory extends React.Component {
                     if (Y_POSITION > Y_START && this.direction === 'upwards')
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: Y_START },
+                            useNativeDriver: false,
                         }).start();
                 });
             }
@@ -69,6 +70,7 @@ export default class RideshareHistory extends React.Component {
                     if (value < this.TOP_OF_TRIPS)
                         Animated.spring(this.position, {
                             toValue: { x: X_CONSTANT, y: (this.TOP_OF_TRIPS + 1) },
+                            useNativeDriver: false,
                         }).start();
                 })
             }
@@ -108,6 +110,7 @@ export default class RideshareHistory extends React.Component {
                 if (Y_POSITION < Y_START) {
                     Animated.decay(this.position, {
                         velocity: { x: 0, y: gestureState.vy }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
 
                     if (Math.sign(gestureState.vy) == 1) //going down
@@ -120,6 +123,7 @@ export default class RideshareHistory extends React.Component {
                     this.direction = 'upwards';
                     Animated.spring(this.position, {
                         toValue: { x: X_CONSTANT, y: Y_START }, // velocity from gesture release
+                        useNativeDriver: false,
                     }).start();
                 }
             },
