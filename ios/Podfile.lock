@@ -508,8 +508,8 @@ PODS:
     - Firebase/Storage (= 8.10.0)
     - React-Core
     - RNFBApp
-  - RNGestureHandler (1.6.1):
-    - React
+  - RNGestureHandler (2.1.0):
+    - React-Core
   - RNInAppBrowser (3.5.1):
     - React-Core
   - RNPermissions (2.2.2):
@@ -879,7 +879,7 @@ SPEC CHECKSUMS:
   RNFBFunctions: 8d98326f2148ef40ec39139914675c19a11ccc30
   RNFBMessaging: 8b7c281136bf8fbd78b332b5b9db7e604853174f
   RNFBStorage: 77eafd785a3a2d4e4ceaac707ebc1abe57537773
-  RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
+  RNGestureHandler: e5c7cab5f214503dcefd6b2b0cefb050e1f51c4a
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNPermissions: 5df468064df661a4c8c017e2791ce90d7695eea5
   RNReanimated: 4e102df74a9674fa943e05f97f3362b6e44d0b48

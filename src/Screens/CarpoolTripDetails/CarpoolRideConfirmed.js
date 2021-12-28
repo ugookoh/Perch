@@ -166,7 +166,11 @@ export default class CarpoolRideConfirmed extends React.Component {
         database().ref(`carpoolTripReserve/carpool/user/${this.props.userID}`).on('child_removed', snapshot => {
             if (this?.props?.animateMapToCurrentRegion)
                 this.props.animateMapToCurrentRegion();
-            this.props.navigation.navigate("Main");
+
+            setTimeout(() => {
+                if (!this.props.tripEnded)
+                    this.props.navigation.navigate("Main");
+            }, 3000);
         })
         AsyncStorage.getItem('USER_DETAILS').then(result => {
             const userDetails = JSON.parse(result);
