@@ -30,19 +30,6 @@ export default class App extends React.Component {
     };
   };
   componentDidMount() {
-    axios.post(`https://us-central1-perch-01.cloudfunctions.net/sendNotification`, {
-      data: {
-         // navigateTo: 'Chat',
-          //driverID: this.state.driverID,
-          //riderID: this.state.riderID,
-      },
-      notification: {
-          title: `New message to you `,
-          body: 'This is a message haha',
-      },
-      recieverID: '59fACYX8hAbKkpwnAqu5NqZWBor2'
-
-  }).catch(error => { console.log(error.message) })
     SplashScreen.hide();
     this.subscriber = auth().onAuthStateChanged(this.onAuthStateChanged);
 
