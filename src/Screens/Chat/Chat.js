@@ -1,11 +1,10 @@
 import React from 'react';
 import styles from './styles';
-import { LogBox, View, Text, Animated, TextInput, FlatList, Keyboard, StatusBar, Platform, LayoutAnimation, UIManager, Alert } from 'react-native';
+import { LogBox, View, TouchableOpacity, Animated, TextInput, FlatList, Keyboard, StatusBar, Platform, LayoutAnimation, UIManager, Alert } from 'react-native';
 import { OfflineNotice, makeid, Notifications, x, y, height, width, dimensionAssert, CustomLayoutLinear, colors } from '../../Functions/Functions';
 import database from '@react-native-firebase/database';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import * as ImagePicker from "react-native-image-picker"
 import storage from '@react-native-firebase/storage';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon_ from 'react-native-vector-icons/Entypo';
@@ -16,7 +15,7 @@ import { check, PERMISSIONS, RESULTS, request } from 'react-native-permissions';
 const BLOCKER_HEIGHT = (dimensionAssert() ? y(65) / 3 : y(189) / 2);
 const DRIVER_PROFILE_HEIGHT_HIDDEN = -y(132);
 
-let keyboardEvent1 = 'keyboardWillShow';
+const keyboardEvent1 = Platform.OS == 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
 
 export default class Chat extends React.Component {
     constructor(props) {
@@ -52,15 +51,14 @@ export default class Chat extends React.Component {
 
     componentDidMount() {
         this.setImage();
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardDidShow);
+        this.keyboardDidShowListener = Keyboard.addListener(keyboardEvent1, this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardDidHide);
         if (Platform.OS === 'android')
             AsyncStorage.getItem('ANDROID_KEYBOARD_HEIGHT')
                 .then(result => {
                     if (result)
                         this.setState({ keyboardHeight: JSON.parse(result) });
-                    else
-                        keyboardEvent1 = 'keyboardWillShow';
+
                 })
                 .catch(err => { console.log(err.message) });
         database().ref(`chats/${this.state.riderID}-${this.state.driverID}/`).once('value', snap => {
@@ -123,7 +121,7 @@ export default class Chat extends React.Component {
                 useNativeDriver: false,
             }).start();
 
-        if (Platform.OS === 'android' && keyboardEvent1 === 'keyboardWillShow') {
+        if (Platform.OS === 'android') {
             AsyncStorage.setItem('ANDROID_KEYBOARD_HEIGHT', JSON.stringify(e.endCoordinates.height))
                 .catch(error => { console.log(error.message) });
         };
@@ -197,7 +195,7 @@ export default class Chat extends React.Component {
                         maxHeight: width,
                     };
 
-                    launchImageLibrary(options, (response) => {
+                    ImagePicker.default.showImagePicker(options, (response) => {
                         if (response.didCancel) {
                             //console.log('User cancelled image picker');
                         } else if (response.error) {
@@ -500,12 +498,10 @@ export default class Chat extends React.Component {
                                 multiline={true}
                                 textAlignVertical={'top'}
                                 onFocus={() => {
-                                    if (Platform.OS === 'android' && keyboardEvent1 !== 'keyboardWillShow')
-                                        Keyboard.emit('keyboardWillShow')
+
                                 }}
                                 onEndEditing={() => {
-                                    if (Platform.OS === 'android')
-                                        Keyboard.emit('keyboardWillHide')
+
                                 }}
                             />
                             <View style={styles.send}>

@@ -225,6 +225,7 @@ export class OfflineNotice extends React.Component {
       .catch(error => { console.log(error.message) })
 
     this.unsubscribe = messaging().onMessage(remoteMessage => {
+      console.log('remoteMessage', remoteMessage)
       if (navigation.isFocused()) {
         PushNotification.configure({
           onNotification: function (notification) {
@@ -296,13 +297,19 @@ export class OfflineNotice extends React.Component {
           requestPermissions: true
         });
 
-        if (remoteMessage.data.navigateTo !== this.props.screenName) {
+        if (this.props.screenName === 'Chat') {
+          if (remoteMessage.data.navigateTo !== 'Chat')
+            PushNotification.localNotification({
+              //... You can use all the options from localNotifications
+              title: remoteMessage.notification.title,
+              message: remoteMessage.notification.body,
+            });
+        } else
           PushNotification.localNotification({
             //... You can use all the options from localNotifications
             title: remoteMessage.notification.title,
             message: remoteMessage.notification.body,
           });
-        }
       }
     });
 
