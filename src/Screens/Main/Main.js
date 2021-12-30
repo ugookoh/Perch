@@ -468,7 +468,7 @@ export default class Main extends React.Component {
             easing: Easing.ease,
             useNativeDriver: false,
         }).start(() => {
-            this.setState({ searchPosition: 'shown' });
+            this.setState({ searchPosition: 'shown', suggestion: 'springUp' });
         });
 
         Animated.spring(this.down_zindex, {
