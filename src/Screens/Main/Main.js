@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import database from '@react-native-firebase/database';
+import axios from 'axios';
 import React from 'react';
 import {
     Animated,
@@ -169,7 +170,6 @@ export default class Main extends React.Component {
     };
     componentDidMount() {
         getFirebaseMessagingToken();
-
         if (this.props.route.params) {
             if (this.props.route.params.userDetails) {
                 const userDetails = this.props.route.params.userDetails;
