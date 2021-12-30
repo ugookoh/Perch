@@ -7,6 +7,7 @@ import auth from '@react-native-firebase/auth';
 import { checkIfFirstLaunch } from './src/Functions/Functions';
 import LoadingScreen from './src/Components/LoadingScreen/LoadingScreen';
 import PushNotification from 'react-native-push-notification';
+import axios from 'axios'
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import messaging from '@react-native-firebase/messaging';
 import database from '@react-native-firebase/database';
@@ -29,9 +30,19 @@ export default class App extends React.Component {
     };
   };
   componentDidMount() {
-    //console.log('loaded');
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-    });
+    axios.post(`https://us-central1-perch-01.cloudfunctions.net/sendNotification`, {
+      data: {
+         // navigateTo: 'Chat',
+          //driverID: this.state.driverID,
+          //riderID: this.state.riderID,
+      },
+      notification: {
+          title: `New message to you `,
+          body: 'This is a message haha',
+      },
+      recieverID: '59fACYX8hAbKkpwnAqu5NqZWBor2'
+
+  }).catch(error => { console.log(error.message) })
     SplashScreen.hide();
     this.subscriber = auth().onAuthStateChanged(this.onAuthStateChanged);
 

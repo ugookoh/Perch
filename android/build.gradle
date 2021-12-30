@@ -14,6 +14,7 @@ buildscript {
         firebaseVersion = "17.0.0"
         googlePlayServicesVersion = "17.0.0"
         googlePlayServicesVisionVersion = "17.0.2"
+        kotlinVersion = "1.5.20"
     }
     repositories {
         google()

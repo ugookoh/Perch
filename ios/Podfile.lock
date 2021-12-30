@@ -176,7 +176,7 @@ PODS:
   - lottie-ios (3.1.8)
   - lottie-react-native (3.5.0):
     - lottie-ios (~> 3.1.8)
-    - React-Core
+    - React
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -508,8 +508,8 @@ PODS:
     - Firebase/Storage (= 8.10.0)
     - React-Core
     - RNFBApp
-  - RNGestureHandler (2.1.0):
-    - React-Core
+  - RNGestureHandler (1.5.0):
+    - React
   - RNInAppBrowser (3.5.1):
     - React-Core
   - RNPermissions (2.2.2):
@@ -827,7 +827,7 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
-  lottie-react-native: 69740f3742cc82d8211979e2b48681e002c22bff
+  lottie-react-native: 1fb4ce21d6ad37dab8343eaff8719df76035bd93
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   Permission-Camera: 5d2aaf95592660b6dcb5e8d1d90ed5d0156cad02
@@ -879,7 +879,7 @@ SPEC CHECKSUMS:
   RNFBFunctions: 8d98326f2148ef40ec39139914675c19a11ccc30
   RNFBMessaging: 8b7c281136bf8fbd78b332b5b9db7e604853174f
   RNFBStorage: 77eafd785a3a2d4e4ceaac707ebc1abe57537773
-  RNGestureHandler: e5c7cab5f214503dcefd6b2b0cefb050e1f51c4a
+  RNGestureHandler: a4ddde1ffc6e590c8127b8b7eabfdade45475c74
   RNInAppBrowser: 48b95ba7a4eaff5cc223bca338d3e319561dbd1b
   RNPermissions: 5df468064df661a4c8c017e2791ce90d7695eea5
   RNReanimated: 4e102df74a9674fa943e05f97f3362b6e44d0b48
