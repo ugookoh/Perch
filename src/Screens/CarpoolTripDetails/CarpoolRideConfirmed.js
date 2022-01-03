@@ -197,10 +197,7 @@ export default class CarpoolRideConfirmed extends React.Component {
                 //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
                 enableHighAccuracy: true,
             }
-        ).catch((error) => {
-            console.log(error.code, error.message);
-           Geolocation.requestAuthorization("whenInUse");
-        });
+        )
 
         this.watchID = Geolocation.watchPosition(position => {//THIS HAPPENS AS THE USER MOVES OR CHANGES LOCATION
             this.setState({
