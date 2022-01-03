@@ -366,7 +366,7 @@ export function permissionLocation() {
   if (Platform.OS === 'ios')
     permission_ = PERMISSIONS.IOS.LOCATION_ALWAYS;
   else if (Platform.OS === 'android')
-    permission_ = PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION
+    permission_ = PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
   check(permission_)
     .then(result => {//STORE THE RESULT IN ASYNC STORAGE AND SO WE CHECK WHENEVR WE WANT TO USE IT.
       switch (result) {
@@ -381,7 +381,7 @@ export function permissionLocation() {
           });
           AsyncStorage.setItem('LOCATION_GRANTED', JSON.stringify('FALSE_DENIED'))
             .catch(error => { console.log(error.message) });
-          Geolocation.requestAuthorization();
+          Geolocation.requestAuthorization("whenInUse");
         }
           break;
         case RESULTS.GRANTED:

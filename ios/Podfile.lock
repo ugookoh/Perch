@@ -176,7 +176,7 @@ PODS:
   - lottie-ios (3.1.8)
   - lottie-react-native (3.5.0):
     - lottie-ios (~> 3.1.8)
-    - React-Core
+    - React
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -392,6 +392,8 @@ PODS:
     - glog
   - react-native-geolocation (2.0.2):
     - React
+  - react-native-geolocation-service (5.2.0):
+    - React
   - react-native-google-maps (0.27.1):
     - Google-Maps-iOS-Utils (= 2.1.0)
     - GoogleMaps (= 3.5.0)
@@ -583,6 +585,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
+  - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
@@ -711,6 +714,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
+  react-native-geolocation-service:
+    :path: "../node_modules/react-native-geolocation-service"
   react-native-google-maps:
     :path: "../node_modules/react-native-maps"
   react-native-image-picker:
@@ -827,7 +832,7 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
-  lottie-react-native: 69740f3742cc82d8211979e2b48681e002c22bff
+  lottie-react-native: 1fb4ce21d6ad37dab8343eaff8719df76035bd93
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   Permission-Camera: 5d2aaf95592660b6dcb5e8d1d90ed5d0156cad02
@@ -848,6 +853,7 @@ SPEC CHECKSUMS:
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
+  react-native-geolocation-service: 7c9436da6dfdecd9526c62eac62ea2bc3f0cc8ea
   react-native-google-maps: 0a989abda71059db2caa98b9dacca7a8f38a47d0
   react-native-image-picker: c6d75c4ab2cf46f9289f341242b219cb3c1180d3
   react-native-keep-awake: afad8a51dfef9fe9655a6344771be32c8596d774

@@ -36,6 +36,7 @@ import Menu from '../../Images/svgImages/menu';
 import Pin from '../../Images/svgImages/pin';
 import Drawer from '../../Navigation/DrawerComponent/DrawerComponent';
 import styles from './styles';
+import auth from '@react-native-firebase/auth';
 const polyline = require('@mapbox/polyline');// for decoding polylines
 
 const X_OUT = 0;
@@ -187,6 +188,7 @@ export default class Main extends React.Component {
         else
             AsyncStorage.getItem('USER_DETAILS')
                 .then(result => {
+                    const currentUser = auth().currentUser;
                     if (result) {
                         const userDetails = JSON.parse(result);
                         this.setState({
@@ -195,6 +197,13 @@ export default class Main extends React.Component {
                         });
 
                         database().ref(`users/${userDetails.userID}/`).on('value', snapshot => {
+                            AsyncStorage.setItem('USER_DETAILS', JSON.stringify(snapshot.val()))
+                                .then(() => { this.setState({ userDetails: snapshot.val() }) })
+                                .catch((e) => { console.log(e.message) })
+                        });
+                    }
+                    else if (currentUser) {
+                        database().ref(`users/${currentUser.uid}/`).on('value', snapshot => {
                             AsyncStorage.setItem('USER_DETAILS', JSON.stringify(snapshot.val()))
                                 .then(() => { this.setState({ userDetails: snapshot.val() }) })
                                 .catch((e) => { console.log(e.message) })
@@ -263,11 +272,11 @@ export default class Main extends React.Component {
             },
             (error) => {
                 console.log(error.code, error.message);
-                Geolocation.requestAuthorization();
+                Geolocation.requestAuthorization("whenInUse");
             },
             {
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
-                //enableHighAccuracy: true,
+                //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                enableHighAccuracy: true,
                 timeout: 15000,
                 maximumAge: 10000,
                 distanceFilter: 0,
@@ -285,7 +294,8 @@ export default class Main extends React.Component {
             error => (console.log(error.message)),
             {
                 distanceFilter: 10,
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                enableHighAccuracy: true,
             }
         )
 
@@ -316,20 +326,17 @@ export default class Main extends React.Component {
             },
             (error) => {
                 console.log(error.code, error.message);
-                Geolocation.requestAuthorization();
+                Geolocation.requestAuthorization("whenInUse");
             },
             {
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
-                //enableHighAccuracy: true,
+                //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                enableHighAccuracy: true,
                 timeout: 15000,
                 maximumAge: 10000,
                 distanceFilter: 0,
                 forceRequestLocation: true
             }
-        ).catch((error) => {
-            console.log(error.code, error.message);
-            Geolocation.requestAuthorization();
-        });
+        )
     };
     forceUpdate(value) {
         const userDetails = value;
@@ -611,18 +618,15 @@ export default class Main extends React.Component {
                                 },
                                 (error) => {
                                     console.log(error.code, error.message);
-                                    Geolocation.requestAuthorization();
+                                    Geolocation.requestAuthorization("whenInUse");
                                 }, {
-                                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
-                                //enableHighAccuracy: true,
+                                //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                                enableHighAccuracy: true,
                                 timeout: 15000,
                                 maximumAge: 10000,
                                 distanceFilter: 0,
                                 forceRequestLocation: true
-                            }).catch((error) => {
-                                console.log(error.code, error.message);
-                                Geolocation.requestAuthorization();
-                            });
+                            })
                         }}
                     >
                         <Icon_ name={'location-arrow'} size={y(21)} color={colors.GREEN} />

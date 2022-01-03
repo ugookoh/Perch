@@ -260,13 +260,14 @@ export default class RideshareChoice extends React.Component {
                                     },
                                     (error) => {
                                         console.log(error.code, error.message);
-                                        Geolocation.requestAuthorization();
+                                       Geolocation.requestAuthorization("whenInUse");
                                     }, {
                                     distanceFilter: 10,
-                                    enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                                    //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                                    enableHighAccuracy:true,
                                 }).catch((error) => {
                                     console.log(error.code, error.message);
-                                    Geolocation.requestAuthorization();
+                                   Geolocation.requestAuthorization("whenInUse");
                                 });
                             }
                         }}

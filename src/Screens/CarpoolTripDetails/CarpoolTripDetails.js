@@ -1583,13 +1583,14 @@ export default class CarpoolTripDetails extends React.Component {
                                 },
                                 (error) => {
                                     console.log(error.code, error.message);
-                                    Geolocation.requestAuthorization();
+                                   Geolocation.requestAuthorization("whenInUse");
                                 }, {
-                                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                                //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                                enableHighAccuracy: true,
                                 distanceFilter: 10,
                             }).catch((error) => {
                                 console.log(error.code, error.message);
-                                Geolocation.requestAuthorization();
+                               Geolocation.requestAuthorization("whenInUse");
                             });
                         }}
                     >

@@ -137,16 +137,14 @@ export default class RideshareConfirmed extends React.Component {
             },
             (error) => {
                 console.log(error.code, error.message);
-                Geolocation.requestAuthorization();
+               Geolocation.requestAuthorization("whenInUse");
             },
             {
                 distanceFilter: 10,
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                enableHighAccuracy: true,
             }
-        ).catch((error) => {
-            console.log(error.code, error.message);
-            Geolocation.requestAuthorization();
-        });
+        )
 
         this.watchID = Geolocation.watchPosition(position => {//THIS HAPPENS AS THE USER MOVES OR CHANGES LOCATION
             if (this.timeoutFunction && this.state.sendUserLocation) {
@@ -160,7 +158,8 @@ export default class RideshareConfirmed extends React.Component {
         },
             error => (console.log(error.message)),
             {
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                enableHighAccuracy: true,
                 distanceFilter: 10,
             }
         );

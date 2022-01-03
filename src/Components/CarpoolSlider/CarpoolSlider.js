@@ -77,13 +77,14 @@ export default class CarpoolResults extends React.Component {
             },
             (error) => {
                 console.log(error.code, error.message);
-                Geolocation.requestAuthorization();
+               Geolocation.requestAuthorization("whenInUse");
             }, {
             distanceFilter: 10,
-            enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+            //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+            enableHighAccuracy: true,
         }).catch((error) => {
             console.log(error.code, error.message);
-            Geolocation.requestAuthorization();
+           Geolocation.requestAuthorization("whenInUse");
         });
 
         this.watchID = Geolocation.watchPosition(position => {//THIS HAPPENS AS THE USER MOVES OR CHANGES LOCATION
@@ -108,7 +109,7 @@ export default class CarpoolResults extends React.Component {
         const walkIn = this.props.etaD1 ? this.props.etaD1 - (data.travelDetails.walkFromL.duration.value / 60).toFixed(0) : 0;
         this.description1 = <Text style={[styles.topText, { marginTop: y(10) }]}>Start walking in {<Text style={{ color: GREEN }}>{walkIn} mins</Text>}</Text>;
         this.description2 = `Walk to ${data.travelDetails.stop1A}`;
-        this.setState({appState:this.state.appState});//to rerender description texts
+        this.setState({ appState: this.state.appState });//to rerender description texts
     };
     descriptionMaker() {
         const data = this.props.data;
@@ -151,7 +152,7 @@ export default class CarpoolResults extends React.Component {
                                 this.props.driver1.carDetails.color + ' ' + this.props.driver1.carDetails.year + ' ' + this.props.driver1.carDetails.make + ' ' + this.props.driver1.carDetails.model :
                                 '';
                             this.description1 = <Text style={[styles.topText, { marginTop: y(10) }]}>Get on the {<Text style={{ color: GREEN }}>{car}</Text>}</Text>;
-                            
+
                         }
                         this.description2 = `Get off at ${data.travelDetails.stop1B}`;
                     }

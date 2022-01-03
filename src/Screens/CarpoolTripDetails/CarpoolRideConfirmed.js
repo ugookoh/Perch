@@ -191,14 +191,15 @@ export default class CarpoolRideConfirmed extends React.Component {
             },
             (error) => {
                 console.log(error.code, error.message);
-                Geolocation.requestAuthorization();
+               Geolocation.requestAuthorization("whenInUse");
             },
             {
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                enableHighAccuracy: true,
             }
         ).catch((error) => {
             console.log(error.code, error.message);
-            Geolocation.requestAuthorization();
+           Geolocation.requestAuthorization("whenInUse");
         });
 
         this.watchID = Geolocation.watchPosition(position => {//THIS HAPPENS AS THE USER MOVES OR CHANGES LOCATION
@@ -219,7 +220,8 @@ export default class CarpoolRideConfirmed extends React.Component {
         },
             error => (console.log(error.message)),
             {
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                enableHighAccuracy: true,
                 distanceFilter: 10,
             }
         );
@@ -1024,13 +1026,14 @@ export default class CarpoolRideConfirmed extends React.Component {
                                 },
                                 (error) => {
                                     console.log(error.code, error.message);
-                                    Geolocation.requestAuthorization();
+                                   Geolocation.requestAuthorization("whenInUse");
                                 }, {
                                 distanceFilter: 10,
-                                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                                //enableHighAccuracy: Platform.OS == 'ios' ? false : true,
+                                enableHighAccuracy: true,
                             }).catch((error) => {
                                 console.log(error.code, error.message);
-                                Geolocation.requestAuthorization();
+                               Geolocation.requestAuthorization("whenInUse");
                             });
                         }}
                     >
