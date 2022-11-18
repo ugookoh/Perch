@@ -1,15 +1,13 @@
 import database from '@react-native-firebase/database';
-import axios from 'axios';
 import React from 'react';
 import {
     Alert, Animated,
-    Keyboard, Platform, Text, TextInput,
+    Keyboard, Text, TextInput,
     TouchableOpacity, TouchableWithoutFeedback,
     View
 } from 'react-native';
 import { MaterialIndicator } from 'react-native-indicators';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import stripe from 'tipsi-stripe';
 import Button from '../../Components/Button/Button';
 import Header from '../../Components/Header/Header';
 import {
@@ -213,101 +211,6 @@ export default class AddFunds extends React.Component { //////////////***ADD A B
                                         });
                                     },
                                 }])
-                            else if (this.state.selected == 'applePay') {
-                                stripe.canMakeNativePayPayments()
-                                    .then(canUsePayment => {
-                                        if (canUsePayment) {
-                                            stripe.paymentRequestWithApplePay([
-                                                { label: `Buy ${this.state.kms} Perch Kilometers`, amount: this.state.cost.toFixed(2) },
-                                                { label: 'Perch', amount: this.state.cost.toFixed(2) },
-                                            ], {
-                                                currencyCode: 'CAD',
-                                                countryCode: 'CA',
-                                            })
-                                                .then((result) => {
-                                                    stripe.completeApplePayRequest()
-                                                        .then(() => {
-                                                            //PAYMENT PROCESSED
-                                                            this.setState({ loading: true }, () => {
-                                                                axios.post(`https://us-central1-perch-01.cloudfunctions.net/buyPerchKilometers`, {
-                                                                    quantity: Number(this.state.kms),
-                                                                    userID: this.state.userDetails.userID,
-                                                                    timestamp: new Date().getTime(),
-                                                                    status: 'payment_completed_on_client',
-                                                                    nativePayType: 'applePay',
-                                                                    paymentIntentId: result.tokenId
-                                                                })
-                                                                    .then(() => {
-                                                                        this.setState({ paymentCompleted: true })
-                                                                    })
-                                                                    .catch(error => {
-                                                                        Alert.alert('Payment Error', `Error: ${error.message}. Please contact us`);
-                                                                        this.setState({ loading: false })
-                                                                    })
-                                                            })
-                                                        })
-                                                        .catch(error => {
-                                                            Alert.alert('Payment Error', error.message);
-                                                            stripe.cancelNativePayRequest()
-                                                        })
-                                                }).catch(error => {
-                                                    Alert.alert('Payment Error', error.message);
-                                                    stripe.cancelNativePayRequest()
-                                                })
-                                        }
-                                        else
-                                            Alert.alert('Payment Error', `You cannot use ${Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}, please select another payment method or add a credit/debit card`);
-                                    })
-                                    .catch(error => { Alert.alert('Payment Error', error.message) })
-                            }
-                            else if (this.state.selected == 'googlePay') {
-                                stripe.canMakeNativePayPayments()
-                                    .then(canUsePayment => {
-                                        if (canUsePayment) {
-                                            stripe.paymentRequestWithAndroidPay({
-                                                total_price: this.state.cost.toFixed(2),
-                                                currency_code: 'CAD',
-                                                shipping_address_required: false,
-                                                billing_address_required: false,
-                                                shipping_countries: ["CA"],
-                                                line_items: [{
-                                                    currency_code: 'CAD',
-                                                    description: 'Perch Kilometers',
-                                                    total_price: this.state.cost.toFixed(2),
-                                                    unit_price: this.state.cost.toFixed(2),
-                                                    quantity: '1',
-                                                }],
-                                            })
-                                                .then((result) => {
-                                                    //PAYMENT PROCESSED
-                                                    this.setState({ loading: true }, () => {
-                                                        axios.post(`https://us-central1-perch-01.cloudfunctions.net/buyPerchKilometers`, {
-                                                            quantity: Number(this.state.kms),
-                                                            userID: this.state.userDetails.userID,
-                                                            timestamp: new Date().getTime(),
-                                                            status: 'payment_completed_on_client',
-                                                            nativePayType: 'googlePay',
-                                                            paymentIntentId: result.tokenId
-                                                        })
-                                                            .then(() => {
-                                                                this.setState({ paymentCompleted: true })
-                                                            })
-                                                            .catch(error => {
-                                                                Alert.alert('Payment Error', `Error: ${error.message}. Please contact us`);
-                                                                this.setState({ loading: false })
-                                                            })
-                                                    })
-                                                })
-                                                .catch(error => {
-                                                    Alert.alert('Payment Error', error.message);
-                                                    stripe.cancelNativePayRequest()
-                                                })
-                                        }
-                                        else
-                                            Alert.alert('Payment Error', `You cannot use ${Platform.OS == 'ios' ? 'Apple Pay' : 'Google Pay'}, please select another payment method or add a credit/debit card`);
-                                    })
-                                    .catch(error => { Alert.alert('Payment Error', error.message) })
-                            }
                             else {
                                 buyKilometers.call(this, {
                                     cardId: this.state.cardDetails.card.cardId,

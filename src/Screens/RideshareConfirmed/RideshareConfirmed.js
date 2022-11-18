@@ -138,10 +138,6 @@ export default class RideshareConfirmed extends React.Component {
             (error) => {
                 console.log(error.code, error.message);
                 Geolocation.requestAuthorization();
-            },
-            {
-                distanceFilter: 10,
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
             }
         ).catch((error) => {
             console.log(error.code, error.message);
@@ -287,7 +283,7 @@ export default class RideshareConfirmed extends React.Component {
         );
         const MoneyChoice = (
             <View style={styles.selection}>
-                <View style={styles.visa, { width: x(25.2), }}><Money height={'100%'} width={'100%'} /></View>
+                <View style={[styles.visa, { width: x(25.2), }]}><Money height={'100%'} width={'100%'} /></View>
                 <View style={styles.paymentInfoNumbers}>
                     <Text style={styles.cardNumber}> Cash</Text>
                     <Text style={[styles.cardNumber, {}]}>$5.00</Text>
@@ -296,7 +292,7 @@ export default class RideshareConfirmed extends React.Component {
         );
         const PerchWalletChoice = (
             <View style={styles.selection}>
-                <View style={styles.visa, { width: x(25.2), }}><PerchWallet height={'100%'} width={'100%'} /></View>
+                <View style={[styles.visa, { width: x(25.2), }]}><PerchWallet height={'100%'} width={'100%'} /></View>
                 <View style={styles.paymentInfoNumbers}>
                     <Text style={styles.cardNumber}> Perch Wallet</Text>
                     <Text style={[styles.cardNumber, {}]}>$20.19</Text>

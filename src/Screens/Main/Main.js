@@ -264,14 +264,6 @@ export default class Main extends React.Component {
             (error) => {
                 console.log(error.code, error.message);
                 Geolocation.requestAuthorization();
-            },
-            {
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
-                //enableHighAccuracy: true,
-                timeout: 15000,
-                maximumAge: 10000,
-                distanceFilter: 0,
-                forceRequestLocation: true
             }
         )
 
@@ -317,14 +309,6 @@ export default class Main extends React.Component {
             (error) => {
                 console.log(error.code, error.message);
                 Geolocation.requestAuthorization();
-            },
-            {
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
-                //enableHighAccuracy: true,
-                timeout: 15000,
-                maximumAge: 10000,
-                distanceFilter: 0,
-                forceRequestLocation: true
             }
         ).catch((error) => {
             console.log(error.code, error.message);
@@ -612,17 +596,10 @@ export default class Main extends React.Component {
                                 (error) => {
                                     console.log(error.code, error.message);
                                     Geolocation.requestAuthorization();
-                                }, {
-                                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
-                                //enableHighAccuracy: true,
-                                timeout: 15000,
-                                maximumAge: 10000,
-                                distanceFilter: 0,
-                                forceRequestLocation: true
-                            }).catch((error) => {
-                                console.log(error.code, error.message);
-                                Geolocation.requestAuthorization();
-                            });
+                                }).catch((error) => {
+                                    console.log(error.code, error.message);
+                                    Geolocation.requestAuthorization();
+                                });
                         }}
                     >
                         <Icon_ name={'location-arrow'} size={y(21)} color={colors.GREEN} />
@@ -746,6 +723,10 @@ export default class Main extends React.Component {
                             }}
                             style={styles.searchInverse_TO}>
                             <Animated.Text style={[styles.mainText, { opacity: animatedValueOpacity }]}>{status}</Animated.Text>
+                            {/*
+                            
+                            THIS IS WHERE THE SCHEDUKLE BUTTON USED TO BE
+
                             {this.state.schedule ?
                                 <TouchableOpacity style={styles.sContainer} onPress={() => {
                                     if (this.state.scheduledStatus) {
@@ -758,7 +739,7 @@ export default class Main extends React.Component {
                                     <Icon name={'clock'} size={y(19)} style={styles.sIcon} color={colors.GREEN} />
                                 </TouchableOpacity> :
                                 <></>
-                            }
+                            } */}
                         </TouchableOpacity>
                     </Animated.View>
 
@@ -859,7 +840,7 @@ export default class Main extends React.Component {
                                     mode={'time'}
                                     is24Hour={false}
                                     display={'spinner'}
-                                    style={{ width: x(320), backgroundColor: colors.GREY, top: y(40) }}
+                                    style={{ width: x(320), backgroundColor: colors.WHITE, top: y(40) }}
                                     onChange={(event, date) => {
                                         //this.setState({ getTime: false })
                                         const d = event.nativeEvent.timestamp;

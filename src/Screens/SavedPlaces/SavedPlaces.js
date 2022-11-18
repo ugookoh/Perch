@@ -50,10 +50,6 @@ export default class SavedPlaces extends React.Component {
             (error) => {
                 console.log(error.code, error.message);
                 Geolocation.requestAuthorization();
-            },
-            {
-                distanceFilter: 10,
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
             }
         ).catch((error) => {
             console.log(error.code, error.message);

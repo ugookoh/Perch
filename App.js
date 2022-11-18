@@ -11,12 +11,6 @@ import axios from 'axios'
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import messaging from '@react-native-firebase/messaging';
 import database from '@react-native-firebase/database';
-import stripe from 'tipsi-stripe';
-stripe.setOptions({
-  publishableKey: 'pk_test_RjADdW2vGwFAgOOk7ws1juNB002JV727O8',
-  androidPayMode: 'test', // Android only
-  merchantId: 'merchant.com.perch',
-})
 export default class App extends React.Component {
   constructor() {
     super();

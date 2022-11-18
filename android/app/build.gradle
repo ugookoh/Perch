@@ -197,7 +197,6 @@ dependencies {
     implementation project(':react-native-geolocation-service')
     implementation project(':tipsi-stripe')
     implementation 'com.google.firebase:firebase-analytics:17.3.0'
-    implementation project(':react-native-linear-gradient')
     implementation project(':react-native-svg')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-splash-screen')

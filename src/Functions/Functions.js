@@ -13,7 +13,6 @@ import axios from 'axios';
 import database from '@react-native-firebase/database';
 import NetInfo from "@react-native-community/netinfo";
 import _ from 'lodash';
-import stripe from 'tipsi-stripe';
 
 const GOOGLE_KEY = 'AIzaSyCBmmCb6Lkhbj6LR5eCi2Lz2ocbpyW6kb4';
 const polyline = require('@mapbox/polyline');// for decoding polylines
@@ -1260,146 +1259,22 @@ export function cancelScheduledTrip(toSend) {
   });
 };
 export function storeCard(userID, cardObject) {
-  axios.post(`https://us-central1-perch-01.cloudfunctions.net/storeStripeCard`, { userID: userID, cardObject: cardObject })
-    .then(() => {
-      this.setState({ loading: false });
-      Alert.alert('Card added', 'Your card has been successfully added', [{
-        text: 'Ok',
-        onPress: () => {
-          this.props.route.params.refreshCards();
-          this.props.navigation.goBack();
-        }
-      }])
-    })
-    .catch(error => {
-      this.setState({ loading: false });
-      Alert.alert('Error', error.message);
-    });
+  this.props.route.params.refreshCards();
+  this.props.navigation.goBack();
 }
+
 export function chargeCustomer(toSend, dataToSend, historyData, usedPerchKms) {
   this.setState({ loading: true }, () => {
-    axios.post(`https://us-central1-perch-01.cloudfunctions.net/chargeCustomer`, toSend)
-      .then(result => {
-        const { status, client_secret, id } = result.data;
-        historyData.paymentIntentId = id;
-        historyData.cost = { ...historyData.cost, paymentIntentId: id };
-        if (status == 'succeeded') {
-          if (usedPerchKms) {
-            perchKilometerPayment.call(this, {
-              userID: this.state.userID,
-              usedPerchKms: usedPerchKms,
-            }, dataToSend, historyData)
-          } else {
-            if (this.state.now)
-              carpoolRequestHandler.call(this, dataToSend, historyData);
-            else
-              scheduledCarpoolRequestHandler.call(this, dataToSend, historyData);
-          }
+    if (this.state.now)
+      carpoolRequestHandler.call(this, dataToSend, historyData);
+    else
+      scheduledCarpoolRequestHandler.call(this, dataToSend, historyData);
 
-        }
-        else if (status == 'requires_action') {
-          stripe.authenticatePaymentIntent({
-            clientSecret: client_secret
-          }).then(data => {
-            if (data.status == 'requires_confirmation') {
-              axios.post(`https://us-central1-perch-01.cloudfunctions.net/confirmStripePayment`, { paymentIntentId: data.paymentIntentId, cardId: data.paymentMethodId })
-                .then((result_) => {
-                  const status_ = result_.data.status;
-                  if (status_ == 'succeeded') {
-                    if (usedPerchKms) {
-                      perchKilometerPayment.call(this, {
-                        userID: this.state.userID,
-                        usedPerchKms: usedPerchKms,
-                      }, dataToSend, historyData)
-                    } else {
-                      if (this.state.now)
-                        carpoolRequestHandler.call(this, dataToSend, historyData);
-                      else
-                        scheduledCarpoolRequestHandler.call(this, dataToSend, historyData);
-                    }
-                  }
-                })
-                .catch(error => {
-                  Alert.alert(
-                    'Payment Error',
-                    `Error : ${error.message}`,
-                    [{
-                      text: 'Ok',
-                      onPress: () => { this.props.navigation.goBack() }
-                    }])
-                })
-            }
-          }).catch(error => {
-            Alert.alert(
-              'Payment Error',
-              `Error : ${error.message}`,
-              [{
-                text: 'Ok',
-                onPress: () => { this.props.navigation.goBack() }
-              }])
-          })
-        }
-      })
-      .catch(error => {
-        Alert.alert(
-          'Payment Error',
-          `Error : ${error.message}`,
-          [{
-            text: 'Ok',
-            onPress: () => { this.props.navigation.goBack() }
-          }])
-      });
   });
 };
 
 export function buyKilometers(toSend) {
-  this.setState({ loading: true }, () => {
-    axios.post(`https://us-central1-perch-01.cloudfunctions.net/buyPerchKilometers`, { ...toSend, status: 'initial' })
-      .then(result => {
-        const { status, client_secret, id } = result.data;
-        toSend.paymentIntentId = id;
-        toSend.status = 'confirm_payment';
-
-        if (status == 'succeeded') {
-          this.setState({ paymentCompleted: true })
-        }
-        else if (status == 'requires_action') {
-          stripe.authenticatePaymentIntent({
-            clientSecret: client_secret
-          }).then(data => {
-            if (data.status == 'requires_confirmation') {
-              axios.post(`https://us-central1-perch-01.cloudfunctions.net/buyPerchKilometers`, { ...toSend, paymentIntentId: id, status: 'confirm_payment' })
-                .then((result_) => {
-                  const status_ = result_.data.status;
-                  if (status_ == 'succeeded') {
-                    this.setState({ paymentCompleted: true })
-                  }
-                })
-                .catch(error => {
-                  this.setState({ loading: false }, () => {
-                    Alert.alert(
-                      'Payment Error',
-                      `Error : ${error.message}`)
-                  });
-                })
-            }
-          }).catch(error => {
-            this.setState({ loading: false }, () => {
-              Alert.alert(
-                'Payment Error',
-                `Error : ${error.message}`)
-            });
-          })
-        }
-      })
-      .catch(error => {
-        this.setState({ loading: false }, () => {
-          Alert.alert(
-            'Payment Error',
-            `Error : ${error.message}`)
-        });
-      });
-  });
+  this.setState({ loading: true, paymentCompleted: true });
 };
 
 export function perchKilometerDifference(perchKms, totalKms, rate) {
@@ -1444,7 +1319,7 @@ export function perchKilometerPayment(toSend, dataToSend, historyData) {
 };
 
 export function deleteCard(userID, last4, selected) {
-  axios.post(`https://us-central1-perch-01.cloudfunctions.net/deleteStripeCard`, { userID: userID, last4: last4, selected: selected });
+
 };
 export function calculateZone(aH, bH, aM, bM, oldzone) {
   let newzone;

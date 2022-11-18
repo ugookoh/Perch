@@ -192,10 +192,8 @@ export default class CarpoolRideConfirmed extends React.Component {
             (error) => {
                 console.log(error.code, error.message);
                 Geolocation.requestAuthorization();
-            },
-            {
-                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
             }
+
         ).catch((error) => {
             console.log(error.code, error.message);
             Geolocation.requestAuthorization();
@@ -1025,13 +1023,10 @@ export default class CarpoolRideConfirmed extends React.Component {
                                 (error) => {
                                     console.log(error.code, error.message);
                                     Geolocation.requestAuthorization();
-                                }, {
-                                distanceFilter: 10,
-                                enableHighAccuracy: Platform.OS == 'ios' ? false : true,
-                            }).catch((error) => {
-                                console.log(error.code, error.message);
-                                Geolocation.requestAuthorization();
-                            });
+                                }).catch((error) => {
+                                    console.log(error.code, error.message);
+                                    Geolocation.requestAuthorization();
+                                });
                         }}
                     >
                         <Icon_ name={'location-arrow'} size={y(21)} color={colors.GREEN} />

@@ -10,8 +10,8 @@ export default StyleSheet.create({
     },
     sharing: {
         marginTop: -x(dimensionAssert() ? 50 : 0),
-        height: x(400),
-        width: x(400),
+        height: x(300),
+        width: x(300),
     },
     lowerContainer: {
         width: width,

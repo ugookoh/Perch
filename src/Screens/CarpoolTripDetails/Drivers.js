@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import database from '@react-native-firebase/database';
-import LottieView from 'lottie-react-native';
 import React from 'react';
 import { Animated, Easing, LayoutAnimation, Platform, Text, TouchableOpacity, UIManager, View } from 'react-native';
 import { MaterialIndicator } from 'react-native-indicators';
 import { CustomLayoutLinear, x, y, colors } from '../../Functions/Functions';
+import Feather from 'react-native-vector-icons/Feather'
 import styles from './styles';
 
 export default class Drivers extends React.Component {
@@ -121,14 +121,7 @@ export default class Drivers extends React.Component {
                         <Text style={[styles.driverName, { color: colors.GREEN, marginVertical: y(10) }]}>{this.props.driver1 ? this.props.driver1.firstName : ''}</Text>
                         {this.state.complete1 ?
                             <View style={{ position: 'absolute', right: -x(17), top: -x(12) }}>
-                                <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress1} style={{ width: x(50), height: x(50) }}
-                                    colorFilters={[{
-                                        keypath: "Shape Layer 3",
-                                        color: colors.GREEN,
-                                    }, {
-                                        keypath: "Shape Layer 4",
-                                        color: colors.GREEN,
-                                    }]} />
+                                <Feather name='check-circle' color={colors.GREEN} size={x(20)} />
                             </View> :
                             <View>
                                 <MaterialIndicator color={colors.GREEN} size={x(20)} />
@@ -148,14 +141,7 @@ export default class Drivers extends React.Component {
                             <Text style={[styles.driverName, { color: colors.GREEN, marginTop: y(10) }]}>{this.props.driver1 ? this.props.driver1.firstName : ''}</Text>
                             {this.state.complete1 ?
                                 <View style={{ position: 'absolute', right: -x(17), top: -x(12) }}>
-                                    <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress1} style={{ width: x(50), height: x(50) }}
-                                        colorFilters={[{
-                                            keypath: "Shape Layer 3",
-                                            color: colors.GREEN,
-                                        }, {
-                                            keypath: "Shape Layer 4",
-                                            color: colors.GREEN,
-                                        }]} />
+                                    <Feather name='check-circle' color={colors.GREEN} size={x(20)} />
                                 </View> :
                                 <View>
                                     <MaterialIndicator color={colors.GREEN} size={x(20)} />
@@ -166,14 +152,7 @@ export default class Drivers extends React.Component {
                             <Text style={[styles.driverName, { color: colors.BLUE, marginBottom: y(10), marginTop: y(5) }]}>{this.props.driver2 ? this.props.driver2.firstName : ''}</Text>
                             {this.state.complete2 ?
                                 <View style={{ position: 'absolute', right: -x(17), top: -x(12) }}>
-                                    <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress2} style={{ width: x(50), height: x(50) }}
-                                        colorFilters={[{
-                                            keypath: "Shape Layer 3",
-                                            color: colors.BLUE,
-                                        }, {
-                                            keypath: "Shape Layer 4",
-                                            color: colors.BLUE,
-                                        }]} />
+                                    <Feather name='check-circle' color={colors.BLUE} size={x(20)} />
                                 </View> :
                                 <View>
                                     <MaterialIndicator color={colors.BLUE} size={x(20)} />
@@ -195,14 +174,7 @@ export default class Drivers extends React.Component {
                             <Text style={[styles.driverName, { color: colors.GREEN, marginTop: y(10) }]}>{this.props.driver1 ? this.props.driver1.firstName : ''}</Text>
                             {this.state.complete1 ?
                                 <View style={{ position: 'absolute', right: -x(17), top: -x(12) }}>
-                                    <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress1} style={{ width: x(50), height: x(50) }}
-                                        colorFilters={[{
-                                            keypath: "Shape Layer 3",
-                                            color: colors.GREEN,
-                                        }, {
-                                            keypath: "Shape Layer 4",
-                                            color: colors.GREEN,
-                                        }]} />
+                                    <Feather name='check-circle' color={colors.GREEN} size={x(20)} />
                                 </View> :
                                 <View>
                                     <MaterialIndicator color={colors.GREEN} size={x(20)} />
@@ -213,14 +185,7 @@ export default class Drivers extends React.Component {
                             <Text style={[styles.driverName, { color: colors.BLUE, marginVertical: y(5) }]}>{this.props.driver2 ? this.props.driver2.firstName : ''}</Text>
                             {this.state.complete2 ?
                                 <View style={{ position: 'absolute', right: -x(17), top: -x(12), }}>
-                                    <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress2} style={{ width: x(50), height: x(50) }}
-                                        colorFilters={[{
-                                            keypath: "Shape Layer 3",
-                                            color: colors.BLUE,
-                                        }, {
-                                            keypath: "Shape Layer 4",
-                                            color: colors.BLUE,
-                                        }]} />
+                                    <Feather name='check-circle' color={colors.BLUE} size={x(20)} />
                                 </View> :
                                 <View>
                                     <MaterialIndicator color={colors.BLUE} size={x(20)} />
@@ -232,14 +197,7 @@ export default class Drivers extends React.Component {
                             <Text style={[styles.driverName, { color: colors.PURPLE, marginBottom: y(10) }]}>{this.props.driver3 ? this.props.driver3.firstName : ''}</Text>
                             {this.state.complete3 ?
                                 <View style={{ position: 'absolute', right: -x(17), top: -x(12) }}>
-                                    <LottieView source={require('../../Images/lottieAnimations/check.json')} progress={this.progress3} style={{ width: x(50), height: x(50) }}
-                                        colorFilters={[{
-                                            keypath: "Shape Layer 3",
-                                            color: colors.PURPLE,
-                                        }, {
-                                            keypath: "Shape Layer 4",
-                                            color: colors.PURPLE,
-                                        }]} />
+                                    <Feather name='check-circle' color={colors.PURPLE} size={x(20)} />
                                 </View> :
                                 <View>
                                     <MaterialIndicator color={colors.PURPLE} size={x(20)} />

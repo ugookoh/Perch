@@ -127,16 +127,7 @@ export default class DrawerComponent extends React.Component {
                         </View>
                     </TouchableOpacity>
                     <View style={styles.divider}><Divider height={0.5} width={x(302)} borderRadius={0} borderColor={'#707070'} borderWidth={0.5} /></View>
-                    <TouchableOpacity onPress={() => {
-                        this.props.hideMenu();
-                        this.props.navigation.navigate('Wallet', { userDetails: this.props.userDetails });
-                    }}>
-                        <View style={styles.menuList}>
-                            <SimpleLineIcons name={'wallet'} size={y(20)} style={styles.icons} />
-                            <Text style={styles.menuText}>Wallet</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <View style={styles.divider}><Divider height={0.5} width={x(302)} borderRadius={0} borderColor={'#707070'} borderWidth={0.5} /></View>
+
 
                     <TouchableOpacity onPress={() => {
                         this.props.hideMenu();

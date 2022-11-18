@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions, StatusBar, Platform } from 'react-native';
-import { x, y, height, width, dimensionAssert } from '../../Functions/Functions';
+import { x, y, height, width, dimensionAssert, colors } from '../../Functions/Functions';
 
 export default StyleSheet.create({
   container: {
@@ -84,7 +84,7 @@ export default StyleSheet.create({
     justifyContent: 'space-around',
   },
   iosSpinnerView: {
-    backgroundColor: '#403D3D',
+    backgroundColor: colors.WHITE,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     top: y(130),
@@ -96,7 +96,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     width: x(320),
     height: y(40),
-    backgroundColor: '#403D3D',
+    backgroundColor: colors.WHITE,
     top: y(40),
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,

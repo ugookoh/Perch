@@ -1,7 +1,6 @@
 import React from 'react';
 import { Alert, Animated, Keyboard, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
-import stripe from 'tipsi-stripe';
 import Button from '../../Components/Button/Button';
 import Header from '../../Components/Header/Header';
 import { OfflineNotice, storeCard, x, y } from '../../Functions/Functions';
@@ -27,22 +26,7 @@ export default class NewCreditCard extends React.Component {
         this.name.focus();
     };
     createTokenWithCard = () => {
-        this.setState({ loading: true }, () => {
-            stripe.createTokenWithCard({
-                number: this.formatCard(this.state.cardNumber),
-                expMonth: Number(this.state.expiryDate.substring(0, 2)),
-                expYear: Number(this.state.expiryDate.substring(5, 7)),
-                cvc: (this.state.ccv),
-                name: this.state.name,
-
-            }).then(token => {
-                storeCard.call(this, this.state.userID, token);
-            }).catch(error => {
-                this.setState({ loading: false }, () => {
-                    Alert.alert('Error', error.message)
-                });
-            });
-        });
+        this.props.navigation.goBack()
     }
     formatCard(card) {
         const formattedCard = card.substring(0, 4) + card.substring(5, 9) + card.substring(10, 14) + card.substring(15, 19);
